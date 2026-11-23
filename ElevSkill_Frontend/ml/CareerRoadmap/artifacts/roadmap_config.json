@@ -1,0 +1,6 @@
+{
+  "role_threshold": 0.36,
+  "ambiguity_margin": 0.04,
+  "skill_threshold": 0.6,
+  "model_source": "models/all-MiniLM-L6-v2"
+}

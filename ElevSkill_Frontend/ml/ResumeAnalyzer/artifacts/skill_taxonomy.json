@@ -1,0 +1,234 @@
+{
+  "languages": {
+    "Python": [
+      "python",
+      "py"
+    ],
+    "JavaScript": [
+      "javascript",
+      "js",
+      "es6",
+      "ecmascript"
+    ],
+    "TypeScript": [
+      "typescript",
+      "ts"
+    ],
+    "Java": [
+      "java"
+    ],
+    "C++": [
+      "c++",
+      "cpp"
+    ],
+    "C#": [
+      "c#",
+      "csharp"
+    ],
+    "C": [
+      "c language"
+    ],
+    "Go": [
+      "golang"
+    ],
+    "Rust": [
+      "rust"
+    ],
+    "SQL": [
+      "sql",
+      "tsql",
+      "plsql"
+    ],
+    "HTML5": [
+      "html",
+      "html5"
+    ],
+    "CSS3": [
+      "css",
+      "css3",
+      "scss",
+      "sass"
+    ],
+    "R": [
+      "r programming"
+    ],
+    "PHP": [
+      "php"
+    ],
+    "Kotlin": [
+      "kotlin"
+    ],
+    "Swift": [
+      "swift"
+    ]
+  },
+  "frameworks": {
+    "React": [
+      "react",
+      "reactjs",
+      "react.js"
+    ],
+    "Next.js": [
+      "next.js",
+      "nextjs"
+    ],
+    "Vue.js": [
+      "vue",
+      "vuejs",
+      "vue.js"
+    ],
+    "Angular": [
+      "angular"
+    ],
+    "Node.js": [
+      "node.js",
+      "nodejs",
+      "node"
+    ],
+    "Express": [
+      "express",
+      "expressjs",
+      "express.js"
+    ],
+    "FastAPI": [
+      "fastapi"
+    ],
+    "Django": [
+      "django"
+    ],
+    "Flask": [
+      "flask"
+    ],
+    "Spring Boot": [
+      "spring boot",
+      "springboot"
+    ],
+    "Tailwind CSS": [
+      "tailwind",
+      "tailwindcss"
+    ],
+    "Bootstrap": [
+      "bootstrap"
+    ],
+    "PyTorch": [
+      "pytorch",
+      "torch"
+    ],
+    "TensorFlow": [
+      "tensorflow",
+      "tf"
+    ],
+    "scikit-learn": [
+      "scikit-learn",
+      "sklearn",
+      "scikit learn"
+    ],
+    "Pandas": [
+      "pandas"
+    ],
+    "NumPy": [
+      "numpy"
+    ]
+  },
+  "databases": {
+    "PostgreSQL": [
+      "postgresql",
+      "postgres"
+    ],
+    "MySQL": [
+      "mysql"
+    ],
+    "SQLite": [
+      "sqlite"
+    ],
+    "MongoDB": [
+      "mongodb",
+      "mongo"
+    ],
+    "Redis": [
+      "redis"
+    ],
+    "Firebase": [
+      "firebase",
+      "firestore"
+    ],
+    "Supabase": [
+      "supabase"
+    ],
+    "DynamoDB": [
+      "dynamodb"
+    ],
+    "Oracle": [
+      "oracle db"
+    ]
+  },
+  "tools": {
+    "Git": [
+      "git",
+      "github",
+      "gitlab"
+    ],
+    "Docker": [
+      "docker"
+    ],
+    "Kubernetes": [
+      "kubernetes",
+      "k8s"
+    ],
+    "AWS": [
+      "aws",
+      "amazon web services"
+    ],
+    "GCP": [
+      "gcp",
+      "google cloud"
+    ],
+    "Azure": [
+      "azure"
+    ],
+    "Vite": [
+      "vite"
+    ],
+    "Webpack": [
+      "webpack"
+    ],
+    "REST API": [
+      "rest",
+      "rest api",
+      "restful",
+      "rest apis"
+    ],
+    "GraphQL": [
+      "graphql"
+    ],
+    "Linux": [
+      "linux",
+      "ubuntu",
+      "bash"
+    ],
+    "CI/CD": [
+      "ci/cd",
+      "github actions",
+      "jenkins"
+    ],
+    "Vitest": [
+      "vitest"
+    ],
+    "Jest": [
+      "jest"
+    ],
+    "Pytest": [
+      "pytest"
+    ],
+    "Figma": [
+      "figma"
+    ],
+    "Jira": [
+      "jira"
+    ],
+    "Jupyter": [
+      "jupyter",
+      "jupyter notebook"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+# Node / Vite
+node_modules/
+dist/
+.env
+.env.local
+
+# Python / ML Environments
+ml/**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ipynb_checkpoints/
+*.pyc
+*.pyo
+
+
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Local logs
+/logs/
+
+# Uploaded user data
+ElevSkill_Backend/storage/
+
+# Build outputs
+dist/
+build/
+
+# Local database files
+*.mdf
+*.ldf
+
+# Operating system files
+.DS_Store
+Thumbs.db
+

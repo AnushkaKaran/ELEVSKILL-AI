@@ -1,0 +1,56 @@
+{
+  "all-MiniLM-L6-v2": {
+    "load_seconds": 12.647,
+    "avg_inference_ms_per_case": 77.73,
+    "mean_match_score_by_tier": {
+      "unrelated": 0.0,
+      "paraphrased": 85.67,
+      "partial": 39.0,
+      "strong": 89.75,
+      "weak": 0.67
+    },
+    "mean_semantic_sim_by_tier": {
+      "unrelated": 0.0253,
+      "paraphrased": 0.6467,
+      "partial": 0.4198,
+      "strong": 0.7572,
+      "weak": 0.0968
+    },
+    "strong_minus_unrelated_score": 89.75,
+    "strong_minus_unrelated_semantic": 0.7319,
+    "monotonic_tier_ranking": true
+  },
+  "BAAI/bge-small-en-v1.5": {
+    "load_seconds": 1.824,
+    "avg_inference_ms_per_case": 161.01,
+    "mean_match_score_by_tier": {
+      "unrelated": 58.67,
+      "paraphrased": 92.33,
+      "partial": 62.0,
+      "strong": 94.0,
+      "weak": 41.33
+    },
+    "mean_semantic_sim_by_tier": {
+      "unrelated": 0.4696,
+      "paraphrased": 0.7229,
+      "partial": 0.6666,
+      "strong": 0.8106,
+      "weak": 0.5472
+    },
+    "strong_minus_unrelated_score": 35.33,
+    "strong_minus_unrelated_semantic": 0.341,
+    "monotonic_tier_ranking": false
+  },
+  "TF-IDF Baseline": {
+    "load_seconds": 0.0,
+    "avg_inference_ms_per_case": 7.35,
+    "mean_semantic_sim_by_tier": {
+      "unrelated": 0.0,
+      "paraphrased": 0.1307,
+      "partial": 0.1352,
+      "strong": 0.421,
+      "weak": 0.0
+    },
+    "strong_minus_unrelated_semantic": 0.421
+  }
+}

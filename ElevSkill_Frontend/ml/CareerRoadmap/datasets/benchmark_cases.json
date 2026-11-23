@@ -1,0 +1,242 @@
+[
+  {
+    "id": "cr-01",
+    "scenario": "beginner_frontend",
+    "target_role": "Frontend Developer",
+    "known_skills": [],
+    "completed_skills": [],
+    "expected_canonical_role": "Frontend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-02",
+    "scenario": "intermediate_frontend_with_prereqs",
+    "target_role": "Frontend React Developer",
+    "known_skills": ["HTML5", "CSS3", "JavaScript", "Git"],
+    "completed_skills": [],
+    "expected_canonical_role": "Frontend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-03",
+    "scenario": "completed_skills_excluded",
+    "target_role": "Frontend Developer",
+    "known_skills": ["HTML5"],
+    "completed_skills": ["CSS3", "JavaScript", "Git"],
+    "expected_canonical_role": "Frontend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-04",
+    "scenario": "informal_role_data_scientist",
+    "target_role": "Junior Data Science Grad",
+    "known_skills": ["Python", "SQL"],
+    "completed_skills": [],
+    "expected_canonical_role": "Data Scientist",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-05",
+    "scenario": "informal_role_ml_engineer",
+    "target_role": "ML Eng",
+    "known_skills": ["Python", "Git"],
+    "completed_skills": ["NumPy & Pandas"],
+    "expected_canonical_role": "Machine Learning Engineer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-06",
+    "scenario": "informal_role_data_analyst",
+    "target_role": "Entry Level Data Analytics",
+    "known_skills": ["SQL"],
+    "completed_skills": [],
+    "expected_canonical_role": "Data Analyst",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-07",
+    "scenario": "python_developer_beginner",
+    "target_role": "Python Developer",
+    "known_skills": [],
+    "completed_skills": ["Python"],
+    "expected_canonical_role": "Python Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-08",
+    "scenario": "backend_developer_intermediate",
+    "target_role": "Backend Developer",
+    "known_skills": ["Python", "SQL", "Git", "REST API"],
+    "completed_skills": [],
+    "expected_canonical_role": "Backend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-09",
+    "scenario": "informal_skill_aliases",
+    "target_role": "Machine Learning Engineer",
+    "known_skills": ["sklearn", "py", "mlops", "postgres"],
+    "completed_skills": ["github"],
+    "expected_canonical_role": "Machine Learning Engineer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-10",
+    "scenario": "duplicate_skill_aliases",
+    "target_role": "Frontend Developer",
+    "known_skills": ["React", "ReactJS", "react.js", "JS", "JavaScript"],
+    "completed_skills": ["HTML", "HTML5"],
+    "expected_canonical_role": "Frontend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-11",
+    "scenario": "unknown_skill_names",
+    "target_role": "Python Developer",
+    "known_skills": ["Python", "Quantum Knitting", "ZebraScript9000"],
+    "completed_skills": [],
+    "expected_canonical_role": "Python Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-12",
+    "scenario": "missing_foundational_prereqs",
+    "target_role": "Machine Learning Engineer",
+    "known_skills": [],
+    "completed_skills": [],
+    "expected_canonical_role": "Machine Learning Engineer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-13",
+    "scenario": "incomplete_profile_no_resume_or_edu",
+    "target_role": "Data Analyst",
+    "known_skills": ["SQL", "Python"],
+    "completed_skills": [],
+    "expected_canonical_role": "Data Analyst",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-14",
+    "scenario": "all_skills_completed_data_analyst",
+    "target_role": "Data Analyst",
+    "known_skills": ["SQL", "Python", "Git"],
+    "completed_skills": ["NumPy & Pandas", "Statistics & EDA", "Data Visualization"],
+    "expected_canonical_role": "Data Analyst",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-15",
+    "scenario": "role_change_from_frontend_to_backend",
+    "target_role": "Backend Developer",
+    "known_skills": ["JavaScript", "REST API"],
+    "completed_skills": ["HTML5", "CSS3", "React", "Git"],
+    "expected_canonical_role": "Backend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-16",
+    "scenario": "disambiguation_java_vs_javascript",
+    "target_role": "Frontend Developer",
+    "known_skills": ["Java"],
+    "completed_skills": [],
+    "expected_canonical_role": "Frontend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-17",
+    "scenario": "disambiguation_nosql_vs_sql",
+    "target_role": "Data Analyst",
+    "known_skills": ["NoSQL"],
+    "completed_skills": [],
+    "expected_canonical_role": "Data Analyst",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-18",
+    "scenario": "disambiguation_deep_learning_vs_ml",
+    "target_role": "Data Scientist",
+    "known_skills": ["Deep Learning"],
+    "completed_skills": [],
+    "expected_canonical_role": "Data Scientist",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-19",
+    "scenario": "resume_and_projects_supplied",
+    "target_role": "Python Developer",
+    "known_skills": [],
+    "completed_skills": [],
+    "project_descriptions": ["Built a FastAPI service with PostgreSQL and pytest unit tests."],
+    "expected_canonical_role": "Python Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-20",
+    "scenario": "semantic_skill_phrase",
+    "target_role": "Frontend Developer",
+    "known_skills": ["responsive flexbox and grid styling", "version control with branches"],
+    "completed_skills": [],
+    "expected_canonical_role": "Frontend Developer",
+    "expected_valid": true
+  },
+  {
+    "id": "cr-21",
+    "scenario": "unsupported_role_pastry_chef",
+    "target_role": "Head Pastry Chef",
+    "known_skills": ["Sourdough"],
+    "completed_skills": [],
+    "expected_canonical_role": null,
+    "expected_valid": false,
+    "expected_error_code": "UNSUPPORTED_ROLE"
+  },
+  {
+    "id": "cr-22",
+    "scenario": "unsupported_role_nurse",
+    "target_role": "Registered Pediatric Nurse",
+    "known_skills": [],
+    "completed_skills": [],
+    "expected_canonical_role": null,
+    "expected_valid": false,
+    "expected_error_code": "UNSUPPORTED_ROLE"
+  },
+  {
+    "id": "cr-23",
+    "scenario": "ambiguous_role_generic_software",
+    "target_role": "Software Programmer",
+    "known_skills": [],
+    "completed_skills": [],
+    "expected_canonical_role": null,
+    "expected_valid": false
+  },
+  {
+    "id": "cr-24",
+    "scenario": "empty_target_role",
+    "target_role": "   ",
+    "known_skills": ["Python"],
+    "completed_skills": [],
+    "expected_canonical_role": null,
+    "expected_valid": false,
+    "expected_error_code": "INVALID_INPUT"
+  },
+  {
+    "id": "cr-25",
+    "scenario": "invalid_known_skills_type",
+    "target_role": "Frontend Developer",
+    "known_skills": "Python",
+    "completed_skills": [],
+    "expected_canonical_role": null,
+    "expected_valid": false,
+    "expected_error_code": "INVALID_INPUT"
+  },
+  {
+    "id": "cr-26",
+    "scenario": "overlong_target_role",
+    "target_role": "Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer Frontend Developer",
+    "known_skills": [],
+    "completed_skills": [],
+    "expected_canonical_role": null,
+    "expected_valid": false,
+    "expected_error_code": "INVALID_INPUT"
+  }
+]

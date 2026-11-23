@@ -1,0 +1,486 @@
+{
+  "html5": {
+    "id": "html5",
+    "name": "HTML5",
+    "category": "Core Web",
+    "tier": "foundational",
+    "aliases": [
+      "html",
+      "html5",
+      "semantic html"
+    ],
+    "prerequisites": [],
+    "estimated_hours": 4,
+    "learning_objective": "Structure accessible web pages using semantic HTML5 landmarks and forms.",
+    "official_resource": {
+      "title": "MDN Web Docs \u2014 HTML",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+      "source_type": "official_documentation"
+    }
+  },
+  "css3": {
+    "id": "css3",
+    "name": "CSS3",
+    "category": "Core Web",
+    "tier": "foundational",
+    "aliases": [
+      "css",
+      "css3",
+      "flexbox",
+      "css grid",
+      "responsive css"
+    ],
+    "prerequisites": [
+      "html5"
+    ],
+    "estimated_hours": 6,
+    "learning_objective": "Build responsive desktop and mobile layouts using Flexbox, Grid, and media queries.",
+    "official_resource": {
+      "title": "MDN Web Docs \u2014 CSS",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+      "source_type": "official_documentation"
+    }
+  },
+  "javascript": {
+    "id": "javascript",
+    "name": "JavaScript",
+    "category": "Programming",
+    "tier": "foundational",
+    "aliases": [
+      "javascript",
+      "js",
+      "es6",
+      "ecmascript",
+      "async/await"
+    ],
+    "prerequisites": [
+      "html5"
+    ],
+    "estimated_hours": 10,
+    "learning_objective": "Master ES6+ syntax, DOM manipulation, promises, async/await, and Fetch API.",
+    "official_resource": {
+      "title": "MDN Web Docs \u2014 JavaScript",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+      "source_type": "official_documentation"
+    }
+  },
+  "git": {
+    "id": "git",
+    "name": "Git",
+    "category": "Workflow",
+    "tier": "foundational",
+    "aliases": [
+      "git",
+      "github",
+      "gitlab",
+      "git branching",
+      "version control"
+    ],
+    "prerequisites": [],
+    "estimated_hours": 3,
+    "learning_objective": "Manage branches, commits, pull requests, and merge conflicts cleanly.",
+    "official_resource": {
+      "title": "Git Official Documentation",
+      "url": "https://git-scm.com/doc",
+      "source_type": "official_documentation"
+    }
+  },
+  "python": {
+    "id": "python",
+    "name": "Python",
+    "category": "Programming",
+    "tier": "foundational",
+    "aliases": [
+      "python",
+      "python3",
+      "python programming"
+    ],
+    "prerequisites": [],
+    "estimated_hours": 10,
+    "learning_objective": "Write clean Python functions, data structures, virtual environments, and modules.",
+    "official_resource": {
+      "title": "Python Documentation",
+      "url": "https://docs.python.org/3/",
+      "source_type": "official_documentation"
+    }
+  },
+  "sql": {
+    "id": "sql",
+    "name": "SQL",
+    "category": "Databases",
+    "tier": "foundational",
+    "aliases": [
+      "sql",
+      "postgresql",
+      "postgres",
+      "mysql",
+      "sqlite",
+      "relational databases"
+    ],
+    "prerequisites": [],
+    "estimated_hours": 6,
+    "learning_objective": "Query, filter, join, and aggregate relational tables safely.",
+    "official_resource": {
+      "title": "PostgreSQL Documentation",
+      "url": "https://www.postgresql.org/docs/",
+      "source_type": "official_documentation"
+    }
+  },
+  "nosql": {
+    "id": "nosql",
+    "name": "NoSQL",
+    "category": "Databases",
+    "tier": "intermediate",
+    "aliases": [
+      "nosql",
+      "no-sql",
+      "mongodb",
+      "document database"
+    ],
+    "prerequisites": [
+      "sql"
+    ],
+    "estimated_hours": 5,
+    "learning_objective": "Model and query document-oriented databases and understand schema tradeoffs.",
+    "official_resource": {
+      "title": "MongoDB Documentation",
+      "url": "https://www.mongodb.com/docs/",
+      "source_type": "official_documentation"
+    }
+  },
+  "java": {
+    "id": "java",
+    "name": "Java",
+    "category": "Programming",
+    "tier": "foundational",
+    "aliases": [
+      "java",
+      "jdk",
+      "jvm"
+    ],
+    "prerequisites": [],
+    "estimated_hours": 12,
+    "learning_objective": "Understand object-oriented Java fundamentals, collections, and exception handling.",
+    "official_resource": {
+      "title": "Oracle Java Documentation",
+      "url": "https://docs.oracle.com/en/java/",
+      "source_type": "official_documentation"
+    }
+  },
+  "typescript": {
+    "id": "typescript",
+    "name": "TypeScript",
+    "category": "Programming",
+    "tier": "intermediate",
+    "aliases": [
+      "typescript",
+      "ts"
+    ],
+    "prerequisites": [
+      "javascript"
+    ],
+    "estimated_hours": 6,
+    "learning_objective": "Add static type safety, interfaces, and generics to JavaScript applications.",
+    "official_resource": {
+      "title": "TypeScript Handbook",
+      "url": "https://www.typescriptlang.org/docs/",
+      "source_type": "official_documentation"
+    }
+  },
+  "react": {
+    "id": "react",
+    "name": "React",
+    "category": "Frameworks",
+    "tier": "intermediate",
+    "aliases": [
+      "react",
+      "reactjs",
+      "react.js",
+      "react hooks",
+      "react components"
+    ],
+    "prerequisites": [
+      "html5",
+      "css3",
+      "javascript"
+    ],
+    "estimated_hours": 10,
+    "learning_objective": "Build reusable components, manage state with hooks, and structure SPA views.",
+    "official_resource": {
+      "title": "React Documentation",
+      "url": "https://react.dev/learn",
+      "source_type": "official_documentation"
+    }
+  },
+  "react_native": {
+    "id": "react_native",
+    "name": "React Native",
+    "category": "Frameworks",
+    "tier": "advanced",
+    "prerequisites": [
+      "react"
+    ],
+    "estimated_hours": 10,
+    "learning_objective": "Build cross-platform mobile interfaces using React Native components.",
+    "official_resource": {
+      "title": "React Native Documentation",
+      "url": "https://reactnative.dev/docs/getting-started",
+      "source_type": "official_documentation"
+    }
+  },
+  "rest_api": {
+    "id": "rest_api",
+    "name": "REST API",
+    "category": "Integration",
+    "tier": "intermediate",
+    "aliases": [
+      "rest",
+      "rest api",
+      "rest apis",
+      "restful",
+      "http apis"
+    ],
+    "prerequisites": [
+      "git"
+    ],
+    "estimated_hours": 5,
+    "learning_objective": "Design or consume HTTP endpoints with proper status codes, loading, and error states.",
+    "official_resource": {
+      "title": "MDN Web Docs \u2014 HTTP",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+      "source_type": "official_documentation"
+    }
+  },
+  "nodejs": {
+    "id": "nodejs",
+    "name": "Node.js",
+    "category": "Frameworks",
+    "tier": "intermediate",
+    "aliases": [
+      "node",
+      "node.js",
+      "nodejs",
+      "express"
+    ],
+    "prerequisites": [
+      "javascript",
+      "rest_api"
+    ],
+    "estimated_hours": 8,
+    "learning_objective": "Build server-side JavaScript APIs, middleware, and async request handlers.",
+    "official_resource": {
+      "title": "Node.js Documentation",
+      "url": "https://nodejs.org/en/docs",
+      "source_type": "official_documentation"
+    }
+  },
+  "fastapi": {
+    "id": "fastapi",
+    "name": "FastAPI",
+    "category": "Frameworks",
+    "tier": "intermediate",
+    "aliases": [
+      "fastapi",
+      "django",
+      "flask",
+      "python web frameworks"
+    ],
+    "prerequisites": [
+      "python",
+      "rest_api"
+    ],
+    "estimated_hours": 7,
+    "learning_objective": "Create validated Python REST APIs with Pydantic schemas and clean error handling.",
+    "official_resource": {
+      "title": "FastAPI Documentation",
+      "url": "https://fastapi.tiangolo.com/",
+      "source_type": "official_documentation"
+    }
+  },
+  "testing": {
+    "id": "testing",
+    "name": "Automated Testing",
+    "category": "Quality",
+    "tier": "advanced",
+    "aliases": [
+      "vitest",
+      "jest",
+      "pytest",
+      "unit testing",
+      "component testing",
+      "testing"
+    ],
+    "prerequisites": [
+      "git"
+    ],
+    "estimated_hours": 6,
+    "learning_objective": "Write automated unit and integration tests to verify edge cases and prevent regressions.",
+    "official_resource": {
+      "title": "Pytest Documentation",
+      "url": "https://docs.pytest.org/",
+      "source_type": "official_documentation"
+    }
+  },
+  "docker": {
+    "id": "docker",
+    "name": "Docker",
+    "category": "Tools",
+    "tier": "advanced",
+    "aliases": [
+      "docker",
+      "containers",
+      "containerization"
+    ],
+    "prerequisites": [
+      "git"
+    ],
+    "estimated_hours": 6,
+    "learning_objective": "Package applications and dependencies into reproducible containers.",
+    "official_resource": {
+      "title": "Docker Get Started",
+      "url": "https://docs.docker.com/get-started/",
+      "source_type": "official_documentation"
+    }
+  },
+  "numpy_pandas": {
+    "id": "numpy_pandas",
+    "name": "NumPy & Pandas",
+    "category": "Data",
+    "tier": "intermediate",
+    "aliases": [
+      "numpy",
+      "pandas",
+      "dataframes",
+      "data manipulation"
+    ],
+    "prerequisites": [
+      "python"
+    ],
+    "estimated_hours": 8,
+    "learning_objective": "Clean, transform, and aggregate tabular datasets using vectorized operations.",
+    "official_resource": {
+      "title": "Pandas User Guide",
+      "url": "https://pandas.pydata.org/docs/user_guide/",
+      "source_type": "official_documentation"
+    }
+  },
+  "data_viz": {
+    "id": "data_viz",
+    "name": "Data Visualization",
+    "category": "Data",
+    "tier": "intermediate",
+    "aliases": [
+      "matplotlib",
+      "seaborn",
+      "data visualization",
+      "charts"
+    ],
+    "prerequisites": [
+      "python",
+      "numpy_pandas"
+    ],
+    "estimated_hours": 5,
+    "learning_objective": "Create clear, accurately labelled charts to communicate distributions and trends.",
+    "official_resource": {
+      "title": "Matplotlib Tutorials",
+      "url": "https://matplotlib.org/stable/tutorials/index.html",
+      "source_type": "official_documentation"
+    }
+  },
+  "statistics_eda": {
+    "id": "statistics_eda",
+    "name": "Statistics & EDA",
+    "category": "Data",
+    "tier": "intermediate",
+    "aliases": [
+      "statistics",
+      "eda",
+      "exploratory data analysis",
+      "probability"
+    ],
+    "prerequisites": [
+      "numpy_pandas"
+    ],
+    "estimated_hours": 8,
+    "learning_objective": "Apply descriptive statistics, hypothesis testing, and exploratory data analysis.",
+    "official_resource": {
+      "title": "SciPy Stats Reference",
+      "url": "https://docs.scipy.org/doc/scipy/reference/stats.html",
+      "source_type": "official_documentation"
+    }
+  },
+  "machine_learning": {
+    "id": "machine_learning",
+    "name": "Machine Learning",
+    "category": "ML/AI",
+    "tier": "intermediate",
+    "aliases": [
+      "machine learning",
+      "ml",
+      "scikit-learn",
+      "sklearn",
+      "supervised learning"
+    ],
+    "prerequisites": [
+      "python",
+      "numpy_pandas",
+      "statistics_eda"
+    ],
+    "estimated_hours": 12,
+    "learning_objective": "Train, validate, and evaluate regression and classification models without leakage.",
+    "official_resource": {
+      "title": "scikit-learn User Guide",
+      "url": "https://scikit-learn.org/stable/user_guide.html",
+      "source_type": "official_documentation"
+    }
+  },
+  "deep_learning": {
+    "id": "deep_learning",
+    "name": "Deep Learning & NLP",
+    "category": "ML/AI",
+    "tier": "advanced",
+    "aliases": [
+      "deep learning",
+      "pytorch",
+      "tensorflow",
+      "nlp",
+      "transformers",
+      "embeddings"
+    ],
+    "prerequisites": [
+      "python",
+      "machine_learning"
+    ],
+    "estimated_hours": 14,
+    "learning_objective": "Apply neural networks and pretrained transformer embeddings for NLP/vision tasks.",
+    "official_resource": {
+      "title": "PyTorch Tutorials",
+      "url": "https://pytorch.org/tutorials/",
+      "source_type": "official_documentation"
+    }
+  },
+  "ml_deployment": {
+    "id": "ml_deployment",
+    "name": "ML Deployment",
+    "category": "ML/AI",
+    "tier": "advanced",
+    "aliases": [
+      "mlops",
+      "model deployment",
+      "ml serving",
+      "model api"
+    ],
+    "prerequisites": [
+      "machine_learning",
+      "fastapi",
+      "docker"
+    ],
+    "estimated_hours": 7,
+    "learning_objective": "Serve saved ML models reliably behind validated API endpoints.",
+    "official_resource": {
+      "title": "FastAPI Deployment Guide",
+      "url": "https://fastapi.tiangolo.com/deployment/",
+      "source_type": "official_documentation"
+    }
+  }
+}

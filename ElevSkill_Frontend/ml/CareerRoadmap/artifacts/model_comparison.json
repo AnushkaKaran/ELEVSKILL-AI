@@ -1,0 +1,16 @@
+{
+  "MiniLM (all-MiniLM-L6-v2)": {
+    "role_accuracy": 1.0,
+    "role_hits": "6/6",
+    "skill_accuracy": 1.0,
+    "skill_hits": "5/5",
+    "avg_ms_per_query": 8.54
+  },
+  "TF-IDF Baseline": {
+    "role_accuracy": 0.3333,
+    "role_hits": "2/6",
+    "skill_accuracy": 1.0,
+    "skill_hits": "5/5",
+    "avg_ms_per_query": 24.54
+  }
+}

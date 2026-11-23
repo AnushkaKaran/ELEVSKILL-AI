@@ -1,0 +1,96 @@
+{
+  "Frontend Developer": {
+    "description": "Builds responsive, accessible browser user interfaces with HTML5, CSS3, JavaScript, TypeScript, React, REST APIs, Git, and automated UI testing.",
+    "required_skill_ids": [
+      "html5",
+      "css3",
+      "javascript",
+      "git",
+      "rest_api",
+      "typescript",
+      "react",
+      "testing"
+    ]
+  },
+  "Backend Developer": {
+    "description": "Designs server-side web APIs, relational databases, testing, and containerized deployments using Python, FastAPI, Node.js, SQL, Git, and Docker.",
+    "required_skill_ids": [
+      "python",
+      "sql",
+      "git",
+      "rest_api",
+      "fastapi",
+      "nodejs",
+      "testing",
+      "docker"
+    ]
+  },
+  "Full Stack Developer": {
+    "description": "Builds end-to-end full-stack web applications spanning client-side web UIs, server-side Node.js REST APIs, relational SQL databases, Git workflows, automated testing, and Dockerized deployments.",
+    "required_skill_ids": [
+      "html5",
+      "css3",
+      "javascript",
+      "git",
+      "sql",
+      "rest_api",
+      "typescript",
+      "react",
+      "nodejs",
+      "testing",
+      "docker"
+    ]
+  },
+  "Python Developer": {
+    "description": "Develops clean Python applications, REST APIs, database integrations, automated pytest suites, and containerized services.",
+    "required_skill_ids": [
+      "python",
+      "git",
+      "sql",
+      "rest_api",
+      "fastapi",
+      "testing",
+      "docker"
+    ]
+  },
+  "Data Analyst": {
+    "description": "Analyzes tabular datasets, writes SQL queries, performs exploratory data analysis and statistics, and creates charts with Python and Pandas.",
+    "required_skill_ids": [
+      "sql",
+      "python",
+      "git",
+      "numpy_pandas",
+      "statistics_eda",
+      "data_viz"
+    ]
+  },
+  "Data Scientist": {
+    "description": "Combines SQL, Python, statistics, exploratory data analysis, visualization, and scikit-learn machine learning models to analyze data.",
+    "required_skill_ids": [
+      "python",
+      "sql",
+      "git",
+      "numpy_pandas",
+      "statistics_eda",
+      "data_viz",
+      "machine_learning",
+      "deep_learning"
+    ]
+  },
+  "Machine Learning Engineer": {
+    "description": "Builds, evaluates, and deploys production machine learning and NLP systems using Python, scikit-learn, PyTorch, FastAPI, testing, and Docker.",
+    "required_skill_ids": [
+      "python",
+      "git",
+      "numpy_pandas",
+      "statistics_eda",
+      "machine_learning",
+      "rest_api",
+      "fastapi",
+      "deep_learning",
+      "testing",
+      "docker",
+      "ml_deployment"
+    ]
+  }
+}

@@ -1,0 +1,408 @@
+[
+  {
+    "id": "jm-01",
+    "tier": "strong",
+    "description": "Frontend graduate matching React/JS/CSS/REST/Git JD",
+    "profile": {
+      "education": "B.S. in Computer Science (2026)",
+      "experience_level": "Fresh Graduate / Internship",
+      "skills": ["JavaScript", "React", "HTML5", "CSS3", "REST API", "Git", "Vite", "Vitest"],
+      "project_descriptions": [
+        "Built a responsive student course planner with React, JavaScript, and CSS3 used by 400+ students.",
+        "Integrated REST APIs and wrote unit tests with Vitest and Git pull requests."
+      ]
+    },
+    "job": {
+      "title": "Junior Frontend Developer",
+      "description": "Requirements:\n- Solid foundation in JavaScript, React, HTML5, and CSS3.\n- Experience integrating REST APIs and using Git.\nPreferred:\n- Unit testing with Vitest and Vite."
+    }
+  },
+  {
+    "id": "jm-02",
+    "tier": "strong",
+    "description": "Python FastAPI backend graduate matching backend JD",
+    "profile": {
+      "education": "B.Tech Computer Science",
+      "experience_level": "Fresh Graduate",
+      "skills": ["Python", "FastAPI", "PostgreSQL", "Docker", "Git", "Pytest", "REST API"],
+      "project_descriptions": [
+        "Engineered a FastAPI backend service with PostgreSQL and Pytest achieving 95% test coverage.",
+        "Containerized microservices with Docker and GitHub Actions CI/CD."
+      ]
+    },
+    "job": {
+      "title": "Junior Backend Engineer",
+      "description": "Requirements:\n- Strong Python and FastAPI or Flask experience.\n- Experience with PostgreSQL, REST APIs, and Git.\nPreferred:\n- Docker and Pytest."
+    }
+  },
+  {
+    "id": "jm-03",
+    "tier": "strong",
+    "description": "ML student matching NLP/scikit-learn/PyTorch JD",
+    "profile": {
+      "education": "M.S. Data Science",
+      "experience_level": "Entry-Level",
+      "skills": ["Python", "Machine Learning", "NLP", "PyTorch", "scikit-learn", "Pandas", "NumPy"],
+      "project_descriptions": [
+        "Implemented a local NLP resume analyzer using PyTorch, scikit-learn, and NumPy.",
+        "Processed text datasets with Pandas and evaluated cosine similarity models."
+      ]
+    },
+    "job": {
+      "title": "Junior NLP Engineer",
+      "description": "Requirements:\n- Proficiency in Python, Machine Learning, NLP, and scikit-learn.\n- Experience with PyTorch and NumPy.\nPreferred:\n- Pandas data pipelines."
+    }
+  },
+  {
+    "id": "jm-04",
+    "tier": "strong",
+    "description": "Full-stack Node/React graduate matching full-stack JD",
+    "profile": {
+      "education": "B.S. Software Engineering",
+      "experience_level": "Junior",
+      "skills": ["TypeScript", "React", "Node.js", "Express", "MongoDB", "Git"],
+      "project_descriptions": [
+        "Built a full-stack task manager using React, TypeScript, Node.js, Express, and MongoDB."
+      ]
+    },
+    "job": {
+      "title": "Junior Full-Stack Developer",
+      "description": "Requirements:\n- Experience with React, TypeScript, Node.js, and Express.\n- Familiarity with MongoDB and Git."
+    }
+  },
+  {
+    "id": "jm-05",
+    "tier": "partial",
+    "description": "Frontend student missing TypeScript & Next.js",
+    "profile": {
+      "education": "B.S. Computer Science",
+      "skills": ["JavaScript", "React", "HTML5", "CSS3", "Git"],
+      "project_descriptions": [
+        "Built a responsive portfolio dashboard with React and CSS3."
+      ]
+    },
+    "job": {
+      "title": "Frontend Engineer",
+      "description": "Requirements:\n- React, TypeScript, Next.js, Tailwind CSS, and Git.\nPreferred:\n- Jest testing."
+    }
+  },
+  {
+    "id": "jm-06",
+    "tier": "partial",
+    "description": "Python student matching language but missing cloud/Kubernetes",
+    "profile": {
+      "education": "B.S. Computer Science",
+      "skills": ["Python", "Flask", "SQLite", "Git"],
+      "project_descriptions": [
+        "Created a Flask and SQLite web app for tracking campus events."
+      ]
+    },
+    "job": {
+      "title": "Cloud Backend Developer",
+      "description": "Requirements:\n- Python, Docker, Kubernetes, AWS, PostgreSQL, and CI/CD.\nPreferred:\n- Linux administration."
+    }
+  },
+  {
+    "id": "jm-07",
+    "tier": "partial",
+    "description": "Data analyst matching SQL/Python but missing Tableau/Spark/AWS",
+    "profile": {
+      "education": "B.S. Statistics",
+      "skills": ["Python", "Pandas", "NumPy", "SQL"],
+      "project_descriptions": [
+        "Analyzed survey datasets using Python, Pandas, and SQL queries."
+      ]
+    },
+    "job": {
+      "title": "Junior Data Engineer",
+      "description": "Requirements:\n- Python, SQL, AWS, Docker, and PostgreSQL.\nPreferred:\n- Machine Learning basics."
+    }
+  },
+  {
+    "id": "jm-08",
+    "tier": "partial",
+    "description": "Java student applying to Kotlin Android role",
+    "profile": {
+      "education": "B.S. Computer Science",
+      "skills": ["Java", "Git", "REST API", "SQLite"],
+      "project_descriptions": [
+        "Built a campus timetable utility in Java with SQLite storage and REST API calls."
+      ]
+    },
+    "job": {
+      "title": "Junior Android Developer",
+      "description": "Requirements:\n- Kotlin, Java, REST API integration, and Git.\nPreferred:\n- Firebase and Jetpack Compose."
+    }
+  },
+  {
+    "id": "jm-09",
+    "tier": "weak",
+    "description": "Frontend React student applying to Embedded C++ role",
+    "profile": {
+      "education": "B.S. Computer Science",
+      "skills": ["JavaScript", "React", "HTML5", "CSS3", "Figma"],
+      "project_descriptions": [
+        "Designed and built web UI components in React and CSS3."
+      ]
+    },
+    "job": {
+      "title": "Embedded Firmware Engineer",
+      "description": "Requirements:\n- Strong C, C++, Linux kernel drivers, and hardware debugging.\nPreferred:\n- Python scripting."
+    }
+  },
+  {
+    "id": "jm-10",
+    "tier": "weak",
+    "description": "UI designer/frontend intern applying to DevOps SRE role",
+    "profile": {
+      "skills": ["HTML5", "CSS3", "Figma", "JavaScript"],
+      "project_descriptions": [
+        "Created responsive landing pages and Figma wireframes."
+      ]
+    },
+    "job": {
+      "title": "Junior DevOps Engineer",
+      "description": "Requirements:\n- Linux, Docker, Kubernetes, AWS, CI/CD, and Python.\nPreferred:\n- Go."
+    }
+  },
+  {
+    "id": "jm-11",
+    "tier": "weak",
+    "description": "Database-focused student applying to Deep Learning computer vision role",
+    "profile": {
+      "skills": ["SQL", "MySQL", "PostgreSQL"],
+      "project_descriptions": [
+        "Normalized relational schemas and wrote SQL reporting queries in MySQL."
+      ]
+    },
+    "job": {
+      "title": "Junior Deep Learning Engineer",
+      "description": "Requirements:\n- Python, PyTorch, TensorFlow, Deep Learning, and Machine Learning.\nPreferred:\n- Docker."
+    }
+  },
+  {
+    "id": "jm-12",
+    "tier": "unrelated",
+    "description": "Frontend web developer vs Pastry Chef role",
+    "profile": {
+      "education": "B.S. Computer Science",
+      "skills": ["React", "JavaScript", "HTML5", "CSS3", "Git"],
+      "project_descriptions": [
+        "Built single-page React dashboards with responsive CSS Grid layouts."
+      ]
+    },
+    "job": {
+      "title": "Head Pastry Chef",
+      "description": "Requirements:\n- 5 years commercial bakery experience, sourdough fermentation, croissant lamination, and kitchen inventory management."
+    }
+  },
+  {
+    "id": "jm-13",
+    "tier": "unrelated",
+    "description": "Python ML student vs Certified Public Accountant role",
+    "profile": {
+      "education": "B.S. Computer Science",
+      "skills": ["Python", "PyTorch", "scikit-learn", "NumPy"],
+      "project_descriptions": [
+        "Trained text classification models with scikit-learn and PyTorch."
+      ]
+    },
+    "job": {
+      "title": "Staff Tax Accountant",
+      "description": "Requirements:\n- CPA license, corporate tax filing, GAAP auditing, payroll reconciliation, and QuickBooks."
+    }
+  },
+  {
+    "id": "jm-14",
+    "tier": "unrelated",
+    "description": "Backend Go/Docker developer vs Pediatric Nurse role",
+    "profile": {
+      "skills": ["Go", "Docker", "Kubernetes", "PostgreSQL"],
+      "project_descriptions": [
+        "Built distributed microservices in Go with PostgreSQL and Kubernetes."
+      ]
+    },
+    "job": {
+      "title": "Registered Pediatric Nurse",
+      "description": "Requirements:\n- Active RN nursing license, pediatric triage, patient charting, and clinical medication administration."
+    }
+  },
+  {
+    "id": "jm-15",
+    "tier": "paraphrased",
+    "description": "Paraphrased frontend profile matching paraphrased frontend JD",
+    "profile": {
+      "resume_text": "Computer science graduate who builds client-side browser interfaces, mobile-friendly visual layouts, and consumes HTTP JSON endpoints using modern web tooling."
+    },
+    "job": {
+      "title": "Web UI Developer",
+      "description": "Seeking a junior engineer to craft responsive single-page web applications, style accessible views across screen sizes, and connect to backend web APIs."
+    }
+  },
+  {
+    "id": "jm-16",
+    "tier": "paraphrased",
+    "description": "Paraphrased backend profile vs paraphrased backend JD",
+    "profile": {
+      "resume_text": "Built server-side HTTP services, relational table schemas, automated integration checks, and containerized deployments for student apps."
+    },
+    "job": {
+      "title": "Server Application Developer",
+      "description": "Looking for a graduate to design backend web APIs, manage relational data persistence, write automated service tests, and package containers."
+    }
+  },
+  {
+    "id": "jm-17",
+    "tier": "paraphrased",
+    "description": "Paraphrased ML profile vs paraphrased ML JD",
+    "profile": {
+      "resume_text": "Implemented text embedding similarity pipelines, vector comparisons, and automated evaluation notebooks for document matching."
+    },
+    "job": {
+      "title": "Applied Language Modeling Intern",
+      "description": "Join our team to build semantic text matching pipelines, cosine vector scoring, and reproducible evaluation experiments."
+    }
+  },
+  {
+    "id": "jm-18",
+    "tier": "disambiguation",
+    "description": "JavaScript profile must NOT match Java requirement",
+    "profile": {
+      "skills": ["JavaScript", "HTML5", "CSS3"],
+      "project_descriptions": ["Built interactive browser forms in JavaScript."]
+    },
+    "job": {
+      "title": "Java Backend Developer",
+      "description": "Requirements:\n- Java and Spring Boot.\nPreferred:\n- PostgreSQL."
+    }
+  },
+  {
+    "id": "jm-19",
+    "tier": "disambiguation",
+    "description": "CSS3 & C++ profile must NOT match standalone C requirement",
+    "profile": {
+      "skills": ["CSS3", "C++", "CI/CD"],
+      "project_descriptions": ["Styled pages with CSS3 and wrote C++ algorithms with CI/CD."]
+    },
+    "job": {
+      "title": "C Systems Programmer",
+      "description": "Requirements:\n- Strong C programming and Linux systems development skills."
+    }
+  },
+  {
+    "id": "jm-20",
+    "tier": "disambiguation",
+    "description": "React Native profile must NOT falsely match React web; Node.js normalization",
+    "profile": {
+      "skills": ["React Native", "Node.js"],
+      "project_descriptions": ["Built mobile screens in React Native with a Node.js backend."]
+    },
+    "job": {
+      "title": "React Web Engineer",
+      "description": "Requirements:\n- Frontend web development using React and Node.js services."
+    }
+  },
+  {
+    "id": "jm-21",
+    "tier": "disambiguation",
+    "description": "NoSQL & Deep Learning vs SQL & Machine Learning",
+    "profile": {
+      "skills": ["NoSQL", "Deep Learning"],
+      "project_descriptions": ["Used NoSQL document stores and Deep Learning neural networks."]
+    },
+    "job": {
+      "title": "SQL & Machine Learning Analyst",
+      "description": "Requirements:\n- Relational SQL querying and Machine Learning modeling experience."
+    }
+  },
+  {
+    "id": "jm-22",
+    "tier": "missing_required",
+    "description": "Missing all required skills (Docker, Kubernetes, Go)",
+    "profile": {
+      "skills": ["HTML5", "CSS3"],
+      "project_descriptions": ["Built static marketing pages with HTML5 and CSS3."]
+    },
+    "job": {
+      "title": "Platform Engineer",
+      "description": "Requirements:\n- Experience with Go, Docker, Kubernetes, and AWS cloud."
+    }
+  },
+  {
+    "id": "jm-23",
+    "tier": "missing_required",
+    "description": "Sensitivity check base: missing Docker from Python/FastAPI/Docker JD",
+    "profile": {
+      "skills": ["Python", "FastAPI", "PostgreSQL"],
+      "project_descriptions": ["Built FastAPI endpoints connected to PostgreSQL."]
+    },
+    "job": {
+      "title": "Backend Developer",
+      "description": "Requirements:\n- Backend services using Python, FastAPI, PostgreSQL, and Docker."
+    }
+  },
+  {
+    "id": "jm-24",
+    "tier": "missing_preferred",
+    "description": "100% required skills met, missing preferred Docker/Vitest",
+    "profile": {
+      "skills": ["JavaScript", "React", "HTML5", "CSS3"],
+      "project_descriptions": ["Built responsive React and JavaScript apps with HTML5 and CSS3."]
+    },
+    "job": {
+      "title": "Frontend Developer",
+      "description": "Requirements:\n- JavaScript, React, HTML5, CSS3.\nPreferred:\n- Docker and Vitest."
+    }
+  },
+  {
+    "id": "jm-25",
+    "tier": "missing_preferred",
+    "description": "100% required skills met, missing preferred GraphQL",
+    "profile": {
+      "skills": ["Python", "Django", "PostgreSQL"],
+      "project_descriptions": ["Developed Django web services backed by PostgreSQL."]
+    },
+    "job": {
+      "title": "Django Developer",
+      "description": "Requirements:\n- Python, Django, PostgreSQL.\nBonus:\n- GraphQL."
+    }
+  },
+  {
+    "id": "jm-26",
+    "tier": "projects_only",
+    "description": "Projects-only student profile without formal work history or education field",
+    "profile": {
+      "skills": ["Python", "FastAPI", "React"],
+      "project_descriptions": [
+        "Built a full-stack CareerPilot AI prototype using FastAPI and React.",
+        "Implemented automated pytest suites and responsive UI components."
+      ]
+    },
+    "job": {
+      "title": "Junior Full-Stack Intern",
+      "description": "Requirements:\n- Python, FastAPI, React, and Pytest."
+    }
+  },
+  {
+    "id": "jm-27",
+    "tier": "invalid_short_jd",
+    "description": "Insufficient JD (< 12 words) must return valid=False",
+    "profile": {
+      "skills": ["Python", "React"]
+    },
+    "job": {
+      "title": "Dev",
+      "description": "Need Python dev."
+    }
+  },
+  {
+    "id": "jm-28",
+    "tier": "invalid_empty_profile",
+    "description": "Empty profile must return valid=False",
+    "profile": {},
+    "job": {
+      "title": "Junior Developer",
+      "description": "Looking for a software engineering graduate with Python, SQL, Git, and REST API development experience."
+    }
+  }
+]

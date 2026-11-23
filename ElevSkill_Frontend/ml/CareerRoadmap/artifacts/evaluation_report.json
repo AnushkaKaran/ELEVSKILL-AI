@@ -1,0 +1,252 @@
+{
+  "total_cases": 26,
+  "passed": 26,
+  "failed": 0,
+  "failures": [],
+  "dag_validation": {
+    "production_graph_acyclic": true,
+    "cycle_detection_verified": true,
+    "invalid_reference_detection_verified": true
+  },
+  "resource_verification": {
+    "total_resources": 22,
+    "all_https_official_domains": true
+  },
+  "runtime_seconds": 33.716,
+  "case_summaries": [
+    {
+      "id": "cr-01",
+      "scenario": "beginner_frontend",
+      "valid": true,
+      "target_role": "Frontend Developer",
+      "coverage_percent": 0.0,
+      "actionable_count": 2,
+      "blocked_count": 6
+    },
+    {
+      "id": "cr-02",
+      "scenario": "intermediate_frontend_with_prereqs",
+      "valid": true,
+      "target_role": "Frontend Developer",
+      "coverage_percent": 50.0,
+      "actionable_count": 4,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-03",
+      "scenario": "completed_skills_excluded",
+      "valid": true,
+      "target_role": "Frontend Developer",
+      "coverage_percent": 50.0,
+      "actionable_count": 4,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-04",
+      "scenario": "informal_role_data_scientist",
+      "valid": true,
+      "target_role": "Data Scientist",
+      "coverage_percent": 25.0,
+      "actionable_count": 2,
+      "blocked_count": 4
+    },
+    {
+      "id": "cr-05",
+      "scenario": "informal_role_ml_engineer",
+      "valid": true,
+      "target_role": "Machine Learning Engineer",
+      "coverage_percent": 27.3,
+      "actionable_count": 4,
+      "blocked_count": 4
+    },
+    {
+      "id": "cr-06",
+      "scenario": "informal_role_data_analyst",
+      "valid": true,
+      "target_role": "Data Analyst",
+      "coverage_percent": 16.7,
+      "actionable_count": 2,
+      "blocked_count": 3
+    },
+    {
+      "id": "cr-07",
+      "scenario": "python_developer_beginner",
+      "valid": true,
+      "target_role": "Python Developer",
+      "coverage_percent": 14.3,
+      "actionable_count": 2,
+      "blocked_count": 4
+    },
+    {
+      "id": "cr-08",
+      "scenario": "backend_developer_intermediate",
+      "valid": true,
+      "target_role": "Backend Developer",
+      "coverage_percent": 50.0,
+      "actionable_count": 4,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-09",
+      "scenario": "informal_skill_aliases",
+      "valid": true,
+      "target_role": "Machine Learning Engineer",
+      "coverage_percent": 27.3,
+      "actionable_count": 4,
+      "blocked_count": 4
+    },
+    {
+      "id": "cr-10",
+      "scenario": "duplicate_skill_aliases",
+      "valid": true,
+      "target_role": "Frontend Developer",
+      "coverage_percent": 37.5,
+      "actionable_count": 3,
+      "blocked_count": 2
+    },
+    {
+      "id": "cr-11",
+      "scenario": "unknown_skill_names",
+      "valid": true,
+      "target_role": "Python Developer",
+      "coverage_percent": 14.3,
+      "actionable_count": 2,
+      "blocked_count": 4
+    },
+    {
+      "id": "cr-12",
+      "scenario": "missing_foundational_prereqs",
+      "valid": true,
+      "target_role": "Machine Learning Engineer",
+      "coverage_percent": 0.0,
+      "actionable_count": 2,
+      "blocked_count": 9
+    },
+    {
+      "id": "cr-13",
+      "scenario": "incomplete_profile_no_resume_or_edu",
+      "valid": true,
+      "target_role": "Data Analyst",
+      "coverage_percent": 33.3,
+      "actionable_count": 2,
+      "blocked_count": 2
+    },
+    {
+      "id": "cr-14",
+      "scenario": "all_skills_completed_data_analyst",
+      "valid": true,
+      "target_role": "Data Analyst",
+      "coverage_percent": 100.0,
+      "actionable_count": 0,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-15",
+      "scenario": "role_change_from_frontend_to_backend",
+      "valid": true,
+      "target_role": "Backend Developer",
+      "coverage_percent": 25.0,
+      "actionable_count": 5,
+      "blocked_count": 1
+    },
+    {
+      "id": "cr-16",
+      "scenario": "disambiguation_java_vs_javascript",
+      "valid": true,
+      "target_role": "Frontend Developer",
+      "coverage_percent": 0.0,
+      "actionable_count": 2,
+      "blocked_count": 6
+    },
+    {
+      "id": "cr-17",
+      "scenario": "disambiguation_nosql_vs_sql",
+      "valid": true,
+      "target_role": "Data Analyst",
+      "coverage_percent": 0.0,
+      "actionable_count": 3,
+      "blocked_count": 3
+    },
+    {
+      "id": "cr-18",
+      "scenario": "disambiguation_deep_learning_vs_ml",
+      "valid": true,
+      "target_role": "Data Scientist",
+      "coverage_percent": 12.5,
+      "actionable_count": 3,
+      "blocked_count": 4
+    },
+    {
+      "id": "cr-19",
+      "scenario": "resume_and_projects_supplied",
+      "valid": true,
+      "target_role": "Python Developer",
+      "coverage_percent": 42.9,
+      "actionable_count": 2,
+      "blocked_count": 2
+    },
+    {
+      "id": "cr-20",
+      "scenario": "semantic_skill_phrase",
+      "valid": true,
+      "target_role": "Frontend Developer",
+      "coverage_percent": 25.0,
+      "actionable_count": 3,
+      "blocked_count": 3
+    },
+    {
+      "id": "cr-21",
+      "scenario": "unsupported_role_pastry_chef",
+      "valid": false,
+      "target_role": null,
+      "coverage_percent": null,
+      "actionable_count": 0,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-22",
+      "scenario": "unsupported_role_nurse",
+      "valid": false,
+      "target_role": null,
+      "coverage_percent": null,
+      "actionable_count": 0,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-23",
+      "scenario": "ambiguous_role_generic_software",
+      "valid": false,
+      "target_role": null,
+      "coverage_percent": null,
+      "actionable_count": 0,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-24",
+      "scenario": "empty_target_role",
+      "valid": false,
+      "target_role": null,
+      "coverage_percent": null,
+      "actionable_count": 0,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-25",
+      "scenario": "invalid_known_skills_type",
+      "valid": false,
+      "target_role": null,
+      "coverage_percent": null,
+      "actionable_count": 0,
+      "blocked_count": 0
+    },
+    {
+      "id": "cr-26",
+      "scenario": "overlong_target_role",
+      "valid": false,
+      "target_role": null,
+      "coverage_percent": null,
+      "actionable_count": 0,
+      "blocked_count": 0
+    }
+  ]
+}

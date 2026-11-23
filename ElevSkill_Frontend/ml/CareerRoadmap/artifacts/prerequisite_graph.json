@@ -1,0 +1,68 @@
+{
+  "html5": [],
+  "css3": [
+    "html5"
+  ],
+  "javascript": [
+    "html5"
+  ],
+  "git": [],
+  "python": [],
+  "sql": [],
+  "nosql": [
+    "sql"
+  ],
+  "java": [],
+  "typescript": [
+    "javascript"
+  ],
+  "react": [
+    "html5",
+    "css3",
+    "javascript"
+  ],
+  "react_native": [
+    "react"
+  ],
+  "rest_api": [
+    "git"
+  ],
+  "nodejs": [
+    "javascript",
+    "rest_api"
+  ],
+  "fastapi": [
+    "python",
+    "rest_api"
+  ],
+  "testing": [
+    "git"
+  ],
+  "docker": [
+    "git"
+  ],
+  "numpy_pandas": [
+    "python"
+  ],
+  "data_viz": [
+    "python",
+    "numpy_pandas"
+  ],
+  "statistics_eda": [
+    "numpy_pandas"
+  ],
+  "machine_learning": [
+    "python",
+    "numpy_pandas",
+    "statistics_eda"
+  ],
+  "deep_learning": [
+    "python",
+    "machine_learning"
+  ],
+  "ml_deployment": [
+    "machine_learning",
+    "fastapi",
+    "docker"
+  ]
+}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="elevPurpleGrad" x1="10" y1="54" x2="54" y2="10" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6D28D9" />
+      <stop offset="52%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#A78BFA" />
+    </linearGradient>
+    <mask id="elevHollowMask">
+      <rect width="64" height="64" fill="black" />
+      <!-- Soft curved, rounded triangular silhouette -->
+      <path
+        d="M27.4 13.8C29.6 9.8 34.4 9.8 36.6 13.8C42.2 23.6 47.4 33.2 51.8 41.8C53.8 45.7 51.0 50.4 46.6 50.4C37.2 50.8 26.8 50.8 17.4 50.4C13.0 50.4 10.2 45.7 12.2 41.8C16.6 33.2 21.8 23.6 27.4 13.8Z"
+        fill="white"
+      />
+      <!-- Genuinely hollow / transparent negative-space internal line detail -->
+      <path
+        d="M23.5 39.5C26.4 33.2 29.6 27.4 32.0 23.2C34.4 27.4 37.6 33.2 40.5 39.5"
+        stroke="black"
+        stroke-width="4.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+    </mask>
+  </defs>
+
+  <!-- Soft rounded purple-gradient symbol with genuine negative-space cutout -->
+  <rect width="64" height="64" fill="url(#elevPurpleGrad)" mask="url(#elevHollowMask)" />
+
+  <!-- Subtle 4-point sparkle near upper-right -->
+  <path
+    d="M50.5 8.5L51.9 12.6L56.0 14.0L51.9 15.4L50.5 19.5L49.1 15.4L45.0 14.0L49.1 12.6L50.5 8.5Z"
+    fill="url(#elevPurpleGrad)"
+  />
+</svg>

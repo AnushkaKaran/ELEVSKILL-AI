@@ -1,0 +1,1851 @@
+{
+  "beh-1": {
+    "category": "behavioral",
+    "difficulty": "beginner",
+    "question": "Tell me about a time you faced a difficult bug or technical blocker in a class or personal project. How did you resolve it?",
+    "tips": "Use STAR: briefly set the Situation, state your Task, detail the debugging Actions you took, and share the Result.",
+    "expected_concepts": [
+      "context or project situation",
+      "specific technical blocker or bug",
+      "debugging or root cause investigation",
+      "fix implemented and verification",
+      "measurable outcome or lesson learned"
+    ]
+  },
+  "beh-2": {
+    "category": "behavioral",
+    "difficulty": "beginner",
+    "question": "Describe a group project where teammates had different opinions on how to build something. How did you handle it?",
+    "tips": "Highlight active listening, objective tradeoffs, and how the team aligned on a solution.",
+    "expected_concepts": [
+      "team project context",
+      "differing technical opinions",
+      "active listening and tradeoff discussion",
+      "compromise or consensus decision",
+      "final project outcome"
+    ]
+  },
+  "beh-3": {
+    "category": "behavioral",
+    "difficulty": "beginner",
+    "question": "Tell me about a time you had to learn a new tool or framework under a tight deadline.",
+    "tips": "Explain how you prioritized core concepts, applied them quickly, and delivered on time.",
+    "expected_concepts": [
+      "deadline context",
+      "learning strategy or documentation",
+      "hands-on application",
+      "obstacles overcome",
+      "timely delivery outcome"
+    ]
+  },
+  "beh-4": {
+    "category": "behavioral",
+    "difficulty": "intermediate",
+    "question": "Describe a situation where you received constructive criticism on your code or work. How did you respond?",
+    "tips": "Show emotional maturity, receptiveness to feedback, concrete changes made, and growth.",
+    "expected_concepts": [
+      "feedback context",
+      "initial reaction and openness",
+      "specific changes implemented",
+      "verification or follow-up",
+      "long-term improvement"
+    ]
+  },
+  "beh-5": {
+    "category": "behavioral",
+    "difficulty": "intermediate",
+    "question": "Tell me about a time you missed a deadline or made a mistake. How did you communicate and recover?",
+    "tips": "Focus on early ownership, transparent communication, root-cause fix, and prevention.",
+    "expected_concepts": [
+      "mistake or delay context",
+      "taking ownership early",
+      "stakeholder communication",
+      "corrective action taken",
+      "process change to prevent recurrence"
+    ]
+  },
+  "beh-6": {
+    "category": "behavioral",
+    "difficulty": "intermediate",
+    "question": "Give an example of when you took initiative to improve a process, codebase, or team workflow without being asked.",
+    "tips": "Explain the gap you spotted, how you proposed or built the fix, and the impact.",
+    "expected_concepts": [
+      "problem or inefficiency noticed",
+      "proactive proposal or action",
+      "collaboration or buy-in",
+      "measurable improvement"
+    ]
+  },
+  "beh-7": {
+    "category": "behavioral",
+    "difficulty": "advanced",
+    "question": "Describe a high-pressure situation where requirements changed late in a project. How did you re-prioritize?",
+    "tips": "Detail scope triage, tradeoff communication, risk mitigation, and final delivery.",
+    "expected_concepts": [
+      "changing requirements context",
+      "impact assessment and triage",
+      "stakeholder alignment",
+      "execution under constraints",
+      "final outcome"
+    ]
+  },
+  "beh-8": {
+    "category": "behavioral",
+    "difficulty": "advanced",
+    "question": "Tell me about a time you had to mentor or unblock a teammate who was struggling with a technical task.",
+    "tips": "Show empathy, structured guidance rather than taking over, and mutual growth.",
+    "expected_concepts": [
+      "teammate blocker context",
+      "teaching or pairing approach",
+      "encouraging independence",
+      "resolved outcome"
+    ]
+  },
+  "beh-9": {
+    "category": "behavioral",
+    "difficulty": "advanced",
+    "question": "Describe the most complex conflict or ambiguity you navigated in a project and how you drove clarity.",
+    "tips": "Highlight structured alignment, data-driven decision making, and measurable results.",
+    "expected_concepts": [
+      "ambiguous or conflicted situation",
+      "structuring options and tradeoffs",
+      "aligning stakeholders",
+      "concrete result"
+    ]
+  },
+  "fe-1": {
+    "category": "frontend",
+    "difficulty": "beginner",
+    "question": "What is the difference between state and props in React, and when would you lift state up to a parent component?",
+    "tips": "Explain ownership/mutability and give a concrete shared-state example.",
+    "expected_concepts": [
+      "props are passed from parent and read-only",
+      "state is managed internally and mutable via setter",
+      "lifting state up shares data between sibling components",
+      "re-rendering when state or props change",
+      "concrete component example"
+    ]
+  },
+  "fe-2": {
+    "category": "frontend",
+    "difficulty": "beginner",
+    "question": "How do you make a web dashboard responsive and accessible across both desktop and mobile screens?",
+    "tips": "Mention semantic HTML, keyboard navigation, contrast, CSS Grid/Flexbox, and media queries.",
+    "expected_concepts": [
+      "CSS Grid or Flexbox flexible layouts",
+      "media queries and mobile breakpoints",
+      "semantic HTML landmarks and labels",
+      "keyboard navigation and focus states",
+      "color contrast and ARIA attributes"
+    ]
+  },
+  "fe-3": {
+    "category": "frontend",
+    "difficulty": "beginner",
+    "question": "Explain the CSS Box Model and the difference between `box-sizing: content-box` and `border-box`.",
+    "tips": "Cover content, padding, border, margin, and why `border-box` simplifies layouts.",
+    "expected_concepts": [
+      "content padding border and margin layers",
+      "content-box adds padding and border to width",
+      "border-box includes padding and border inside width",
+      "practical layout benefit"
+    ]
+  },
+  "fe-4": {
+    "category": "frontend",
+    "difficulty": "intermediate",
+    "question": "How do `useEffect` dependencies work in React, and how do you avoid infinite loops or stale closures?",
+    "tips": "Discuss dependency arrays, cleanup functions, and separating state/effects cleanly.",
+    "expected_concepts": [
+      "dependency array controls effect execution",
+      "missing or unstable dependencies cause bugs",
+      "cleanup function prevents leaks or race conditions",
+      "avoiding unnecessary state updates inside effects"
+    ]
+  },
+  "fe-5": {
+    "category": "frontend",
+    "difficulty": "intermediate",
+    "question": "Compare client-side rendering (CSR), server-side rendering (SSR), and static site generation (SSG).",
+    "tips": "Discuss initial load, SEO, TTFB, hydration, and use-case tradeoffs.",
+    "expected_concepts": [
+      "CSR renders in browser via JavaScript",
+      "SSR renders HTML per request on server",
+      "SSG pre-builds HTML at build time",
+      "SEO and performance tradeoffs"
+    ]
+  },
+  "fe-6": {
+    "category": "frontend",
+    "difficulty": "intermediate",
+    "question": "How does event delegation work in the DOM, and why is it useful for large dynamic lists?",
+    "tips": "Explain event bubbling, attaching one listener to a parent, and `event.target`.",
+    "expected_concepts": [
+      "event bubbling from child to parent",
+      "single listener on parent container",
+      "reduced memory and dynamic element support",
+      "checking event target"
+    ]
+  },
+  "fe-7": {
+    "category": "frontend",
+    "difficulty": "advanced",
+    "question": "How would you diagnose and fix unnecessary re-renders and layout thrashing in a complex React dashboard?",
+    "tips": "Mention React Profiler, memoization tradeoffs, state colocation, virtualization, and batched DOM reads/writes.",
+    "expected_concepts": [
+      "profiling with React DevTools",
+      "state colocation and splitting contexts",
+      "React.memo useMemo and useCallback tradeoffs",
+      "list virtualization and avoiding forced synchronous layouts"
+    ]
+  },
+  "fe-8": {
+    "category": "frontend",
+    "difficulty": "advanced",
+    "question": "Explain Core Web Vitals (LCP, INP, CLS) and concrete techniques to optimize each one.",
+    "tips": "Cover image/font optimization, main-thread responsiveness, and reserving layout dimensions.",
+    "expected_concepts": [
+      "LCP measures largest content paint speed",
+      "INP measures interaction responsiveness",
+      "CLS measures visual layout stability",
+      "concrete optimization techniques for each"
+    ]
+  },
+  "fe-9": {
+    "category": "frontend",
+    "difficulty": "advanced",
+    "question": "How do you design a resilient frontend API layer handling retries, cancellation, and optimistic updates?",
+    "tips": "Discuss AbortController, exponential backoff, rollback on failure, and loading/error states.",
+    "expected_concepts": [
+      "AbortController for request cancellation",
+      "retry with backoff on transient errors",
+      "optimistic UI with rollback on failure",
+      "consistent loading and error state handling"
+    ]
+  },
+  "be-1": {
+    "category": "backend",
+    "difficulty": "beginner",
+    "question": "What makes an API RESTful, and how do you choose between GET, POST, PUT, PATCH, and DELETE?",
+    "tips": "Cover resource-oriented URLs, idempotency, safety, and proper HTTP status codes.",
+    "expected_concepts": [
+      "resource-based endpoints and statelessness",
+      "GET safe and idempotent retrieval",
+      "POST creates resources",
+      "PUT full replace vs PATCH partial update",
+      "appropriate HTTP status codes"
+    ]
+  },
+  "be-2": {
+    "category": "backend",
+    "difficulty": "beginner",
+    "question": "Explain the difference between authentication and authorization, and give a practical example of each.",
+    "tips": "Contrast verifying identity (AuthN) with checking permissions (AuthZ).",
+    "expected_concepts": [
+      "authentication verifies user identity",
+      "authorization checks permissions and roles",
+      "session or token example",
+      "role-based access control example"
+    ]
+  },
+  "be-3": {
+    "category": "backend",
+    "difficulty": "beginner",
+    "question": "What is CORS, why do browsers enforce it, and how should a backend configure it safely?",
+    "tips": "Explain Same-Origin Policy, `Access-Control-Allow-Origin`, preflight OPTIONS, and avoiding wildcard with credentials.",
+    "expected_concepts": [
+      "Same-Origin Policy browser security",
+      "CORS headers allow trusted cross-origin requests",
+      "preflight OPTIONS request",
+      "restricting origins instead of open wildcard"
+    ]
+  },
+  "be-4": {
+    "category": "backend",
+    "difficulty": "intermediate",
+    "question": "Compare session-based authentication with JWT (JSON Web Token) authentication, including security tradeoffs.",
+    "tips": "Discuss server statefulness, revocation, token expiration, and HttpOnly cookies vs localStorage.",
+    "expected_concepts": [
+      "sessions store state server-side and are easily revoked",
+      "JWTs are stateless and self-contained",
+      "revocation and expiration challenges with JWT",
+      "XSS and CSRF storage considerations"
+    ]
+  },
+  "be-5": {
+    "category": "backend",
+    "difficulty": "intermediate",
+    "question": "How do you implement rate limiting in a backend API, and why is it important?",
+    "tips": "Mention token bucket or sliding window, Redis counters, `429 Too Many Requests`, and abuse protection.",
+    "expected_concepts": [
+      "prevents abuse brute-force and resource exhaustion",
+      "token bucket or sliding window algorithm",
+      "distributed store like Redis",
+      "returning HTTP 429 with Retry-After"
+    ]
+  },
+  "be-6": {
+    "category": "backend",
+    "difficulty": "intermediate",
+    "question": "What is connection pooling for databases, and what happens if pool limits are misconfigured?",
+    "tips": "Explain reusing TCP/DB connections, latency reduction, and pool exhaustion under load.",
+    "expected_concepts": [
+      "reuses persistent database connections",
+      "avoids expensive handshake overhead",
+      "too small causes request queueing timeouts",
+      "too large exhausts database memory"
+    ]
+  },
+  "be-7": {
+    "category": "backend",
+    "difficulty": "advanced",
+    "question": "How do you design idempotent payment or order-creation endpoints to safely handle network retries?",
+    "tips": "Cover idempotency keys, atomic DB transactions/constraints, and returning stored responses.",
+    "expected_concepts": [
+      "client-supplied idempotency key",
+      "storing key and result atomically",
+      "preventing duplicate side effects on retry",
+      "handling concurrent duplicate requests"
+    ]
+  },
+  "be-8": {
+    "category": "backend",
+    "difficulty": "advanced",
+    "question": "Compare synchronous request-response APIs with asynchronous message queues (e.g., RabbitMQ/Kafka) for background jobs.",
+    "tips": "Discuss latency, decoupling, backpressure, dead-letter queues, and eventual consistency.",
+    "expected_concepts": [
+      "synchronous blocks caller until completion",
+      "message queues decouple producers and consumers",
+      "retry and dead-letter queue handling",
+      "tradeoffs in complexity and eventual consistency"
+    ]
+  },
+  "be-9": {
+    "category": "backend",
+    "difficulty": "advanced",
+    "question": "How do you diagnose and resolve high tail latency (p99) in a production backend service?",
+    "tips": "Cover distributed tracing, DB slow queries, N+1 calls, GC pauses, and caching/timeouts.",
+    "expected_concepts": [
+      "structured logging metrics and distributed tracing",
+      "identifying N+1 queries or lock contention",
+      "timeouts circuit breakers and caching",
+      "measuring p95 and p99 improvements"
+    ]
+  },
+  "py-1": {
+    "category": "python",
+    "difficulty": "beginner",
+    "question": "What is the difference between a list and a tuple in Python, and when would you use each?",
+    "tips": "Cover mutability, memory/performance, hashability as dict keys, and semantic intent.",
+    "expected_concepts": [
+      "lists are mutable and tuples are immutable",
+      "tuples can be dictionary keys if elements are hashable",
+      "fixed heterogeneous records vs dynamic collections",
+      "memory and iteration efficiency"
+    ]
+  },
+  "py-2": {
+    "category": "python",
+    "difficulty": "beginner",
+    "question": "How do list comprehensions and generator expressions differ in Python?",
+    "tips": "Compare eager list allocation in memory vs lazy on-demand evaluation with `yield`/generators.",
+    "expected_concepts": [
+      "list comprehension builds full list in memory",
+      "generator expression evaluates lazily one item at a time",
+      "memory efficiency for large streams",
+      "single-pass iteration behavior"
+    ]
+  },
+  "py-3": {
+    "category": "python",
+    "difficulty": "beginner",
+    "question": "Explain how Python dictionaries work under the hood and why keys must be hashable.",
+    "tips": "Cover hash tables, O(1) average lookup, hash collisions, and immutability of keys.",
+    "expected_concepts": [
+      "hash table implementation",
+      "O(1) average lookup time",
+      "keys must implement __hash__ and __eq__",
+      "mutable types like lists cannot be keys"
+    ]
+  },
+  "py-4": {
+    "category": "python",
+    "difficulty": "intermediate",
+    "question": "What are decorators in Python, and how does `functools.wraps` help when writing them?",
+    "tips": "Explain higher-order functions wrapping behavior and preserving `__name__`/`__doc__` metadata.",
+    "expected_concepts": [
+      "function taking and returning a function",
+      "adds cross-cutting behavior like logging or auth",
+      "functools.wraps preserves wrapped metadata",
+      "practical decorator example"
+    ]
+  },
+  "py-5": {
+    "category": "python",
+    "difficulty": "intermediate",
+    "question": "How do context managers (`with` statement) work in Python, and how can you implement a custom one?",
+    "tips": "Mention `__enter__`/`__exit__`, exception-safe resource cleanup, and `@contextlib.contextmanager`.",
+    "expected_concepts": [
+      "automatic resource acquisition and cleanup",
+      "__enter__ and __exit__ protocol",
+      "cleanup runs even on exceptions",
+      "contextlib.contextmanager alternative"
+    ]
+  },
+  "py-6": {
+    "category": "python",
+    "difficulty": "intermediate",
+    "question": "Explain Python's Global Interpreter Lock (GIL) and how it affects multithreading vs multiprocessing.",
+    "tips": "Cover CPython reference counting, CPU-bound vs I/O-bound workloads, and process parallelism.",
+    "expected_concepts": [
+      "GIL allows one thread to execute Python bytecode at a time",
+      "I/O-bound tasks still benefit from threading or asyncio",
+      "CPU-bound tasks need multiprocessing or C extensions",
+      "memory isolation tradeoff in multiprocessing"
+    ]
+  },
+  "py-7": {
+    "category": "python",
+    "difficulty": "advanced",
+    "question": "Compare `asyncio` cooperative concurrency with `threading` and `multiprocessing` in Python.",
+    "tips": "Discuss event loops, `async/await`, non-blocking I/O, and CPU-bound limitations.",
+    "expected_concepts": [
+      "asyncio uses single-threaded event loop",
+      "tasks yield control at await points",
+      "ideal for high-concurrency I/O",
+      "blocking calls stall the event loop"
+    ]
+  },
+  "py-8": {
+    "category": "python",
+    "difficulty": "advanced",
+    "question": "Explain Python's descriptors and how `@property` uses the descriptor protocol.",
+    "tips": "Cover `__get__`, `__set__`, `__delete__`, data vs non-data descriptors, and attribute lookup order.",
+    "expected_concepts": [
+      "__get__ __set__ __delete__ methods",
+      "reusable managed attribute logic",
+      "property implements descriptor protocol",
+      "attribute lookup precedence"
+    ]
+  },
+  "py-9": {
+    "category": "python",
+    "difficulty": "advanced",
+    "question": "How do you profile and optimize a slow Python data-processing pipeline?",
+    "tips": "Mention `cProfile`, algorithmic complexity, vectorization with NumPy, generators, and avoiding Python-loop overhead.",
+    "expected_concepts": [
+      "profiling with cProfile or py-spy",
+      "fixing algorithmic bottlenecks first",
+      "vectorization with NumPy or C extensions",
+      "streaming with generators to reduce memory"
+    ]
+  },
+  "cpp-1": {
+    "category": "cpp",
+    "difficulty": "beginner",
+    "question": "What is the difference between pointers and references in C++?",
+    "tips": "Cover nullability, reassignment, indirection syntax, and memory safety.",
+    "expected_concepts": [
+      "pointers hold addresses and can be null or reassigned",
+      "references are aliases bound at initialization",
+      "pointers require dereferencing",
+      "preferring references when null is invalid"
+    ]
+  },
+  "cpp-2": {
+    "category": "cpp",
+    "difficulty": "beginner",
+    "question": "Explain stack vs heap memory allocation in C++ and the risks of manual `new`/`delete`.",
+    "tips": "Discuss automatic lifetime vs dynamic lifetime, memory leaks, and dangling pointers.",
+    "expected_concepts": [
+      "stack allocation is automatic and fast",
+      "heap allocation has dynamic lifetime",
+      "manual delete risks leaks and double-free",
+      "dangling pointers after deallocation"
+    ]
+  },
+  "cpp-3": {
+    "category": "cpp",
+    "difficulty": "beginner",
+    "question": "What is `const` correctness in C++ and why does it matter?",
+    "tips": "Cover `const` variables, `const` references in parameters, and `const` member functions.",
+    "expected_concepts": [
+      "prevents unintended mutation at compile time",
+      "const reference avoids copying large objects",
+      "const member functions promise not to mutate state",
+      "improves API safety and clarity"
+    ]
+  },
+  "cpp-4": {
+    "category": "cpp",
+    "difficulty": "intermediate",
+    "question": "Explain RAII (Resource Acquisition Is Initialization) and how smart pointers (`unique_ptr`, `shared_ptr`) implement it.",
+    "tips": "Cover tying resource lifetime to object scope, deterministic destructors, and ownership semantics.",
+    "expected_concepts": [
+      "resources tied to object lifetime and destructor",
+      "exception-safe deterministic cleanup",
+      "unique_ptr exclusive ownership",
+      "shared_ptr reference-counted ownership and weak_ptr"
+    ]
+  },
+  "cpp-5": {
+    "category": "cpp",
+    "difficulty": "intermediate",
+    "question": "How does runtime polymorphism work in C++ using `virtual` functions and vtables?",
+    "tips": "Explain base pointers, vptr/vtable dispatch, `override`, and virtual destructors.",
+    "expected_concepts": [
+      "virtual functions enable dynamic dispatch",
+      "vtable and vptr mechanism",
+      "virtual destructor prevents partial destruction",
+      "override keyword catches signature mismatches"
+    ]
+  },
+  "cpp-6": {
+    "category": "cpp",
+    "difficulty": "intermediate",
+    "question": "What is the difference between `std::vector` and `std::list` in terms of memory layout and cache performance?",
+    "tips": "Compare contiguous array vs doubly-linked nodes, random access, and CPU cache locality.",
+    "expected_concepts": [
+      "vector uses contiguous memory",
+      "list uses heap-allocated linked nodes",
+      "vector has O(1) random access and better cache locality",
+      "insertion and iterator invalidation tradeoffs"
+    ]
+  },
+  "cpp-7": {
+    "category": "cpp",
+    "difficulty": "advanced",
+    "question": "Explain move semantics, rvalue references (`&&`), and `std::move` in modern C++.",
+    "tips": "Discuss transferring ownership of temporary resources instead of deep copying, and `noexcept` moves.",
+    "expected_concepts": [
+      "lvalue vs rvalue references",
+      "move constructor steals internal pointers",
+      "std::move casts to rvalue reference",
+      "avoids expensive deep copies"
+    ]
+  },
+  "cpp-8": {
+    "category": "cpp",
+    "difficulty": "advanced",
+    "question": "Compare compile-time polymorphism (templates/concepts) with runtime virtual polymorphism in C++.",
+    "tips": "Cover zero-overhead abstraction, code bloat, binary size, and heterogeneous collections.",
+    "expected_concepts": [
+      "templates resolve dispatch at compile time",
+      "no vtable indirection overhead",
+      "virtual functions support heterogeneous runtime containers",
+      "compile time and code size tradeoffs"
+    ]
+  },
+  "cpp-9": {
+    "category": "cpp",
+    "difficulty": "advanced",
+    "question": "How do you prevent data races and deadlocks in multithreaded C++ using `std::mutex`, `std::lock_guard`, and `std::atomic`?",
+    "tips": "Explain lock ordering, RAII lock wrappers, lock-free atomics, and memory ordering basics.",
+    "expected_concepts": [
+      "std::lock_guard or unique_lock for exception-safe locking",
+      "consistent lock ordering prevents deadlocks",
+      "std::atomic for lock-free primitive operations",
+      "data race causes undefined behavior"
+    ]
+  },
+  "java-1": {
+    "category": "java",
+    "difficulty": "beginner",
+    "question": "Explain the difference between `==` and `.equals()` in Java, and why `hashCode()` must stay consistent with `equals()`.",
+    "tips": "Cover reference identity vs value equality and hash-based collections like `HashMap`.",
+    "expected_concepts": [
+      "== compares references for objects",
+      ".equals compares logical value equality",
+      "equal objects must return equal hashCodes",
+      "HashMap and HashSet rely on this contract"
+    ]
+  },
+  "java-2": {
+    "category": "java",
+    "difficulty": "beginner",
+    "question": "What is the difference between an interface and an abstract class in Java?",
+    "tips": "Discuss multiple inheritance of types, state/fields, constructors, and default methods.",
+    "expected_concepts": [
+      "class can implement multiple interfaces",
+      "abstract class can hold instance state and constructors",
+      "interfaces define contracts and default methods",
+      "when to choose each"
+    ]
+  },
+  "java-3": {
+    "category": "java",
+    "difficulty": "beginner",
+    "question": "Explain checked vs unchecked exceptions in Java and best practices for handling them.",
+    "tips": "Compare compile-time checked exceptions (`IOException`) with `RuntimeException`.",
+    "expected_concepts": [
+      "checked exceptions must be caught or declared",
+      "unchecked extend RuntimeException",
+      "avoid swallowing exceptions silently",
+      "try-with-resources for AutoCloseable"
+    ]
+  },
+  "java-4": {
+    "category": "java",
+    "difficulty": "intermediate",
+    "question": "How does `HashMap` work internally in Java, including collision handling and treeification?",
+    "tips": "Cover `hashCode`, bucket array, equals check, load factor resizing, and Java 8 balanced trees.",
+    "expected_concepts": [
+      "hashCode maps key to bucket index",
+      "equals resolves collisions in bucket",
+      "resizing at load factor threshold",
+      "linked list converts to red-black tree on high collisions"
+    ]
+  },
+  "java-5": {
+    "category": "java",
+    "difficulty": "intermediate",
+    "question": "Explain the Java Memory Model concepts of Heap vs Stack and how Garbage Collection works.",
+    "tips": "Cover thread stacks, shared heap, generational GC (Young/Old), and reachability.",
+    "expected_concepts": [
+      "each thread has its own stack for primitives and references",
+      "objects live on shared heap",
+      "garbage collector reclaims unreachable objects",
+      "generational collection improves throughput"
+    ]
+  },
+  "java-6": {
+    "category": "java",
+    "difficulty": "intermediate",
+    "question": "What are Java Streams, and how do intermediate vs terminal operations work?",
+    "tips": "Discuss lazy evaluation, stateless pipelines, `map`/`filter` vs `collect`/`reduce`.",
+    "expected_concepts": [
+      "streams process data declaratively without mutating source",
+      "intermediate operations are lazy",
+      "terminal operations trigger execution",
+      "readability and parallel stream caveats"
+    ]
+  },
+  "java-7": {
+    "category": "java",
+    "difficulty": "advanced",
+    "question": "How do `synchronized`, `volatile`, and `ReentrantLock` differ in Java concurrency?",
+    "tips": "Cover mutual exclusion, visibility/happens-before, and advanced locking features like `tryLock`.",
+    "expected_concepts": [
+      "volatile guarantees visibility not atomicity",
+      "synchronized provides intrinsic monitor lock",
+      "ReentrantLock adds tryLock fairness and interruptibility",
+      "happens-before memory visibility"
+    ]
+  },
+  "java-8": {
+    "category": "java",
+    "difficulty": "advanced",
+    "question": "Explain `CompletableFuture` and how you compose non-blocking asynchronous pipelines in Java.",
+    "tips": "Cover `supplyAsync`, `thenApply`, `thenCompose`, `exceptionally`, and custom executor pools.",
+    "expected_concepts": [
+      "non-blocking async composition",
+      "thenApply transforms vs thenCompose flattens futures",
+      "exception handling with exceptionally or handle",
+      "using dedicated thread pools"
+    ]
+  },
+  "java-9": {
+    "category": "java",
+    "difficulty": "advanced",
+    "question": "How do you diagnose a `OutOfMemoryError` or high GC pause issue in a JVM application?",
+    "tips": "Mention heap dumps (`jmap`), GC logs, profiler tools, and common leak patterns like static collections or unclosed listeners.",
+    "expected_concepts": [
+      "capturing heap dumps and analyzing retained objects",
+      "inspecting GC logs for pause times",
+      "identifying unintended strong references or caches",
+      "tuning heap or fixing object retention"
+    ]
+  },
+  "cs-1": {
+    "category": "csharp",
+    "difficulty": "beginner",
+    "question": "What is the difference between value types (`struct`) and reference types (`class`) in C#?",
+    "tips": "Cover stack/inline vs heap allocation, copy-by-value vs reference copying, and boxing.",
+    "expected_concepts": [
+      "value types store data directly and copy on assignment",
+      "reference types store heap references",
+      "structs cannot inherit from other structs or classes",
+      "boxing overhead when treating value type as object"
+    ]
+  },
+  "cs-2": {
+    "category": "csharp",
+    "difficulty": "beginner",
+    "question": "Explain `IEnumerable<T>` vs `IQueryable<T>` in C# and LINQ.",
+    "tips": "Cover in-memory delegate execution vs expression-tree translation for databases.",
+    "expected_concepts": [
+      "IEnumerable executes delegates in memory",
+      "IQueryable builds expression trees for providers like EF Core",
+      "database filtering happens server-side with IQueryable",
+      "deferred execution behavior"
+    ]
+  },
+  "cs-3": {
+    "category": "csharp",
+    "difficulty": "beginner",
+    "question": "What is the purpose of `using` statements and `IDisposable` in C#?",
+    "tips": "Explain deterministic cleanup of unmanaged resources like file handles and DB connections.",
+    "expected_concepts": [
+      "IDisposable exposes Dispose for unmanaged resources",
+      "using ensures Dispose runs even on exceptions",
+      "prevents handle and connection leaks",
+      "alternative to waiting for finalizer"
+    ]
+  },
+  "cs-4": {
+    "category": "csharp",
+    "difficulty": "intermediate",
+    "question": "How do `async` and `await` work in C#, and why should you avoid `async void` and `.Result`?",
+    "tips": "Cover state machines, thread release during I/O, deadlocks in synchronization contexts, and exception handling.",
+    "expected_concepts": [
+      "await yields control without blocking thread",
+      "async Task allows awaiting and exception propagation",
+      "async void cannot be awaited and crashes on exceptions",
+      ".Result or .Wait can cause deadlocks"
+    ]
+  },
+  "cs-5": {
+    "category": "csharp",
+    "difficulty": "intermediate",
+    "question": "Explain delegates, `Action`, `Func`, and events in C#.",
+    "tips": "Discuss type-safe function pointers, built-in generic delegates, and event encapsulation.",
+    "expected_concepts": [
+      "delegates are type-safe function references",
+      "Action returns void while Func returns a value",
+      "events restrict external invocation to += and -=",
+      "used in callbacks and LINQ"
+    ]
+  },
+  "cs-6": {
+    "category": "csharp",
+    "difficulty": "intermediate",
+    "question": "What are nullable reference types in C# and how do they help prevent `NullReferenceException`?",
+    "tips": "Cover compile-time static flow analysis, `?` annotations, and null-forgiving/coalescing operators.",
+    "expected_concepts": [
+      "distinguishes non-nullable from nullable reference types",
+      "compiler warns on potential null dereference",
+      "reduces runtime NullReferenceException",
+      "null-coalescing and pattern matching"
+    ]
+  },
+  "cs-7": {
+    "category": "csharp",
+    "difficulty": "advanced",
+    "question": "Explain `Span<T>` and `Memory<T>` in C# and when they improve performance.",
+    "tips": "Cover zero-allocation slicing of arrays/strings/stack memory and `ref struct` constraints.",
+    "expected_concepts": [
+      "zero-allocation view over contiguous memory",
+      "reduces GC pressure from substring or array copies",
+      "Span is stack-only ref struct",
+      "Memory<T> works across async boundaries"
+    ]
+  },
+  "cs-8": {
+    "category": "csharp",
+    "difficulty": "advanced",
+    "question": "How does `CancellationToken` propagate cooperative cancellation across async C# workflows?",
+    "tips": "Discuss passing tokens through async calls, `ThrowIfCancellationRequested`, and avoiding wasted work.",
+    "expected_concepts": [
+      "cooperative cancellation pattern",
+      "propagated through async method parameters",
+      "registers callbacks or throws OperationCanceledException",
+      "frees server resources when client disconnects"
+    ]
+  },
+  "cs-9": {
+    "category": "csharp",
+    "difficulty": "advanced",
+    "question": "Compare `record` types with `class` and `struct` in modern C#.",
+    "tips": "Cover value-based equality, immutability (`init`), `with` expressions, and DTO/domain modeling.",
+    "expected_concepts": [
+      "records provide built-in value equality",
+      "non-destructive mutation via with expressions",
+      "ideal for immutable DTOs and messages",
+      "class vs struct record differences"
+    ]
+  },
+  "dn-1": {
+    "category": "dotnet",
+    "difficulty": "beginner",
+    "question": "What is Dependency Injection in ASP.NET Core, and how do Transient, Scoped, and Singleton lifetimes differ?",
+    "tips": "Explain IoC container registration and lifetime per resolution, HTTP request, or app lifetime.",
+    "expected_concepts": [
+      "IoC container injects dependencies via constructor",
+      "Transient creates new instance every time",
+      "Scoped creates one instance per HTTP request",
+      "Singleton lives for application lifetime"
+    ]
+  },
+  "dn-2": {
+    "category": "dotnet",
+    "difficulty": "beginner",
+    "question": "Explain the ASP.NET Core request middleware pipeline and why middleware order matters.",
+    "tips": "Cover `UseRouting`, `UseAuthentication`, `UseAuthorization`, `UseExceptionHandler`, and short-circuiting.",
+    "expected_concepts": [
+      "middleware forms ordered request-response pipeline",
+      "each component calls next or short-circuits",
+      "exception handler must wrap downstream middleware",
+      "authentication runs before authorization"
+    ]
+  },
+  "dn-3": {
+    "category": "dotnet",
+    "difficulty": "beginner",
+    "question": "How does `Program.cs` minimal hosting work in modern .NET / ASP.NET Core?",
+    "tips": "Discuss `WebApplication.CreateBuilder`, service registration on `builder.Services`, and pipeline setup on `app`.",
+    "expected_concepts": [
+      "WebApplicationBuilder configures services and config",
+      "builder.Services registers DI dependencies",
+      "app.MapControllers or minimal endpoints",
+      "unified host model"
+    ]
+  },
+  "dn-4": {
+    "category": "dotnet",
+    "difficulty": "intermediate",
+    "question": "What is a captive dependency bug in ASP.NET Core DI, and how do you avoid it?",
+    "tips": "Explain injecting a Scoped service (like `DbContext`) into a Singleton and using `IServiceScopeFactory`.",
+    "expected_concepts": [
+      "Singleton holding Scoped service keeps it alive too long",
+      "causes stale state or concurrency bugs in DbContext",
+      "resolve scoped services via IServiceScopeFactory",
+      "built-in scope validation catches it in Development"
+    ]
+  },
+  "dn-5": {
+    "category": "dotnet",
+    "difficulty": "intermediate",
+    "question": "Compare Controller-based APIs with Minimal APIs in ASP.NET Core.",
+    "tips": "Discuss boilerplate, filters/model binding, performance, and team organization tradeoffs.",
+    "expected_concepts": [
+      "Controllers use MVC conventions attributes and filters",
+      "Minimal APIs use concise lambda route handlers",
+      "Minimal APIs have lower overhead for microservices",
+      "Controllers suit large structured APIs"
+    ]
+  },
+  "dn-6": {
+    "category": "dotnet",
+    "difficulty": "intermediate",
+    "question": "How do you avoid N+1 query problems and improve performance in Entity Framework Core?",
+    "tips": "Mention `.Include()`, `.AsNoTracking()`, projections with `.Select()`, and inspecting generated SQL.",
+    "expected_concepts": [
+      "N+1 occurs with lazy loading inside loops",
+      "eager loading with Include or explicit Select projection",
+      "AsNoTracking skips change tracker overhead for reads",
+      "paging and indexing"
+    ]
+  },
+  "dn-7": {
+    "category": "dotnet",
+    "difficulty": "advanced",
+    "question": "How do you implement global exception handling and RFC 7807 `ProblemDetails` in ASP.NET Core?",
+    "tips": "Cover `IExceptionHandler` or exception middleware, status mapping, and hiding sensitive stack traces in Production.",
+    "expected_concepts": [
+      "centralized exception handling middleware or IExceptionHandler",
+      "consistent ProblemDetails JSON format",
+      "maps domain exceptions to HTTP status codes",
+      "omits internal stack traces in production"
+    ]
+  },
+  "dn-8": {
+    "category": "dotnet",
+    "difficulty": "advanced",
+    "question": "How do `IHostedService` and `BackgroundService` work in .NET for background tasks, and what are their pitfalls?",
+    "tips": "Discuss long-running loops, `CancellationToken`, scoped service creation, and unhandled exceptions.",
+    "expected_concepts": [
+      "runs background work inside .NET host",
+      "must respect stoppingToken for graceful shutdown",
+      "create DI scope manually for scoped services",
+      "handle exceptions to avoid crashing host"
+    ]
+  },
+  "dn-9": {
+    "category": "dotnet",
+    "difficulty": "advanced",
+    "question": "How would you secure and optimize a high-throughput ASP.NET Core Web API for production?",
+    "tips": "Cover response compression, output caching, rate limiting, health checks, JWT validation, and Kestrel tuning.",
+    "expected_concepts": [
+      "rate limiting and JWT/OAuth validation",
+      "output caching and response compression",
+      "health checks for readiness and liveness",
+      "async I/O and connection pooling"
+    ]
+  },
+  "mern-1": {
+    "category": "mern",
+    "difficulty": "beginner",
+    "question": "Walk through how data flows from a React frontend through Express/Node.js to MongoDB and back.",
+    "tips": "Cover HTTP fetch/Axios, Express routing/middleware, Mongoose schema/query, and JSON response.",
+    "expected_concepts": [
+      "React sends HTTP request with JSON payload",
+      "Express route parses body and runs middleware",
+      "Mongoose validates and queries MongoDB",
+      "JSON response updates React state"
+    ]
+  },
+  "mern-2": {
+    "category": "mern",
+    "difficulty": "beginner",
+    "question": "What is Mongoose in a MERN application, and why use schemas over raw MongoDB driver calls?",
+    "tips": "Discuss schema validation, casting, middleware hooks, and model methods.",
+    "expected_concepts": [
+      "ODM library modeling MongoDB documents",
+      "enforces schema structure and validation",
+      "provides hooks and query helpers",
+      "bridges JavaScript objects and BSON documents"
+    ]
+  },
+  "mern-3": {
+    "category": "mern",
+    "difficulty": "beginner",
+    "question": "How does Express middleware work, and how do you write an error-handling middleware?",
+    "tips": "Explain `(req, res, next)` vs 4-argument `(err, req, res, next)` error handler.",
+    "expected_concepts": [
+      "middleware inspects or modifies req and res",
+      "calls next to pass control",
+      "error middleware has four parameters err req res next",
+      "centralizes error formatting"
+    ]
+  },
+  "mern-4": {
+    "category": "mern",
+    "difficulty": "intermediate",
+    "question": "In MongoDB, when should you embed subdocuments vs reference another collection with `ObjectId`?",
+    "tips": "Cover read/write patterns, 16MB document limit, unbounded arrays, and `$lookup` tradeoffs.",
+    "expected_concepts": [
+      "embedding gives fast single-query reads for bounded data",
+      "referencing avoids duplication and unbounded growth",
+      "16MB BSON document limit",
+      "update frequency and join complexity tradeoffs"
+    ]
+  },
+  "mern-5": {
+    "category": "mern",
+    "difficulty": "intermediate",
+    "question": "How do you prevent NoSQL injection and XSS vulnerabilities in a MERN stack app?",
+    "tips": "Discuss input validation (Zod/Joi), sanitizing `$` operators, React escaping, and HttpOnly cookies.",
+    "expected_concepts": [
+      "validate and sanitize request inputs against operator injection",
+      "avoid passing raw req.body into MongoDB queries",
+      "React escapes JSX by default avoid unsafe HTML",
+      "store auth tokens in HttpOnly cookies"
+    ]
+  },
+  "mern-6": {
+    "category": "mern",
+    "difficulty": "intermediate",
+    "question": "How do you manage server state and caching in React when talking to an Express/MongoDB backend?",
+    "tips": "Mention loading/error states, avoiding duplicate fetches, pagination, and tools like React Query/SWR or custom hooks.",
+    "expected_concepts": [
+      "separate server cache from local UI state",
+      "handle loading error and empty states",
+      "cursor or page-based pagination",
+      "request deduplication and stale-while-revalidate"
+    ]
+  },
+  "mern-7": {
+    "category": "mern",
+    "difficulty": "advanced",
+    "question": "How do you design MongoDB indexes and aggregation pipelines for fast analytics queries?",
+    "tips": "Cover compound indexes (ESR rule), `explain()`, `$match` early in pipeline, and avoiding collection scans.",
+    "expected_concepts": [
+      "compound indexes following Equality Sort Range",
+      "using explain to verify index usage",
+      "filtering early with $match in aggregation",
+      "tradeoff between read speed and write overhead"
+    ]
+  },
+  "mern-8": {
+    "category": "mern",
+    "difficulty": "advanced",
+    "question": "How would you implement real-time updates (e.g., notifications or live chat) in a MERN architecture?",
+    "tips": "Discuss WebSockets / Socket.IO, Redis pub/sub for horizontal scaling, and auth handshake.",
+    "expected_concepts": [
+      "WebSocket or Socket.IO persistent connection",
+      "authenticating socket handshake with token",
+      "Redis adapter or pub/sub across multiple Node instances",
+      "reconnection and fallback handling"
+    ]
+  },
+  "mern-9": {
+    "category": "mern",
+    "difficulty": "advanced",
+    "question": "How do you scale a Node.js/Express backend when CPU-intensive tasks or traffic spikes occur?",
+    "tips": "Cover clustering/PM2, offloading CPU work to worker threads or queues, caching with Redis, and stateless horizontal scaling.",
+    "expected_concepts": [
+      "Node event loop blocks on heavy CPU work",
+      "offload CPU tasks to worker threads or job queues",
+      "stateless instances behind load balancer",
+      "Redis caching for hot reads"
+    ]
+  },
+  "dsa-1": {
+    "category": "dsa",
+    "difficulty": "beginner",
+    "question": "How would you explain time and space complexity (Big O) to another student, and why does it matter in real apps?",
+    "tips": "Compare O(1) vs O(n) vs O(n^2) and give a practical scaling example.",
+    "expected_concepts": [
+      "time complexity measures operations growth with input size",
+      "space complexity measures memory usage growth",
+      "O(1) hash map vs O(n) linear scan comparison",
+      "scalability impact on real datasets",
+      "practical trade-off example"
+    ]
+  },
+  "dsa-2": {
+    "category": "dsa",
+    "difficulty": "beginner",
+    "question": "If a search input filters a list of 5,000 items on every keystroke and feels sluggish, how would you optimize it?",
+    "tips": "Mention debouncing, memoization, indexing, and list virtualization.",
+    "expected_concepts": [
+      "debouncing or throttling input events",
+      "memoizing filtered results",
+      "list virtualization or pagination for DOM rendering",
+      "pre-indexing or efficient data structure",
+      "measuring render performance"
+    ]
+  },
+  "dsa-3": {
+    "category": "dsa",
+    "difficulty": "beginner",
+    "question": "Explain the difference between a Stack and a Queue, and give a real-world software use case for each.",
+    "tips": "Cover LIFO vs FIFO, O(1) push/pop/enqueue/dequeue, undo/call stack vs task/BFS queue.",
+    "expected_concepts": [
+      "stack is LIFO last in first out",
+      "queue is FIFO first in first out",
+      "stack use cases like undo or call stack",
+      "queue use cases like task scheduling or BFS"
+    ]
+  },
+  "dsa-4": {
+    "category": "dsa",
+    "difficulty": "intermediate",
+    "question": "Compare Breadth-First Search (BFS) and Depth-First Search (DFS) on graphs and trees.",
+    "tips": "Cover queue vs stack/recursion, shortest path in unweighted graphs, and memory tradeoffs.",
+    "expected_concepts": [
+      "BFS uses queue and explores level by level",
+      "DFS uses stack or recursion and explores deep paths",
+      "BFS finds shortest path in unweighted graphs",
+      "space complexity tradeoffs"
+    ]
+  },
+  "dsa-5": {
+    "category": "dsa",
+    "difficulty": "intermediate",
+    "question": "How does Binary Search work, what preconditions does it require, and what are common edge-case bugs?",
+    "tips": "Cover sorted order, O(log n), mid calculation overflow, and loop termination (`low <= high`).",
+    "expected_concepts": [
+      "requires monotonic or sorted search space",
+      "halves search space in O(log n) time",
+      "avoiding integer overflow in mid calculation",
+      "boundary conditions low <= high"
+    ]
+  },
+  "dsa-6": {
+    "category": "dsa",
+    "difficulty": "intermediate",
+    "question": "Explain how a Min-Heap / Priority Queue works and how you would use it to find the Top K frequent elements.",
+    "tips": "Discuss heapify/push/pop O(log k) complexity vs sorting O(n log n).",
+    "expected_concepts": [
+      "complete binary tree maintaining heap property",
+      "O(log n) insert and extract-min",
+      "frequency map plus size-K min-heap",
+      "O(n log k) better than full O(n log n) sort"
+    ]
+  },
+  "dsa-7": {
+    "category": "dsa",
+    "difficulty": "advanced",
+    "question": "Explain Dynamic Programming: how do memoization (top-down) and tabulation (bottom-up) differ?",
+    "tips": "Cover overlapping subproblems, optimal substructure, state transitions, and space optimization.",
+    "expected_concepts": [
+      "overlapping subproblems and optimal substructure",
+      "top-down recursion with memoization cache",
+      "bottom-up iterative table filling",
+      "space optimization to rolling variables"
+    ]
+  },
+  "dsa-8": {
+    "category": "dsa",
+    "difficulty": "advanced",
+    "question": "How does Topological Sort work on a Directed Acyclic Graph (DAG), and how do you detect a cycle?",
+    "tips": "Mention Kahn's algorithm (in-degrees + queue) or DFS 3-color cycle detection.",
+    "expected_concepts": [
+      "orders nodes so prerequisites come first",
+      "Kahn algorithm tracks in-degrees with queue",
+      "cycle detected if visited count < total nodes",
+      "DFS recursion stack cycle check"
+    ]
+  },
+  "dsa-9": {
+    "category": "dsa",
+    "difficulty": "advanced",
+    "question": "Explain how you would design an LRU (Least Recently Used) Cache with O(1) `get` and `put` operations.",
+    "tips": "Combine a Hash Map for O(1) lookup with a Doubly Linked List for O(1) eviction/promotion.",
+    "expected_concepts": [
+      "hash map maps keys to list nodes in O(1)",
+      "doubly linked list tracks recency order",
+      "move accessed node to head in O(1)",
+      "evict tail node when capacity exceeded"
+    ]
+  },
+  "dbms-1": {
+    "category": "dbms",
+    "difficulty": "beginner",
+    "question": "What is the difference between a PRIMARY KEY, UNIQUE constraint, and FOREIGN KEY in SQL?",
+    "tips": "Cover row identity, nullability, uniqueness, and referential integrity across tables.",
+    "expected_concepts": [
+      "primary key uniquely identifies each row and cannot be null",
+      "unique enforces distinct values",
+      "foreign key references primary key of another table",
+      "maintains referential integrity"
+    ]
+  },
+  "dbms-2": {
+    "category": "dbms",
+    "difficulty": "beginner",
+    "question": "Explain INNER JOIN, LEFT JOIN, and RIGHT JOIN with a simple example.",
+    "tips": "Describe matching rows vs preserving unmatched rows from the left or right table with NULLs.",
+    "expected_concepts": [
+      "INNER JOIN returns only matching rows",
+      "LEFT JOIN keeps all left rows with NULLs for unmatched right",
+      "RIGHT JOIN keeps all right rows",
+      "practical two-table example"
+    ]
+  },
+  "dbms-3": {
+    "category": "dbms",
+    "difficulty": "beginner",
+    "question": "What is database normalization (1NF, 2NF, 3NF), and why is it used?",
+    "tips": "Cover eliminating redundant data, update/delete anomalies, and dependency on the key.",
+    "expected_concepts": [
+      "reduces data redundancy and anomalies",
+      "1NF atomic values",
+      "2NF removes partial dependencies",
+      "3NF removes transitive dependencies"
+    ]
+  },
+  "dbms-4": {
+    "category": "dbms",
+    "difficulty": "intermediate",
+    "question": "How do B-Tree database indexes speed up queries, and when can an index hurt performance?",
+    "tips": "Explain balanced tree search O(log n), covering/composite indexes, and write amplification.",
+    "expected_concepts": [
+      "B-Tree allows O(log n) sorted lookups and range scans",
+      "speeds up WHERE JOIN and ORDER BY",
+      "slows down INSERT UPDATE DELETE due to index maintenance",
+      "unused indexes waste storage and memory"
+    ]
+  },
+  "dbms-5": {
+    "category": "dbms",
+    "difficulty": "intermediate",
+    "question": "Explain ACID properties in database transactions with a bank transfer example.",
+    "tips": "Cover Atomicity, Consistency, Isolation, and Durability.",
+    "expected_concepts": [
+      "Atomicity all or nothing",
+      "Consistency preserves valid constraints",
+      "Isolation prevents concurrent interference",
+      "Durability persists after commit"
+    ]
+  },
+  "dbms-6": {
+    "category": "dbms",
+    "difficulty": "intermediate",
+    "question": "What is the difference between `WHERE` and `HAVING` in SQL, and in what order do they execute?",
+    "tips": "Explain filtering rows before `GROUP BY` vs filtering aggregated groups after `GROUP BY`.",
+    "expected_concepts": [
+      "WHERE filters individual rows before grouping",
+      "HAVING filters grouped results after aggregation",
+      "HAVING works with aggregate functions like COUNT or SUM",
+      "logical SQL execution order"
+    ]
+  },
+  "dbms-7": {
+    "category": "dbms",
+    "difficulty": "advanced",
+    "question": "Explain SQL transaction isolation levels (Read Committed, Repeatable Read, Serializable) and the anomalies they prevent.",
+    "tips": "Cover dirty reads, non-repeatable reads, phantom reads, and MVCC/locking tradeoffs.",
+    "expected_concepts": [
+      "dirty read non-repeatable read and phantom read",
+      "Read Committed prevents dirty reads",
+      "Repeatable Read prevents non-repeatable reads",
+      "Serializable prevents phantoms with concurrency cost"
+    ]
+  },
+  "dbms-8": {
+    "category": "dbms",
+    "difficulty": "advanced",
+    "question": "How do you read a SQL `EXPLAIN` / `EXPLAIN ANALYZE` plan to optimize a slow query?",
+    "tips": "Mention sequential scans vs index scans, join strategies, cardinality estimates, and rewriting queries.",
+    "expected_concepts": [
+      "identify full table sequential scans on large tables",
+      "check index usage and join types",
+      "compare estimated vs actual row counts",
+      "add composite indexes or rewrite predicates"
+    ]
+  },
+  "dbms-9": {
+    "category": "dbms",
+    "difficulty": "advanced",
+    "question": "Compare vertical scaling, read replicas, and horizontal sharding for scaling a relational database.",
+    "tips": "Cover read-heavy scaling, replication lag, shard key selection, and cross-shard join complexity.",
+    "expected_concepts": [
+      "read replicas offload read queries with eventual consistency",
+      "sharding partitions data across nodes by shard key",
+      "cross-shard joins and transactions become complex",
+      "hot-spot shard key risks"
+    ]
+  },
+  "os-1": {
+    "category": "os",
+    "difficulty": "beginner",
+    "question": "What is the difference between a Process and a Thread?",
+    "tips": "Cover isolated address spaces vs shared memory, context-switch overhead, and fault isolation.",
+    "expected_concepts": [
+      "process has isolated virtual address space",
+      "threads share process heap and code",
+      "thread context switch is lighter",
+      "process crash does not corrupt other processes"
+    ]
+  },
+  "os-2": {
+    "category": "os",
+    "difficulty": "beginner",
+    "question": "Explain what a Context Switch is and why excessive context switching hurts performance.",
+    "tips": "Cover saving/restoring registers, program counter, and CPU cache/TLB cold misses.",
+    "expected_concepts": [
+      "OS saves current state and loads next task state",
+      "CPU registers and stack pointer updated",
+      "cache and TLB invalidation overhead",
+      "reduces effective throughput"
+    ]
+  },
+  "os-3": {
+    "category": "os",
+    "difficulty": "beginner",
+    "question": "What is Virtual Memory and why do modern operating systems use it?",
+    "tips": "Explain virtual-to-physical address translation, process isolation, and running programs larger than RAM.",
+    "expected_concepts": [
+      "gives each process isolated address space",
+      "maps virtual pages to physical frames",
+      "enables memory protection between processes",
+      "allows paging to disk when RAM is full"
+    ]
+  },
+  "os-4": {
+    "category": "os",
+    "difficulty": "intermediate",
+    "question": "What are the four Coffman conditions for a Deadlock, and how can you prevent one?",
+    "tips": "Cover Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait, and breaking Circular Wait via lock ordering.",
+    "expected_concepts": [
+      "mutual exclusion",
+      "hold and wait",
+      "no preemption",
+      "circular wait and breaking it with lock ordering"
+    ]
+  },
+  "os-5": {
+    "category": "os",
+    "difficulty": "intermediate",
+    "question": "Compare CPU scheduling algorithms: FIFO, Round Robin, Shortest Job First, and Priority Scheduling.",
+    "tips": "Discuss time quantum, fairness, starvation, and average waiting time.",
+    "expected_concepts": [
+      "FIFO is simple but suffers convoy effect",
+      "Round Robin uses time quantum for fairness",
+      "SJF minimizes average wait time but risks starvation",
+      "priority scheduling with aging"
+    ]
+  },
+  "os-6": {
+    "category": "os",
+    "difficulty": "intermediate",
+    "question": "Explain Paging, Page Faults, and Thrashing in Operating Systems.",
+    "tips": "Cover page tables, TLB, disk swap on page fault, and working-set exhaustion causing thrashing.",
+    "expected_concepts": [
+      "paging divides memory into fixed-size pages and frames",
+      "page fault occurs when page is not in RAM",
+      "TLB caches recent translations",
+      "thrashing spends more time swapping than executing"
+    ]
+  },
+  "os-7": {
+    "category": "os",
+    "difficulty": "advanced",
+    "question": "Compare Mutexes, Semaphores, and Condition Variables for thread synchronization.",
+    "tips": "Cover ownership semantics (mutex) vs signaling/counting (semaphore) vs waiting on predicates.",
+    "expected_concepts": [
+      "mutex enforces exclusive ownership by locking thread",
+      "semaphore is a signaling counter without strict ownership",
+      "condition variable waits atomically on state predicate",
+      "spurious wakeups require while loop"
+    ]
+  },
+  "os-8": {
+    "category": "os",
+    "difficulty": "advanced",
+    "question": "How do System Calls transition from User Mode to Kernel Mode, and why is this separation enforced?",
+    "tips": "Cover trap/interrupt instructions, privilege rings, validating pointers, and protecting hardware.",
+    "expected_concepts": [
+      "user mode restricts direct hardware access",
+      "system call triggers trap into kernel mode",
+      "kernel validates arguments and executes safely",
+      "restores user mode on return"
+    ]
+  },
+  "os-9": {
+    "category": "os",
+    "difficulty": "advanced",
+    "question": "Explain Copy-on-Write (CoW) in `fork()` and how it optimizes process creation.",
+    "tips": "Cover sharing read-only pages initially and duplicating a page only when either process writes.",
+    "expected_concepts": [
+      "parent and child share physical pages initially",
+      "pages marked read-only",
+      "write triggers page fault to copy only modified page",
+      "makes fork fast and memory-efficient"
+    ]
+  },
+  "net-1": {
+    "category": "networks",
+    "difficulty": "beginner",
+    "question": "Explain the difference between TCP and UDP, and give a real-world use case for each.",
+    "tips": "Cover connection-oriented reliability vs connectionless low-latency streaming.",
+    "expected_concepts": [
+      "TCP is connection-oriented reliable and ordered",
+      "UDP is connectionless fast with no delivery guarantee",
+      "TCP used for HTTP or file transfer",
+      "UDP used for video calls DNS or gaming"
+    ]
+  },
+  "net-2": {
+    "category": "networks",
+    "difficulty": "beginner",
+    "question": "What happens step-by-step when you type a URL into a browser and press Enter?",
+    "tips": "Walk through DNS lookup, TCP handshake, TLS handshake, HTTP request/response, and rendering.",
+    "expected_concepts": [
+      "DNS resolves domain to IP address",
+      "TCP three-way handshake establishes connection",
+      "TLS handshake for HTTPS encryption",
+      "HTTP request and server response"
+    ]
+  },
+  "net-3": {
+    "category": "networks",
+    "difficulty": "beginner",
+    "question": "Compare HTTP status codes 2xx, 3xx, 4xx, and 5xx with common examples.",
+    "tips": "Mention 200/201, 301/302, 400/401/403/404/429, and 500/502/503.",
+    "expected_concepts": [
+      "2xx success like 200 OK or 201 Created",
+      "3xx redirects",
+      "4xx client errors like 400 401 404",
+      "5xx server errors like 500 or 503"
+    ]
+  },
+  "net-4": {
+    "category": "networks",
+    "difficulty": "intermediate",
+    "question": "Explain the TCP 3-way handshake (`SYN`, `SYN-ACK`, `ACK`) and how flow control works.",
+    "tips": "Cover sequence numbers, establishing bidirectional state, and sliding window / congestion control.",
+    "expected_concepts": [
+      "client sends SYN",
+      "server replies SYN-ACK",
+      "client sends ACK",
+      "sliding window controls receiver buffer flow"
+    ]
+  },
+  "net-5": {
+    "category": "networks",
+    "difficulty": "intermediate",
+    "question": "How does HTTPS / TLS protect data in transit using both asymmetric and symmetric encryption?",
+    "tips": "Explain certificates, asymmetric key exchange, and fast symmetric session encryption.",
+    "expected_concepts": [
+      "digital certificates verify server identity",
+      "asymmetric crypto exchanges session key",
+      "symmetric AES/ChaCha encrypts bulk traffic",
+      "protects confidentiality and integrity"
+    ]
+  },
+  "net-6": {
+    "category": "networks",
+    "difficulty": "intermediate",
+    "question": "Compare HTTP/1.1, HTTP/2, and HTTP/3 (QUIC) in terms of performance.",
+    "tips": "Cover head-of-line blocking, multiplexing over single TCP connection, and QUIC over UDP.",
+    "expected_concepts": [
+      "HTTP/1.1 suffers head-of-line blocking across requests",
+      "HTTP/2 multiplexes streams over one TCP connection",
+      "HTTP/3 uses QUIC over UDP to eliminate TCP HoL blocking",
+      "faster connection setup"
+    ]
+  },
+  "net-7": {
+    "category": "networks",
+    "difficulty": "advanced",
+    "question": "How do DNS caching, TTL, and Anycast routing work to keep domain resolution fast and resilient?",
+    "tips": "Cover recursive resolvers, authoritative servers, TTL tradeoffs, and nearest-POP routing.",
+    "expected_concepts": [
+      "recursive resolver queries root TLD and authoritative servers",
+      "TTL controls cache freshness vs propagation delay",
+      "Anycast routes to nearest healthy server",
+      "reduces latency and absorbs DDoS"
+    ]
+  },
+  "net-8": {
+    "category": "networks",
+    "difficulty": "advanced",
+    "question": "Compare L4 (Transport) vs L7 (Application) Load Balancers and when you would use each.",
+    "tips": "Discuss packet/connection routing vs HTTP header/path inspection and TLS termination.",
+    "expected_concepts": [
+      "L4 routes based on IP and TCP/UDP port without inspecting payload",
+      "L7 inspects HTTP headers paths and cookies",
+      "L7 supports TLS termination and smart routing",
+      "L4 offers lower latency and higher raw throughput"
+    ]
+  },
+  "net-9": {
+    "category": "networks",
+    "difficulty": "advanced",
+    "question": "Explain how a CDN (Content Delivery Network) reduces latency and origin load, including cache invalidation strategies.",
+    "tips": "Cover edge POPs, Cache-Control headers, content hashing, and stale-while-revalidate.",
+    "expected_concepts": [
+      "caches static and edge assets close to users",
+      "reduces RTT and origin bandwidth",
+      "Cache-Control and ETag headers",
+      "content-hashed filenames for instant invalidation"
+    ]
+  },
+  "aiml-1": {
+    "category": "aiml",
+    "difficulty": "beginner",
+    "question": "What is the difference between supervised, unsupervised, and reinforcement learning?",
+    "tips": "Give clear definitions and a concrete example for each paradigm.",
+    "expected_concepts": [
+      "supervised uses labeled input-output pairs",
+      "unsupervised finds patterns in unlabeled data",
+      "reinforcement learns via rewards and environment feedback",
+      "concrete examples for each"
+    ]
+  },
+  "aiml-2": {
+    "category": "aiml",
+    "difficulty": "beginner",
+    "question": "Explain overfitting vs underfitting, and name three ways to reduce overfitting.",
+    "tips": "Cover bias-variance intuition, train vs validation gap, regularization, dropout, more data, and early stopping.",
+    "expected_concepts": [
+      "overfitting memorizes training noise and fails on unseen data",
+      "underfitting fails to capture underlying pattern",
+      "regularization dropout or early stopping",
+      "more training data or simpler model"
+    ]
+  },
+  "aiml-3": {
+    "category": "aiml",
+    "difficulty": "beginner",
+    "question": "Why do we split data into Train, Validation, and Test sets instead of just Train and Test?",
+    "tips": "Explain preventing hyperparameter leakage into the final unbiased test evaluation.",
+    "expected_concepts": [
+      "train fits model parameters",
+      "validation tunes hyperparameters and model choice",
+      "test provides unbiased final evaluation",
+      "prevents data leakage"
+    ]
+  },
+  "aiml-4": {
+    "category": "aiml",
+    "difficulty": "intermediate",
+    "question": "Why is accuracy misleading on imbalanced datasets, and how do Precision, Recall, and F1-score help?",
+    "tips": "Use a fraud or medical screening example and explain false positives vs false negatives.",
+    "expected_concepts": [
+      "accuracy hides minority class failures",
+      "precision measures true positives among predicted positives",
+      "recall measures true positives found among actual positives",
+      "F1 balances precision and recall"
+    ]
+  },
+  "aiml-5": {
+    "category": "aiml",
+    "difficulty": "intermediate",
+    "question": "Explain how text embeddings (like sentence transformers) and cosine similarity work for semantic search.",
+    "tips": "Cover dense vector representations, semantic closeness vs exact keywords, and L2 normalization.",
+    "expected_concepts": [
+      "maps text into dense semantic vectors",
+      "similar meanings cluster closely in vector space",
+      "cosine similarity measures angle between vectors",
+      "captures synonyms beyond exact keyword match"
+    ]
+  },
+  "aiml-6": {
+    "category": "aiml",
+    "difficulty": "intermediate",
+    "question": "Compare Bag-of-Words / TF-IDF with Transformer embeddings for NLP tasks.",
+    "tips": "Discuss sparsity vs dense context, polysemy, compute cost, and interpretability.",
+    "expected_concepts": [
+      "TF-IDF is sparse lexical weighting based on term frequency",
+      "transformers capture word order and context",
+      "TF-IDF is fast and interpretable",
+      "embeddings handle paraphrasing better at higher compute cost"
+    ]
+  },
+  "aiml-7": {
+    "category": "aiml",
+    "difficulty": "advanced",
+    "question": "Explain the self-attention mechanism in Transformers and why positional encoding is needed.",
+    "tips": "Cover Query-Key-Value dot products, contextual weighting, parallelization, and sequence order.",
+    "expected_concepts": [
+      "computes attention weights via Query Key Value",
+      "captures long-range dependencies in parallel",
+      "self-attention is permutation invariant",
+      "positional encoding injects token order"
+    ]
+  },
+  "aiml-8": {
+    "category": "aiml",
+    "difficulty": "advanced",
+    "question": "How does Retrieval-Augmented Generation (RAG) work, and how do you evaluate and reduce hallucinations?",
+    "tips": "Cover chunking, vector retrieval, grounded context prompting, and citation/faithfulness checks.",
+    "expected_concepts": [
+      "retrieves relevant documents before generation",
+      "grounds LLM output in retrieved context",
+      "chunking and hybrid retrieval quality",
+      "evaluating faithfulness and retrieval recall"
+    ]
+  },
+  "aiml-9": {
+    "category": "aiml",
+    "difficulty": "advanced",
+    "question": "How do you monitor an ML model in production for data drift and concept drift?",
+    "tips": "Discuss input feature distribution shifts, delayed ground-truth labels, shadow testing, and retraining triggers.",
+    "expected_concepts": [
+      "data drift tracks input feature distribution changes",
+      "concept drift tracks changing relationship to target",
+      "monitoring confidence and proxy metrics",
+      "alerting and controlled retraining"
+    ]
+  },
+  "ds-1": {
+    "category": "datascience",
+    "difficulty": "beginner",
+    "question": "Explain the difference between Mean, Median, and Mode, and when Median is preferred over Mean.",
+    "tips": "Mention skewed distributions and outliers (e.g., income or latency).",
+    "expected_concepts": [
+      "mean is arithmetic average",
+      "median is middle value",
+      "mode is most frequent value",
+      "median is robust to outliers and skew"
+    ]
+  },
+  "ds-2": {
+    "category": "datascience",
+    "difficulty": "beginner",
+    "question": "How do you handle missing values in a tabular dataset before modeling or analysis?",
+    "tips": "Cover MCAR/MAR reasoning, dropping vs mean/median/mode imputation, and missingness indicator flags.",
+    "expected_concepts": [
+      "investigate why values are missing",
+      "drop rows or columns only when appropriate",
+      "impute numeric with median or model-based methods",
+      "avoid data leakage by fitting imputer on train split"
+    ]
+  },
+  "ds-3": {
+    "category": "datascience",
+    "difficulty": "beginner",
+    "question": "What is the difference between correlation and causation, and how do you communicate it to stakeholders?",
+    "tips": "Give a confounding variable example and explain controlled experiments.",
+    "expected_concepts": [
+      "correlation measures statistical association",
+      "causation means one variable directly drives another",
+      "confounding variables can create spurious correlation",
+      "experiments or A/B tests establish causation"
+    ]
+  },
+  "ds-4": {
+    "category": "datascience",
+    "difficulty": "intermediate",
+    "question": "Walk through how you design and analyze an A/B test from hypothesis to decision.",
+    "tips": "Cover null/alternative hypotheses, randomization, sample size/power, p-value, and practical significance.",
+    "expected_concepts": [
+      "define clear metric and hypothesis",
+      "randomly split users without contamination",
+      "calculate required sample size before running",
+      "check statistical and practical significance"
+    ]
+  },
+  "ds-5": {
+    "category": "datascience",
+    "difficulty": "intermediate",
+    "question": "Explain feature scaling (Standardization vs Min-Max Normalization) and which algorithms require it.",
+    "tips": "Contrast distance/gradient models (KNN, SVM, Logistic Regression) with tree-based models.",
+    "expected_concepts": [
+      "standardization centers to zero mean and unit variance",
+      "min-max scales to fixed range like 0 to 1",
+      "required for distance-based and gradient models",
+      "tree-based models are invariant to monotonic scaling"
+    ]
+  },
+  "ds-6": {
+    "category": "datascience",
+    "difficulty": "intermediate",
+    "question": "What is data leakage in a machine learning or analytics pipeline, and give two realistic examples?",
+    "tips": "Mention scaling before train/test split and target-correlated future features.",
+    "expected_concepts": [
+      "using information unavailable at prediction time",
+      "fitting scaler or imputer on full dataset before split",
+      "including post-outcome or target-proxy columns",
+      "inflates validation scores unrealistically"
+    ]
+  },
+  "ds-7": {
+    "category": "datascience",
+    "difficulty": "advanced",
+    "question": "How do you handle severe multicollinearity in regression models, and when does it matter?",
+    "tips": "Cover VIF, unstable coefficients vs prediction accuracy, regularization (Ridge/Lasso), and feature selection.",
+    "expected_concepts": [
+      "correlated predictors inflate coefficient variance",
+      "detected via VIF or correlation matrix",
+      "matters for coefficient interpretation",
+      "addressed with Ridge Lasso or dropping redundant features"
+    ]
+  },
+  "ds-8": {
+    "category": "datascience",
+    "difficulty": "advanced",
+    "question": "Explain Multiple Hypothesis Testing (peeking / p-hacking) in product analytics and how to control false positives.",
+    "tips": "Mention Bonferroni/FDR correction, sequential testing, and pre-registration of metrics.",
+    "expected_concepts": [
+      "running many tests inflates family-wise false positive rate",
+      "peeking early inflates Type I error",
+      "Bonferroni or Benjamini-Hochberg FDR correction",
+      "pre-define primary metric and stopping rule"
+    ]
+  },
+  "ds-9": {
+    "category": "datascience",
+    "difficulty": "advanced",
+    "question": "How would you forecast a seasonal business metric (e.g., weekly signups) and validate the forecast properly?",
+    "tips": "Cover time-based rolling cross-validation (no random shuffle!), trend/seasonality decomposition, and MAE/MAPE.",
+    "expected_concepts": [
+      "never randomly shuffle time series splits",
+      "use expanding or rolling window time-series CV",
+      "capture trend seasonality and holidays",
+      "evaluate with MAE RMSE or MAPE"
+    ]
+  },
+  "log-1": {
+    "category": "logic",
+    "difficulty": "beginner",
+    "question": "You have an array of integers and a target sum. How would you find two numbers that add up to the target efficiently?",
+    "tips": "Compare brute-force O(n^2) with a Hash Set/Map O(n) single-pass lookup.",
+    "expected_concepts": [
+      "brute force checks pairs in O(n^2)",
+      "hash map stores seen values and indices",
+      "check complement target - num in O(1)",
+      "reduces time complexity to O(n)"
+    ]
+  },
+  "log-2": {
+    "category": "logic",
+    "difficulty": "beginner",
+    "question": "How would you check if a string of brackets `()[]{}` is balanced and properly nested?",
+    "tips": "Explain using a Stack, matching closing brackets against top of stack, and empty-stack check at end.",
+    "expected_concepts": [
+      "use a stack for opening brackets",
+      "pop and match when encountering closing bracket",
+      "return false on mismatch or empty stack",
+      "ensure stack is empty at end"
+    ]
+  },
+  "log-3": {
+    "category": "logic",
+    "difficulty": "beginner",
+    "question": "If a function works on small inputs but times out on 100,000 items, how do you systematically debug the bottleneck?",
+    "tips": "Discuss measuring runtime, checking nested loops, I/O inside loops, and choosing better data structures.",
+    "expected_concepts": [
+      "profile or time sections to locate bottleneck",
+      "look for O(n^2) nested loops or repeated scans",
+      "replace linear scans with hash map or set",
+      "verify on large synthetic input"
+    ]
+  },
+  "log-4": {
+    "category": "logic",
+    "difficulty": "intermediate",
+    "question": "How do you merge overlapping time intervals (e.g., calendar meetings) in optimal time?",
+    "tips": "Cover sorting by start time O(n log n) and linear merge pass checking `current.start <= prev.end`.",
+    "expected_concepts": [
+      "sort intervals by start time",
+      "compare current start with previous merged end",
+      "merge by taking max end time",
+      "O(n log n) time complexity"
+    ]
+  },
+  "log-5": {
+    "category": "logic",
+    "difficulty": "intermediate",
+    "question": "Explain the Two Pointers technique and give two problems where it reduces O(n^2) to O(n).",
+    "tips": "Mention sorted two-sum, removing duplicates in-place, or container with most water.",
+    "expected_concepts": [
+      "maintains two indices moving based on condition",
+      "avoids nested inner loops",
+      "works on sorted arrays or palindromes",
+      "O(n) time and O(1) extra space"
+    ]
+  },
+  "log-6": {
+    "category": "logic",
+    "difficulty": "intermediate",
+    "question": "How does the Sliding Window pattern work for finding the longest substring without repeating characters?",
+    "tips": "Explain expanding right pointer, shrinking left pointer on duplicate using a map/set, and tracking max length.",
+    "expected_concepts": [
+      "right pointer expands window",
+      "hash map tracks last seen index of characters",
+      "left pointer jumps past duplicate",
+      "O(n) single-pass solution"
+    ]
+  },
+  "log-7": {
+    "category": "logic",
+    "difficulty": "advanced",
+    "question": "How would you find the median of a continuous stream of incoming numbers in real time?",
+    "tips": "Cover two heaps: Max-Heap for lower half and Min-Heap for upper half, keeping sizes balanced within 1.",
+    "expected_concepts": [
+      "maintain max-heap for smaller half and min-heap for larger half",
+      "keep heap sizes balanced within 1 element",
+      "insert in O(log n) time",
+      "read median from heap tops in O(1)"
+    ]
+  },
+  "log-8": {
+    "category": "logic",
+    "difficulty": "advanced",
+    "question": "How do you detect whether a linked list has a cycle and find the exact node where the cycle begins?",
+    "tips": "Explain Floyd's Tortoise and Hare (fast/slow pointers) and resetting one pointer to head.",
+    "expected_concepts": [
+      "slow moves 1 step and fast moves 2 steps",
+      "meeting proves a cycle exists in O(1) space",
+      "reset one pointer to head and advance both by 1",
+      "second meeting point is cycle entry"
+    ]
+  },
+  "log-9": {
+    "category": "logic",
+    "difficulty": "advanced",
+    "question": "Design an algorithm to rate-limit requests per user (e.g., max 100 requests per 60 seconds) accurately.",
+    "tips": "Compare fixed window boundary burst issue vs sliding window log/counter or token bucket.",
+    "expected_concepts": [
+      "fixed window allows boundary burst",
+      "sliding window or token bucket smooths traffic",
+      "O(1) memory with token bucket",
+      "evict expired timestamps cleanly"
+    ]
+  },
+  "gen-1": {
+    "category": "general",
+    "difficulty": "beginner",
+    "question": "Why are you interested in this entry-level role, and what kind of team environment helps you learn fastest?",
+    "tips": "Connect your projects/coursework to the role and highlight openness to feedback.",
+    "expected_concepts": [
+      "alignment between coursework or projects and the role",
+      "growth mindset and curiosity",
+      "openness to code reviews and feedback",
+      "collaborative team environment",
+      "desire to contribute and take ownership"
+    ]
+  },
+  "gen-2": {
+    "category": "general",
+    "difficulty": "beginner",
+    "question": "What is a recent technology or concept you taught yourself outside of class, and how did you apply it?",
+    "tips": "Describe your learning process, a challenge you solved, and what you built.",
+    "expected_concepts": [
+      "self-directed learning motivation",
+      "learning process using docs or tutorials",
+      "hands-on project application",
+      "challenge overcome while learning",
+      "reflection on outcome"
+    ]
+  },
+  "gen-3": {
+    "category": "general",
+    "difficulty": "beginner",
+    "question": "How do you organize your time when juggling multiple coursework deadlines, projects, and interview prep?",
+    "tips": "Explain prioritization, breaking down tasks, time-blocking, and tracking progress.",
+    "expected_concepts": [
+      "prioritizing by deadline and impact",
+      "breaking large tasks into small milestones",
+      "consistent schedule or time-blocking",
+      "adjusting when unexpected blockers arise"
+    ]
+  },
+  "gen-4": {
+    "category": "general",
+    "difficulty": "intermediate",
+    "question": "What does good code review etiquette look like to you, both as an author and as a reviewer?",
+    "tips": "Cover small PRs, clear descriptions, constructive/kind feedback focused on code not person, and automated checks.",
+    "expected_concepts": [
+      "keeping pull requests small and focused",
+      "explaining context and testing done",
+      "constructive objective feedback on code",
+      "learning from reviewer suggestions"
+    ]
+  },
+  "gen-5": {
+    "category": "general",
+    "difficulty": "intermediate",
+    "question": "Describe a project you are most proud of. If you had two more weeks, what would you improve?",
+    "tips": "Show ownership, awareness of technical tradeoffs, testing/UX gaps, and clear next steps.",
+    "expected_concepts": [
+      "project goal and your personal contribution",
+      "technical decisions and tradeoffs made",
+      "honest reflection on limitations",
+      "concrete prioritized improvements"
+    ]
+  },
+  "gen-6": {
+    "category": "general",
+    "difficulty": "intermediate",
+    "question": "How do you approach debugging an unfamiliar codebase on your first week in a new team?",
+    "tips": "Discuss reading docs/tests, reproducing locally, tracing entry points, and asking focused questions.",
+    "expected_concepts": [
+      "reproducing the issue locally first",
+      "reading tests logs and entry points",
+      "forming hypotheses before asking for help",
+      "documenting findings for the team"
+    ]
+  },
+  "gen-7": {
+    "category": "general",
+    "difficulty": "advanced",
+    "question": "How do you balance shipping features quickly for a deadline vs maintaining clean architecture and tests?",
+    "tips": "Cover pragmatic tradeoffs, isolating tech debt, critical-path tests, and follow-up cleanup.",
+    "expected_concepts": [
+      "assessing business urgency vs long-term risk",
+      "keeping core tests and safety checks",
+      "documenting intentional technical debt",
+      "scheduling follow-up refactoring"
+    ]
+  },
+  "gen-8": {
+    "category": "general",
+    "difficulty": "advanced",
+    "question": "What makes an engineering team effective, and how can a junior engineer actively contribute to team culture?",
+    "tips": "Mention psychological safety, clear communication, documentation, reliability, and curiosity.",
+    "expected_concepts": [
+      "clear communication and shared ownership",
+      "writing helpful docs and tests",
+      "asking thoughtful questions and unblocking others",
+      "fostering respectful collaboration"
+    ]
+  },
+  "gen-9": {
+    "category": "general",
+    "difficulty": "advanced",
+    "question": "Where do you want to grow technically over the next 1–2 years, and how are you preparing for it today?",
+    "tips": "Connect concrete learning goals (systems, testing, domain depth) to current habits.",
+    "expected_concepts": [
+      "specific realistic 1 to 2 year growth goals",
+      "alignment with target role",
+      "current deliberate practice habits",
+      "seeking mentorship and feedback"
+    ]
+  }
+}

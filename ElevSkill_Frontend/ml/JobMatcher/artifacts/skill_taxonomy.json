@@ -1,0 +1,227 @@
+{
+  "languages": {
+    "Python": [
+      "python"
+    ],
+    "JavaScript": [
+      "javascript",
+      "es6",
+      "ecmascript"
+    ],
+    "TypeScript": [
+      "typescript"
+    ],
+    "Java": [
+      "java",
+      "jdk",
+      "jvm"
+    ],
+    "C++": [
+      "c++",
+      "cpp"
+    ],
+    "C#": [
+      "c#",
+      "csharp"
+    ],
+    "C": [
+      "c programming",
+      "ansi c",
+      "c language",
+      "c"
+    ],
+    "Go": [
+      "golang"
+    ],
+    "Rust": [
+      "rust"
+    ],
+    "SQL": [
+      "sql",
+      "tsql",
+      "plsql"
+    ],
+    "HTML5": [
+      "html",
+      "html5"
+    ],
+    "CSS3": [
+      "css",
+      "css3",
+      "scss",
+      "sass"
+    ],
+    "Kotlin": [
+      "kotlin"
+    ],
+    "Swift": [
+      "swift"
+    ]
+  },
+  "frameworks": {
+    "React": [
+      "react",
+      "reactjs",
+      "react.js"
+    ],
+    "React Native": [
+      "react native"
+    ],
+    "Next.js": [
+      "next.js",
+      "nextjs"
+    ],
+    "Vue.js": [
+      "vue",
+      "vuejs",
+      "vue.js"
+    ],
+    "Angular": [
+      "angular"
+    ],
+    "Node.js": [
+      "node.js",
+      "nodejs",
+      "node js",
+      "node"
+    ],
+    "Express": [
+      "express",
+      "expressjs",
+      "express.js"
+    ],
+    "FastAPI": [
+      "fastapi"
+    ],
+    "Django": [
+      "django"
+    ],
+    "Flask": [
+      "flask"
+    ],
+    "Spring Boot": [
+      "spring boot",
+      "springboot"
+    ],
+    "Tailwind CSS": [
+      "tailwind",
+      "tailwindcss"
+    ],
+    "PyTorch": [
+      "pytorch"
+    ],
+    "TensorFlow": [
+      "tensorflow"
+    ],
+    "scikit-learn": [
+      "scikit-learn",
+      "sklearn",
+      "scikit learn"
+    ],
+    "Pandas": [
+      "pandas"
+    ],
+    "NumPy": [
+      "numpy"
+    ]
+  },
+  "databases": {
+    "PostgreSQL": [
+      "postgresql",
+      "postgres"
+    ],
+    "MySQL": [
+      "mysql"
+    ],
+    "SQLite": [
+      "sqlite"
+    ],
+    "MongoDB": [
+      "mongodb"
+    ],
+    "NoSQL": [
+      "nosql",
+      "no-sql"
+    ],
+    "Redis": [
+      "redis"
+    ],
+    "Firebase": [
+      "firebase",
+      "firestore"
+    ],
+    "DynamoDB": [
+      "dynamodb"
+    ]
+  },
+  "ml_and_concepts": {
+    "Machine Learning": [
+      "machine learning"
+    ],
+    "Deep Learning": [
+      "deep learning"
+    ],
+    "NLP": [
+      "natural language processing",
+      "nlp"
+    ],
+    "REST API": [
+      "rest api",
+      "rest apis",
+      "restful"
+    ],
+    "GraphQL": [
+      "graphql"
+    ]
+  },
+  "tools": {
+    "Git": [
+      "git",
+      "github",
+      "gitlab"
+    ],
+    "Docker": [
+      "docker"
+    ],
+    "Kubernetes": [
+      "kubernetes",
+      "k8s"
+    ],
+    "AWS": [
+      "aws",
+      "amazon web services"
+    ],
+    "GCP": [
+      "gcp",
+      "google cloud"
+    ],
+    "Azure": [
+      "azure"
+    ],
+    "Vite": [
+      "vite"
+    ],
+    "Vitest": [
+      "vitest"
+    ],
+    "Jest": [
+      "jest"
+    ],
+    "Pytest": [
+      "pytest"
+    ],
+    "Linux": [
+      "linux",
+      "ubuntu",
+      "bash"
+    ],
+    "CI/CD": [
+      "ci/cd",
+      "github actions",
+      "jenkins"
+    ],
+    "Figma": [
+      "figma"
+    ]
+  }
+}

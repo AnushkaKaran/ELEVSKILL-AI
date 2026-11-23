@@ -1,0 +1,33 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+
+# Logs & Runtime Artifacts
+logs/
+*.log
+
+# Node.js Dependencies & Build Output
+node_modules/
+ElevSkill_Frontend/dist/
+ElevSkill_Backend/coverage/
+
+# Python Virtual Environments & Caches
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ipynb_checkpoints/
+*.pyc
+*.pyo
+
+# Uploaded & Temporary User Files
+ElevSkill_Backend/storage/resumes/*
+!ElevSkill_Backend/storage/resumes/.gitkeep
+ElevSkill_Backend/storage/temporary/*
+!ElevSkill_Backend/storage/temporary/.gitkeep
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

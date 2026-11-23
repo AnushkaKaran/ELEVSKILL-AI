@@ -1,0 +1,138 @@
+{
+  "total_runtime_seconds": 16.491,
+  "functional_cases_passed": 8,
+  "test_results": [
+    {
+      "case": "1_empty_resume",
+      "valid": false,
+      "overall_score": 0,
+      "detected_skills_count": 0,
+      "missing_sections": [],
+      "semantic_similarity": null,
+      "lexical_tfidf_similarity": null,
+      "weak_bullets_count": 0,
+      "repeated_openers": []
+    },
+    {
+      "case": "2_very_short_resume",
+      "valid": true,
+      "overall_score": 12,
+      "detected_skills_count": 1,
+      "missing_sections": [
+        "summary",
+        "education",
+        "experience",
+        "projects",
+        "skills",
+        "certifications"
+      ],
+      "semantic_similarity": null,
+      "lexical_tfidf_similarity": null,
+      "weak_bullets_count": 0,
+      "repeated_openers": []
+    },
+    {
+      "case": "3_missing_sections_resume",
+      "valid": true,
+      "overall_score": 30,
+      "detected_skills_count": 4,
+      "missing_sections": [
+        "summary",
+        "education",
+        "experience",
+        "projects",
+        "certifications"
+      ],
+      "semantic_similarity": null,
+      "lexical_tfidf_similarity": null,
+      "weak_bullets_count": 0,
+      "repeated_openers": []
+    },
+    {
+      "case": "4_multi_skill_resume",
+      "valid": true,
+      "overall_score": 76,
+      "detected_skills_count": 12,
+      "missing_sections": [
+        "summary",
+        "education",
+        "projects",
+        "certifications"
+      ],
+      "semantic_similarity": null,
+      "lexical_tfidf_similarity": null,
+      "weak_bullets_count": 0,
+      "repeated_openers": []
+    },
+    {
+      "case": "5_projects_and_education_resume",
+      "valid": true,
+      "overall_score": 77,
+      "detected_skills_count": 8,
+      "missing_sections": [
+        "summary",
+        "experience",
+        "certifications"
+      ],
+      "semantic_similarity": null,
+      "lexical_tfidf_similarity": null,
+      "weak_bullets_count": 0,
+      "repeated_openers": []
+    },
+    {
+      "case": "6_matched_job_description",
+      "valid": true,
+      "overall_score": 90,
+      "detected_skills_count": 8,
+      "missing_sections": [
+        "summary",
+        "certifications"
+      ],
+      "semantic_similarity": 0.8335,
+      "lexical_tfidf_similarity": 0.5918,
+      "weak_bullets_count": 0,
+      "repeated_openers": []
+    },
+    {
+      "case": "7_unrelated_job_description",
+      "valid": true,
+      "overall_score": 45,
+      "detected_skills_count": 7,
+      "missing_sections": [
+        "summary",
+        "experience",
+        "certifications"
+      ],
+      "semantic_similarity": 0.2522,
+      "lexical_tfidf_similarity": 0.0,
+      "weak_bullets_count": 0,
+      "repeated_openers": []
+    },
+    {
+      "case": "8_unusual_formatting_and_repetition",
+      "valid": true,
+      "overall_score": 44,
+      "detected_skills_count": 3,
+      "missing_sections": [
+        "summary",
+        "education",
+        "projects",
+        "certifications"
+      ],
+      "semantic_similarity": 0.4991,
+      "lexical_tfidf_similarity": 0.1884,
+      "weak_bullets_count": 4,
+      "repeated_openers": [
+        {
+          "word": "worked",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "paraphrase_comparison": {
+    "semantic_minilm_similarity": 0.5901,
+    "lexical_tfidf_similarity": 0.0,
+    "semantic_advantage": 0.5901
+  }
+}

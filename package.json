@@ -1,0 +1,10 @@
+{
+  "name": "elevskill-ai-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root orchestrator scripts for ELEVSKILL AI",
+  "scripts": {
+    "start": "powershell -NoProfile -ExecutionPolicy Bypass -File ./start_elevskill.ps1",
+    "dev": "powershell -NoProfile -ExecutionPolicy Bypass -File ./start_elevskill.ps1"
+  }
+}

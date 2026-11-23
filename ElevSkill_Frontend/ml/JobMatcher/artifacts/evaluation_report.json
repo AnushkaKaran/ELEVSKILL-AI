@@ -1,0 +1,262 @@
+{
+  "total_cases": 28,
+  "all_assertions_passed": true,
+  "sensitivity_check_jm23": {
+    "without_docker_score": 91,
+    "with_docker_score": 95
+  },
+  "case_summaries": [
+    {
+      "id": "jm-01",
+      "tier": "strong",
+      "valid": true,
+      "overall_match_score": 92,
+      "semantic_relevance": 0.8191,
+      "required_skill_coverage": 100.0,
+      "preferred_skill_coverage": 100.0
+    },
+    {
+      "id": "jm-02",
+      "tier": "strong",
+      "valid": true,
+      "overall_match_score": 83,
+      "semantic_relevance": 0.7707,
+      "required_skill_coverage": 80.0,
+      "preferred_skill_coverage": 100.0
+    },
+    {
+      "id": "jm-03",
+      "tier": "strong",
+      "valid": true,
+      "overall_match_score": 84,
+      "semantic_relevance": 0.6221,
+      "required_skill_coverage": 100.0,
+      "preferred_skill_coverage": 100.0
+    },
+    {
+      "id": "jm-04",
+      "tier": "strong",
+      "valid": true,
+      "overall_match_score": 100,
+      "semantic_relevance": 0.817,
+      "required_skill_coverage": 100.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-05",
+      "tier": "partial",
+      "valid": true,
+      "overall_match_score": 46,
+      "semantic_relevance": 0.5472,
+      "required_skill_coverage": 40.0,
+      "preferred_skill_coverage": 0.0
+    },
+    {
+      "id": "jm-06",
+      "tier": "partial",
+      "valid": true,
+      "overall_match_score": 14,
+      "semantic_relevance": 0.24,
+      "required_skill_coverage": 20.0,
+      "preferred_skill_coverage": 0.0
+    },
+    {
+      "id": "jm-07",
+      "tier": "partial",
+      "valid": true,
+      "overall_match_score": 40,
+      "semantic_relevance": 0.3713,
+      "required_skill_coverage": 50.0,
+      "preferred_skill_coverage": 0.0
+    },
+    {
+      "id": "jm-08",
+      "tier": "partial",
+      "valid": true,
+      "overall_match_score": 56,
+      "semantic_relevance": 0.5205,
+      "required_skill_coverage": 66.7,
+      "preferred_skill_coverage": 0.0
+    },
+    {
+      "id": "jm-09",
+      "tier": "weak",
+      "valid": true,
+      "overall_match_score": 2,
+      "semantic_relevance": 0.1717,
+      "required_skill_coverage": 0.0,
+      "preferred_skill_coverage": 0.0
+    },
+    {
+      "id": "jm-10",
+      "tier": "weak",
+      "valid": true,
+      "overall_match_score": 0,
+      "semantic_relevance": 0.1187,
+      "required_skill_coverage": 0.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-11",
+      "tier": "weak",
+      "valid": true,
+      "overall_match_score": 0,
+      "semantic_relevance": 0.0,
+      "required_skill_coverage": 0.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-12",
+      "tier": "unrelated",
+      "valid": true,
+      "overall_match_score": 0,
+      "semantic_relevance": 0.0313,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-13",
+      "tier": "unrelated",
+      "valid": true,
+      "overall_match_score": 0,
+      "semantic_relevance": 0.0141,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-14",
+      "tier": "unrelated",
+      "valid": true,
+      "overall_match_score": 0,
+      "semantic_relevance": 0.0306,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-15",
+      "tier": "paraphrased",
+      "valid": true,
+      "overall_match_score": 87,
+      "semantic_relevance": 0.6853,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-16",
+      "tier": "paraphrased",
+      "valid": true,
+      "overall_match_score": 80,
+      "semantic_relevance": 0.618,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-17",
+      "tier": "paraphrased",
+      "valid": true,
+      "overall_match_score": 90,
+      "semantic_relevance": 0.6368,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-18",
+      "tier": "disambiguation",
+      "valid": true,
+      "overall_match_score": 0,
+      "semantic_relevance": 0.1373,
+      "required_skill_coverage": 0.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-19",
+      "tier": "disambiguation",
+      "valid": true,
+      "overall_match_score": 14,
+      "semantic_relevance": 0.2722,
+      "required_skill_coverage": 0.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-20",
+      "tier": "disambiguation",
+      "valid": true,
+      "overall_match_score": 55,
+      "semantic_relevance": 0.4654,
+      "required_skill_coverage": 50.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-21",
+      "tier": "disambiguation",
+      "valid": true,
+      "overall_match_score": 16,
+      "semantic_relevance": 0.3098,
+      "required_skill_coverage": 0.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-22",
+      "tier": "missing_required",
+      "valid": true,
+      "overall_match_score": 0,
+      "semantic_relevance": 0.0752,
+      "required_skill_coverage": 0.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-23",
+      "tier": "missing_required",
+      "valid": true,
+      "overall_match_score": 91,
+      "semantic_relevance": 0.6178,
+      "required_skill_coverage": 100.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-24",
+      "tier": "missing_preferred",
+      "valid": true,
+      "overall_match_score": 74,
+      "semantic_relevance": 0.5073,
+      "required_skill_coverage": 100.0,
+      "preferred_skill_coverage": 0.0
+    },
+    {
+      "id": "jm-25",
+      "tier": "missing_preferred",
+      "valid": true,
+      "overall_match_score": 100,
+      "semantic_relevance": 0.7264,
+      "required_skill_coverage": 100.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-26",
+      "tier": "projects_only",
+      "valid": true,
+      "overall_match_score": 93,
+      "semantic_relevance": 0.674,
+      "required_skill_coverage": 100.0,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-27",
+      "tier": "invalid_short_jd",
+      "valid": false,
+      "overall_match_score": 0,
+      "semantic_relevance": null,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    },
+    {
+      "id": "jm-28",
+      "tier": "invalid_empty_profile",
+      "valid": false,
+      "overall_match_score": 0,
+      "semantic_relevance": null,
+      "required_skill_coverage": null,
+      "preferred_skill_coverage": null
+    }
+  ]
+}

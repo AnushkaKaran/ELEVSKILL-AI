@@ -1,0 +1,228 @@
+{
+  "model_benchmark": {
+    "BAAI/bge-small-en-v1.5": {
+      "load_seconds": 11.924,
+      "avg_inference_ms_per_pair": 150.75,
+      "mean_similarity_by_tier": {
+        "strong": 0.766,
+        "paraphrased": 0.6993,
+        "partial": 0.7355,
+        "off_topic": 0.4585
+      },
+      "strong_minus_offtopic": 0.3075,
+      "paraphrased_minus_offtopic": 0.2408
+    },
+    "all-MiniLM-L6-v2": {
+      "load_seconds": 0.282,
+      "avg_inference_ms_per_pair": 87.48,
+      "mean_similarity_by_tier": {
+        "strong": 0.4983,
+        "paraphrased": 0.2803,
+        "partial": 0.5302,
+        "off_topic": 0.0644
+      },
+      "strong_minus_offtopic": 0.4339,
+      "paraphrased_minus_offtopic": 0.2159
+    },
+    "TF-IDF Baseline": {
+      "load_seconds": 0.0,
+      "avg_inference_ms_per_pair": 10.0,
+      "mean_similarity_by_tier": {
+        "strong": 0.1779,
+        "paraphrased": 0.0,
+        "partial": 0.1459,
+        "off_topic": 0.0
+      },
+      "strong_minus_offtopic": 0.1779,
+      "paraphrased_minus_offtopic": 0.0
+    }
+  },
+  "selected_model": "all-MiniLM-L6-v2",
+  "saved_model_path": "D:\\CareerPilot AI\\ml\\InterviewCoach\\models\\all-MiniLM-L6-v2",
+  "functional_evaluation": {
+    "total_cases": 20,
+    "all_assertions_passed": true,
+    "case_scores": {
+      "tc-01": {
+        "category": "behavioral",
+        "tier": "strong",
+        "score": 58,
+        "relevance": 0.2594,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 4
+      },
+      "tc-02": {
+        "category": "behavioral",
+        "tier": "missing_result",
+        "score": 24,
+        "relevance": 0.1661,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 1
+      },
+      "tc-03": {
+        "category": "behavioral",
+        "tier": "strong",
+        "score": 45,
+        "relevance": 0.3445,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 2
+      },
+      "tc-04": {
+        "category": "behavioral",
+        "tier": "vague",
+        "score": 33,
+        "relevance": 0.3904,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 0
+      },
+      "tc-05": {
+        "category": "behavioral",
+        "tier": "off_topic",
+        "score": 15,
+        "relevance": 0.0549,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 0
+      },
+      "tc-06": {
+        "category": "frontend",
+        "tier": "strong",
+        "score": 86,
+        "relevance": 0.7484,
+        "covered_count": 4,
+        "missing_count": 1,
+        "star_present": null
+      },
+      "tc-07": {
+        "category": "frontend",
+        "tier": "paraphrased",
+        "score": 16,
+        "relevance": 0.203,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": null
+      },
+      "tc-08": {
+        "category": "frontend",
+        "tier": "partial",
+        "score": 59,
+        "relevance": 0.7155,
+        "covered_count": 3,
+        "missing_count": 2,
+        "star_present": null
+      },
+      "tc-09": {
+        "category": "frontend",
+        "tier": "strong",
+        "score": 69,
+        "relevance": 0.6037,
+        "covered_count": 5,
+        "missing_count": 0,
+        "star_present": null
+      },
+      "tc-10": {
+        "category": "frontend",
+        "tier": "off_topic",
+        "score": 9,
+        "relevance": 0.0253,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": null
+      },
+      "tc-11": {
+        "category": "dsa",
+        "tier": "strong",
+        "score": 74,
+        "relevance": 0.5976,
+        "covered_count": 3,
+        "missing_count": 2,
+        "star_present": null
+      },
+      "tc-12": {
+        "category": "dsa",
+        "tier": "paraphrased",
+        "score": 32,
+        "relevance": 0.3576,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": null
+      },
+      "tc-13": {
+        "category": "dsa",
+        "tier": "strong",
+        "score": 72,
+        "relevance": 0.7615,
+        "covered_count": 3,
+        "missing_count": 2,
+        "star_present": null
+      },
+      "tc-14": {
+        "category": "dsa",
+        "tier": "partial",
+        "score": 22,
+        "relevance": 0.5284,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": null
+      },
+      "tc-15": {
+        "category": "dsa",
+        "tier": "one_word",
+        "score": 6,
+        "relevance": 0.0924,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": null
+      },
+      "tc-16": {
+        "category": "general",
+        "tier": "strong",
+        "score": 48,
+        "relevance": 0.5111,
+        "covered_count": 2,
+        "missing_count": 3,
+        "star_present": 1
+      },
+      "tc-17": {
+        "category": "general",
+        "tier": "strong",
+        "score": 19,
+        "relevance": 0.1599,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 0
+      },
+      "tc-18": {
+        "category": "general",
+        "tier": "partial",
+        "score": 21,
+        "relevance": 0.3469,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 0
+      },
+      "tc-19": {
+        "category": "general",
+        "tier": "long_repetitive",
+        "score": 35,
+        "relevance": 0.451,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 0
+      },
+      "tc-20": {
+        "category": "general",
+        "tier": "off_topic",
+        "score": 12,
+        "relevance": 0.1131,
+        "covered_count": 0,
+        "missing_count": 5,
+        "star_present": 0
+      }
+    }
+  }
+}
