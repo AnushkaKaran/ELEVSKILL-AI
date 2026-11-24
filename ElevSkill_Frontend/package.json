@@ -6,17 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
     "firebase": "^13.4.0",
+    "idb": "^8.0.4",
     "lucide-react": "^0.460.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11"
+    "fake-indexeddb": "^6.2.8",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
   },
   "allowScripts": {
     "@firebase/util@1.15.3": true,

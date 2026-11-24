@@ -1,5 +1,3 @@
-import { apiRequest, getAuthToken } from './apiClient.js';
-
 export const CAREER_ROADMAP_API_URL = (
   import.meta.env.VITE_CAREER_ROADMAP_API_URL || 'http://127.0.0.1:8004'
 ).replace(/\/+$/, '');
@@ -94,22 +92,6 @@ export async function checkCareerRoadmapHealth({ signal } = {}) {
 }
 
 export async function generateCareerRoadmap(requestData, { signal } = {}) {
-  if (getAuthToken()) {
-    try {
-      const data = await apiRequest('/roadmap/generate', {
-        method: 'POST',
-        body: requestData,
-        signal,
-      });
-      return data?.roadmap ?? data;
-    } catch (err) {
-      throw new CareerRoadmapApiError(err?.message || 'Career roadmap generation failed.', {
-        status: err?.status || null,
-        code: err?.code || 'API_ERROR',
-      });
-    }
-  }
-
   const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, 20000);
   let response;
   try {

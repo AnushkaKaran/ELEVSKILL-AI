@@ -1,5 +1,3 @@
-import { apiRequest, getAuthToken } from './apiClient.js';
-
 export const INTERVIEW_COACH_API_URL = (
   import.meta.env.VITE_INTERVIEW_COACH_API_URL || 'http://127.0.0.1:8002'
 ).replace(/\/+$/, '');
@@ -80,27 +78,6 @@ export async function evaluateInterviewAnswer(
     typeof questionReference === 'object' && questionReference?.questionText
       ? questionReference.questionText
       : null;
-
-  if (getAuthToken()) {
-    try {
-      const data = await apiRequest('/interviews/evaluate', {
-        method: 'POST',
-        body: {
-          answerText,
-          category,
-          questionId,
-          questionText,
-        },
-        signal,
-      });
-      return data?.evaluation ?? data;
-    } catch (err) {
-      throw new InterviewCoachApiError(err?.message || 'Interview evaluation failed.', {
-        status: err?.status || null,
-        code: err?.code || 'API_ERROR',
-      });
-    }
-  }
 
   let response;
   try {

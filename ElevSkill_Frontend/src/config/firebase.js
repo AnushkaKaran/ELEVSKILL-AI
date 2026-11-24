@@ -1,6 +1,7 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { getAI, GoogleAIBackend } from 'firebase/ai';
+import { getAuth } from 'firebase/auth';
 
 export class FirebaseConfigError extends Error {
   constructor(message, missingKeys = []) {
@@ -39,12 +40,13 @@ export function getMissingFirebaseKeys() {
 let cachedApp = null;
 let cachedAppCheck = null;
 let cachedAi = null;
+let cachedAuth = null;
 
-export function getFirebaseServices() {
+function ensureFirebaseApp() {
   const missing = getMissingFirebaseKeys();
   if (missing.length > 0) {
     throw new FirebaseConfigError(
-      `Firebase AI Logic is not configured yet. Add ${missing.join(', ')} to ElevSkill_Frontend/.env.local.`,
+      `Firebase is not configured yet. Add ${missing.join(', ')} to ElevSkill_Frontend/.env.local.`,
       missing
     );
   }
@@ -53,6 +55,19 @@ export function getFirebaseServices() {
     const config = readFirebaseConfig();
     cachedApp = getApps().length > 0 ? getApp() : initializeApp(config);
   }
+  return cachedApp;
+}
+
+export function getFirebaseAuth() {
+  const app = ensureFirebaseApp();
+  if (!cachedAuth) {
+    cachedAuth = getAuth(app);
+  }
+  return cachedAuth;
+}
+
+export function getFirebaseServices() {
+  ensureFirebaseApp();
 
   if (!cachedAppCheck && typeof window !== 'undefined') {
     const siteKey = (import.meta.env.VITE_FIREBASE_APP_CHECK_SITE_KEY || '').trim();
@@ -88,10 +103,15 @@ export function getFirebaseServices() {
     cachedAi = getAI(cachedApp, { backend: new GoogleAIBackend() });
   }
 
+  if (!cachedAuth) {
+    cachedAuth = getAuth(cachedApp);
+  }
+
   return {
     app: cachedApp,
     appCheck: cachedAppCheck,
     ai: cachedAi,
+    auth: cachedAuth,
     appCheckConfigured: Boolean(cachedAppCheck),
   };
 }

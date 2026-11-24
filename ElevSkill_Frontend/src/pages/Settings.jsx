@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { Save, Check } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Save, Check, Download, Upload, AlertTriangle } from 'lucide-react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Badge } from '../components/Badge';
+import { validateWorkspaceBackup } from '../utils/indexedDbStore';
 import './pages.css';
 
 const THEME_OPTIONS = [
@@ -11,12 +12,28 @@ const THEME_OPTIONS = [
   { id: 'sky', label: 'Powder Blue & Mint Pastel' },
 ];
 
-export function Settings({ userProfile, onSaveProfile, onResetAll, isAuthenticated = false }) {
+export function Settings({
+  userProfile,
+  onSaveProfile,
+  onResetAll,
+  onExportBackup,
+  onImportBackup,
+  isAuthenticated = false,
+}) {
   const [formState, setFormState] = useState({ ...userProfile });
   const [savedNotice, setSavedNotice] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [resetError, setResetError] = useState('');
+  const [backupStatus, setBackupStatus] = useState('');
+  const [backupError, setBackupError] = useState('');
+  const [pendingBackup, setPendingBackup] = useState(null);
+  const [isImporting, setIsImporting] = useState(false);
+  const backupFileInputRef = useRef(null);
+
+  useEffect(() => {
+    setFormState({ ...userProfile });
+  }, [userProfile]);
 
   const handleChange = (field, value) => {
     const next = { ...formState, [field]: value };
@@ -290,7 +307,7 @@ export function Settings({ userProfile, onSaveProfile, onResetAll, isAuthenticat
                         setConfirmReset(false);
                       } catch (err) {
                         setResetError(
-                          err?.message || 'Failed to reset account data. Please ensure the backend server is running.'
+                          err?.message || 'Failed to reset browser workspace data.'
                         );
                       } finally {
                         setIsResetting(false);
@@ -355,11 +372,151 @@ export function Settings({ userProfile, onSaveProfile, onResetAll, isAuthenticat
                   <span className="feedback-dot" />
                   <span>
                     {isAuthenticated
-                      ? 'Your account data is synchronized with the ELEVSKILL backend and persisted in SQL Server across sessions.'
-                      : 'Guest data is stored locally in your current browser session and may not persist across devices or cleared storage.'}
+                      ? 'Your signed-in workspace is stored in IndexedDB on this browser and isolated to your Firebase UID. Data is local to this browser and does not automatically sync across devices.'
+                      : 'Guest data is stored in IndexedDB on this browser under the guest workspace and does not automatically sync across devices.'}
                   </span>
                 </li>
               </ul>
+            </div>
+
+            <div className="rec-card">
+              <h4 className="rec-title">Workspace Backup &amp; Restore (JSON)</h4>
+              <p className="text-small text-muted" style={{ marginBottom: '12px' }}>
+                Export your active workspace (profile, resume text, analyses, drafts, interview history, job matches, roadmap, and activity) as JSON, or restore from a backup file. Note: raw PDF binary Blobs are not included in JSON backups.
+              </p>
+              <div className="action-row">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={async () => {
+                    setBackupError('');
+                    setBackupStatus('');
+                    try {
+                      const backup = await onExportBackup?.();
+                      if (!backup) return;
+                      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      const datePart = new Date().toISOString().slice(0, 10);
+                      a.href = url;
+                      a.download = `elevskill-backup-${backup.ownerId || 'workspace'}-${datePart}.json`;
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      setTimeout(() => URL.revokeObjectURL(url), 1000);
+                      setBackupStatus('Workspace backup exported as JSON (PDF binary Blobs excluded).');
+                    } catch (err) {
+                      setBackupError(err?.message || 'Failed to export workspace backup.');
+                    }
+                  }}
+                >
+                  <Download size={14} /> Export Workspace JSON
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setBackupError('');
+                    setBackupStatus('');
+                    backupFileInputRef.current?.click();
+                  }}
+                >
+                  <Upload size={14} /> Import Backup JSON
+                </Button>
+                <input
+                  ref={backupFileInputRef}
+                  type="file"
+                  accept="application/json,.json"
+                  style={{ display: 'none' }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    e.target.value = '';
+                    if (!file) return;
+                    setBackupError('');
+                    setBackupStatus('');
+                    try {
+                      const text = await file.text();
+                      const parsed = JSON.parse(text);
+                      const check = validateWorkspaceBackup(parsed);
+                      if (!check.valid) {
+                        setBackupError(check.error || 'Invalid backup file.');
+                        return;
+                      }
+                      setPendingBackup({ fileName: file.name, payload: parsed });
+                    } catch {
+                      setBackupError('Could not read backup file. Please select a valid ELEVSKILL JSON backup.');
+                    }
+                  }}
+                />
+              </div>
+
+              {pendingBackup && (
+                <div
+                  role="alertdialog"
+                  style={{
+                    marginTop: '12px',
+                    padding: '12px',
+                    borderRadius: '10px',
+                    border: '1px solid var(--border-subtle)',
+                    background: 'var(--bg-app)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontWeight: 600 }}>
+                    <AlertTriangle size={15} style={{ color: '#d97706', flexShrink: 0 }} />
+                    <span>
+                      Replace your current workspace records with backup &ldquo;{pendingBackup.fileName}&rdquo;?
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="sm"
+                      disabled={isImporting}
+                      onClick={async () => {
+                        setIsImporting(true);
+                        setBackupError('');
+                        try {
+                          await onImportBackup?.(pendingBackup.payload);
+                          setPendingBackup(null);
+                          setBackupStatus('Workspace restored from backup successfully.');
+                        } catch (err) {
+                          setBackupError(err?.message || 'Failed to import workspace backup.');
+                        } finally {
+                          setIsImporting(false);
+                        }
+                      }}
+                    >
+                      {isImporting ? 'Importing...' : 'Confirm Replace & Import'}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={isImporting}
+                      onClick={() => setPendingBackup(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {backupStatus && (
+                <div role="status" className="text-small" style={{ marginTop: '10px', color: '#15803d', fontWeight: 600 }}>
+                  {backupStatus}
+                </div>
+              )}
+              {backupError && (
+                <div role="alert" className="validation-error" style={{ marginTop: '10px' }}>
+                  {backupError}
+                </div>
+              )}
             </div>
           </div>
         </Card>

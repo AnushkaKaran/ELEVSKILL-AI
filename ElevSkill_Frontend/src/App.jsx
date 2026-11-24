@@ -3,8 +3,24 @@ import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
 import { OnboardingModal } from './components/OnboardingModal';
 import { AuthModal } from './components/AuthModal';
-import { getAuthToken, setAuthToken } from './services/apiClient';
-import { backendAuthApi, backendWorkspaceApi } from './services/backendWorkspaceApi';
+import {
+  GUEST_OWNER_ID,
+  STORE_NAMES,
+  clearOwnerWorkspace,
+  deleteRecord,
+  exportWorkspaceBackup,
+  importWorkspaceBackup,
+  loadOwnerWorkspace,
+  migrateGuestLocalStorageToIndexedDb,
+  saveRecord,
+  saveResumeRecord,
+  updateRecord,
+} from './utils/indexedDbStore';
+import {
+  getAuthSessionState,
+  logoutFirebase,
+  subscribeToAuthChanges,
+} from './services/firebaseAuthService';
 import { Dashboard } from './pages/Dashboard';
 import { ResumeAnalyzer } from './pages/ResumeAnalyzer';
 import { ResumeVault } from './pages/ResumeVault';
@@ -15,21 +31,13 @@ import { JobMatcher } from './pages/JobMatcher';
 import { Settings } from './pages/Settings';
 import { EMPTY_PROFILE } from './data/sampleData';
 import {
-  STORAGE_KEYS,
-  safeWriteStorage,
-  loadUserProfile,
-  loadRoadmapSkills,
-  loadLatestResumeAnalysis,
-  loadSavedResumes,
-  loadLatestJobMatch,
-  loadLatestInterviewSession,
-  loadInterviewHistory,
-  loadActivityLog,
   clearAllUserData,
   startNewGuestSession,
   isProfileComplete,
   formatDateShort,
 } from './utils/dashboardStore';
+
+const THEME_PREF_KEY = 'elevskill_theme_preference';
 
 const PAGE_META = {
   dashboard: {
@@ -70,126 +78,92 @@ export default function App() {
   const [activePage, setActivePage] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [userProfile, setUserProfile] = useState(() => loadUserProfile());
-  const [roadmapSkills, setRoadmapSkills] = useState(() => loadRoadmapSkills());
-  const [latestResumeAnalysis, setLatestResumeAnalysis] = useState(() =>
-    loadLatestResumeAnalysis()
-  );
-  const [latestJobMatch, setLatestJobMatch] = useState(() => loadLatestJobMatch());
-  const [latestInterviewSession, setLatestInterviewSession] = useState(() =>
-    loadLatestInterviewSession()
-  );
-  const [interviewHistory, setInterviewHistory] = useState(() => loadInterviewHistory());
-  const [savedResumes, setSavedResumes] = useState(() => loadSavedResumes());
+  const [userProfile, setUserProfile] = useState(() => {
+    let savedTheme = 'lavender';
+    try {
+      const pref = typeof window !== 'undefined' ? window.localStorage.getItem(THEME_PREF_KEY) : null;
+      if (pref && ['lavender', 'blossom', 'sky'].includes(pref)) savedTheme = pref;
+    } catch {
+      // ignore storage errors
+    }
+    return { ...EMPTY_PROFILE, themeVariant: savedTheme };
+  });
+  const [roadmapSkills, setRoadmapSkills] = useState([]);
+  const [latestResumeAnalysis, setLatestResumeAnalysis] = useState(null);
+  const [latestJobMatch, setLatestJobMatch] = useState(null);
+  const [latestInterviewSession, setLatestInterviewSession] = useState(null);
+  const [interviewHistory, setInterviewHistory] = useState([]);
+  const [savedResumes, setSavedResumes] = useState([]);
   const [sharedResumeText, setSharedResumeText] = useState('');
   const [sharedMatcherText, setSharedMatcherText] = useState('');
   const [sharedBuilderText, setSharedBuilderText] = useState('');
-  const [activityLog, setActivityLog] = useState(() => loadActivityLog());
+  const [activityLog, setActivityLog] = useState([]);
   const [authUser, setAuthUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  const hydrateFromBackend = useCallback(async () => {
-    if (!getAuthToken()) return;
-    try {
-      const [dashData, resumesData, interviewData] = await Promise.all([
-        backendWorkspaceApi.getDashboard(),
-        backendWorkspaceApi.listResumes(),
-        backendWorkspaceApi.listInterviewHistory(),
-      ]);
+  const authSession = getAuthSessionState(authUser);
+  const activeOwnerId = authSession.ownerId;
 
-      if (dashData?.profile) {
-        setAuthUser(dashData.profile);
-        setUserProfile({ ...EMPTY_PROFILE, ...dashData.profile });
+  const hydrateWorkspace = useCallback(async (ownerId, currentAuthUser = null) => {
+    try {
+      if (ownerId === GUEST_OWNER_ID) {
+        await migrateGuestLocalStorageToIndexedDb({ ownerId: GUEST_OWNER_ID }).catch(() => null);
       }
-      if (Array.isArray(dashData?.roadmapSkills)) {
-        setRoadmapSkills(dashData.roadmapSkills);
-      }
-      if (dashData?.latestResumeAnalysis !== undefined) {
-        setLatestResumeAnalysis(dashData.latestResumeAnalysis);
-      }
-      if (dashData?.latestJobMatch !== undefined) {
-        setLatestJobMatch(dashData.latestJobMatch);
-      }
-      if (dashData?.latestInterviewSession !== undefined) {
-        setLatestInterviewSession(dashData.latestInterviewSession);
-      }
-      if (Array.isArray(dashData?.activityLog)) {
-        setActivityLog(
-          dashData.activityLog.map((item) => ({
-            ...item,
-            timeLabel: formatDateShort(item.createdAt),
-          }))
-        );
-      }
-      if (Array.isArray(resumesData?.resumes)) {
-        setSavedResumes(resumesData.resumes);
-      }
-      if (Array.isArray(interviewData?.history)) {
-        setInterviewHistory(
-          interviewData.history.map((item) => ({
-            ...item,
-            timeLabel: formatDateShort(item.practicedAt),
-          }))
-        );
-      }
+
+      const ws = await loadOwnerWorkspace(ownerId);
+      const baseProfile = ws.profile
+        ? { ...EMPTY_PROFILE, ...ws.profile }
+        : {
+            ...EMPTY_PROFILE,
+            name: currentAuthUser?.fullName || currentAuthUser?.name || '',
+            email: currentAuthUser?.email || '',
+          };
+
+      setUserProfile(baseProfile);
+      setRoadmapSkills(ws.roadmapSkills || []);
+      setSavedResumes(ws.savedResumes || []);
+      setLatestResumeAnalysis(ws.latestResumeAnalysis || null);
+      setLatestJobMatch(ws.latestJobMatch || null);
+      setInterviewHistory(
+        (ws.interviewHistory || []).map((item) => ({
+          ...item,
+          timeLabel: item.timeLabel || formatDateShort(item.practicedAt || item.createdAt),
+        }))
+      );
+      setLatestInterviewSession(ws.latestInterviewSession || null);
+      setActivityLog(
+        (ws.activityLog || []).slice(0, 15).map((item) => ({
+          ...item,
+          timeLabel: item.timeLabel || formatDateShort(item.createdAt),
+        }))
+      );
     } catch {
-      setAuthToken(null);
-      setAuthUser(null);
+      // Preserve in-memory fallback if IndexedDB is unavailable
     }
   }, []);
 
   useEffect(() => {
-    hydrateFromBackend();
-  }, [hydrateFromBackend]);
+    const unsubscribe = subscribeToAuthChanges((firebaseUser) => {
+      setAuthUser(firebaseUser || null);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', userProfile.themeVariant || 'lavender');
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.PROFILE, userProfile);
-    }
-  }, [userProfile, authUser]);
+    hydrateWorkspace(activeOwnerId, authUser);
+  }, [activeOwnerId, authUser, hydrateWorkspace]);
 
   useEffect(() => {
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.SKILLS, roadmapSkills);
+    const theme = userProfile.themeVariant || 'lavender';
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(THEME_PREF_KEY, theme);
+      }
+    } catch {
+      // ignore storage errors
     }
-  }, [roadmapSkills, authUser]);
-
-  useEffect(() => {
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.RESUME_ANALYSIS, latestResumeAnalysis);
-    }
-  }, [latestResumeAnalysis, authUser]);
-
-  useEffect(() => {
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.JOB_MATCH, latestJobMatch);
-    }
-  }, [latestJobMatch, authUser]);
-
-  useEffect(() => {
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.INTERVIEW_SESSION, latestInterviewSession);
-    }
-  }, [latestInterviewSession, authUser]);
-
-  useEffect(() => {
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.INTERVIEW_HISTORY, interviewHistory);
-    }
-  }, [interviewHistory, authUser]);
-
-  useEffect(() => {
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.SAVED_RESUMES, savedResumes);
-    }
-  }, [savedResumes, authUser]);
-
-  useEffect(() => {
-    if (!authUser && !getAuthToken()) {
-      safeWriteStorage(STORAGE_KEYS.ACTIVITY, activityLog);
-    }
-  }, [activityLog, authUser]);
+  }, [userProfile.themeVariant]);
 
   const logActivity = ({ title, category, badge, variant = 'neutral' }) => {
     const now = new Date().toISOString();
@@ -203,6 +177,7 @@ export default function App() {
       variant,
     };
     setActivityLog((prev) => [entry, ...prev].slice(0, 15));
+    saveRecord(STORE_NAMES.ACTIVITY_LOGS, entry, activeOwnerId).catch(() => {});
   };
 
   const handleToggleSkill = (skillId) => {
@@ -216,9 +191,12 @@ export default function App() {
         skill.id === skillId ? { ...skill, completed: nextCompleted, status: nextStatus } : skill
       )
     );
-    if (authUser) {
-      backendWorkspaceApi.updateSkill(skillId, { status: nextStatus }).catch(() => {});
-    }
+    updateRecord(
+      STORE_NAMES.ROADMAP_SKILLS,
+      skillId,
+      { status: nextStatus, completed: nextCompleted },
+      activeOwnerId
+    ).catch(() => {});
 
     if (nextCompleted) {
       logActivity({
@@ -250,9 +228,12 @@ export default function App() {
         skill.id === skillId ? { ...skill, status: validStatus, completed: nextCompleted } : skill
       )
     );
-    if (authUser) {
-      backendWorkspaceApi.updateSkill(skillId, { status: validStatus }).catch(() => {});
-    }
+    updateRecord(
+      STORE_NAMES.ROADMAP_SKILLS,
+      skillId,
+      { status: validStatus, completed: nextCompleted },
+      activeOwnerId
+    ).catch(() => {});
 
     const labelMap = {
       not_started: 'Not Started',
@@ -276,9 +257,12 @@ export default function App() {
         skill.id === skillId ? { ...skill, alreadyKnown: nextKnown } : skill
       )
     );
-    if (authUser) {
-      backendWorkspaceApi.updateSkill(skillId, { alreadyKnown: nextKnown }).catch(() => {});
-    }
+    updateRecord(
+      STORE_NAMES.ROADMAP_SKILLS,
+      skillId,
+      { alreadyKnown: nextKnown },
+      activeOwnerId
+    ).catch(() => {});
   };
 
   const handleAddSkill = ({ title, category, hours = 4, priority = 'Medium', alreadyKnown = false }) => {
@@ -298,24 +282,7 @@ export default function App() {
       alreadyKnown: Boolean(alreadyKnown),
     };
     setRoadmapSkills((prev) => [newSkill, ...prev]);
-    if (authUser) {
-      backendWorkspaceApi
-        .addSkill({
-          title: newSkill.title,
-          category: newSkill.category,
-          hours: newSkill.hours,
-          priority: newSkill.priority,
-          alreadyKnown: newSkill.alreadyKnown,
-        })
-        .then((res) => {
-          if (res?.skill) {
-            setRoadmapSkills((prev) =>
-              prev.map((s) => (s.id === newSkill.id ? res.skill : s))
-            );
-          }
-        })
-        .catch(() => {});
-    }
+    saveRecord(STORE_NAMES.ROADMAP_SKILLS, newSkill, activeOwnerId).catch(() => {});
     logActivity({
       title: `Added roadmap skill "${newSkill.title}"`,
       category: 'Career Roadmap',
@@ -347,9 +314,9 @@ export default function App() {
     });
     if (toAdd.length === 0) return 0;
     setRoadmapSkills((prev) => [...toAdd, ...prev]);
-    if (authUser) {
-      backendWorkspaceApi.syncSkills(toAdd).then(() => hydrateFromBackend()).catch(() => {});
-    }
+    Promise.all(toAdd.map((skill) => saveRecord(STORE_NAMES.ROADMAP_SKILLS, skill, activeOwnerId))).catch(
+      () => {}
+    );
     logActivity({
       title: `Synced ${toAdd.length} recommended skill(s) to Career Roadmap`,
       category: 'Career Roadmap',
@@ -360,10 +327,11 @@ export default function App() {
   };
 
   const handleResetSkills = () => {
+    const ids = roadmapSkills.map((s) => s.id);
     setRoadmapSkills([]);
-    if (authUser) {
-      backendWorkspaceApi.clearRoadmap().catch(() => {});
-    }
+    Promise.all(ids.map((id) => deleteRecord(STORE_NAMES.ROADMAP_SKILLS, id, activeOwnerId))).catch(
+      () => {}
+    );
     logActivity({
       title: 'Cleared Career Roadmap checklist',
       category: 'Career Roadmap',
@@ -376,9 +344,7 @@ export default function App() {
     const targetSkill = roadmapSkills.find((s) => s.id === skillId);
     if (!targetSkill) return;
     setRoadmapSkills((prev) => prev.filter((s) => s.id !== skillId));
-    if (authUser) {
-      backendWorkspaceApi.deleteSkill(skillId).catch(() => {});
-    }
+    deleteRecord(STORE_NAMES.ROADMAP_SKILLS, skillId, activeOwnerId).catch(() => {});
     logActivity({
       title: `Removed roadmap skill "${targetSkill.title}"`,
       category: 'Career Roadmap',
@@ -388,7 +354,12 @@ export default function App() {
   };
 
   const handleRecordResumeAnalysis = (analysisSummary) => {
-    setLatestResumeAnalysis(analysisSummary);
+    const entry = {
+      ...analysisSummary,
+      overallScore: analysisSummary.score ?? analysisSummary.overallScore ?? 0,
+    };
+    setLatestResumeAnalysis(entry);
+    saveRecord(STORE_NAMES.RESUME_ANALYSES, entry, activeOwnerId).catch(() => {});
     logActivity({
       title: `Completed resume analysis (${analysisSummary.score}/100 · ${analysisSummary.status})`,
       category: 'Resume Analyzer',
@@ -398,7 +369,12 @@ export default function App() {
   };
 
   const handleRecordJobMatch = (matchSummary) => {
-    setLatestJobMatch(matchSummary);
+    const entry = {
+      ...matchSummary,
+      overallScore: matchSummary.matchPercent ?? matchSummary.overallScore ?? 0,
+    };
+    setLatestJobMatch(entry);
+    saveRecord(STORE_NAMES.JOB_MATCH_HISTORY, entry, activeOwnerId).catch(() => {});
     logActivity({
       title: `Completed job matching (${matchSummary.matchPercent}% keyword overlap)`,
       category: 'Job Matcher',
@@ -409,9 +385,7 @@ export default function App() {
 
   const handleSaveProfile = (updatedProfile) => {
     setUserProfile(updatedProfile);
-    if (authUser) {
-      backendWorkspaceApi.updateProfile(updatedProfile).catch(() => {});
-    }
+    saveRecord(STORE_NAMES.PROFILES, updatedProfile, activeOwnerId).catch(() => {});
     logActivity({
       title: updatedProfile.targetRole
         ? `Updated profile for ${updatedProfile.targetRole}`
@@ -424,25 +398,23 @@ export default function App() {
 
   const handleRecordInterviewSession = ({ score, category, questionText = '' }) => {
     const now = new Date().toISOString();
+    const roundedScore = Math.round(score);
+    const entry = {
+      id: `int-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+      score: roundedScore,
+      category,
+      questionText,
+      practicedAt: now,
+      timeLabel: formatDateShort(now),
+    };
     setLatestInterviewSession((prev) => ({
-      score: Math.round(score),
+      score: roundedScore,
       category,
       practicedAt: now,
       totalPracticed: (prev?.totalPracticed || 0) + 1,
     }));
-    setInterviewHistory((prev) =>
-      [
-        {
-          id: `int-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
-          score: Math.round(score),
-          category,
-          questionText,
-          practicedAt: now,
-          timeLabel: formatDateShort(now),
-        },
-        ...prev,
-      ].slice(0, 30)
-    );
+    setInterviewHistory((prev) => [entry, ...prev].slice(0, 30));
+    saveRecord(STORE_NAMES.INTERVIEW_HISTORY, entry, activeOwnerId).catch(() => {});
   };
 
   const handleSaveResumeToVault = ({
@@ -452,38 +424,25 @@ export default function App() {
     classification = '',
     originalFileName = null,
     originalFileDataUrl = null,
+    pdfBlob = null,
   }) => {
     const now = new Date().toISOString();
     const entry = {
       id: `res-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
       name,
       text,
+      extractedText: text,
       lastScore,
       classification,
       originalFileName,
       originalFileDataUrl,
+      pdfBlob,
+      hasPdfBlob: Boolean(pdfBlob),
       savedAt: now,
       updatedAt: now,
     };
     setSavedResumes((prev) => [entry, ...prev]);
-    if (authUser) {
-      backendWorkspaceApi
-        .saveResume({
-          name,
-          text,
-          lastScore,
-          classification,
-          originalFileName,
-        })
-        .then((res) => {
-          if (res?.resume) {
-            setSavedResumes((prev) =>
-              prev.map((r) => (r.id === entry.id ? res.resume : r))
-            );
-          }
-        })
-        .catch(() => {});
-    }
+    saveResumeRecord(entry, activeOwnerId).catch(() => {});
     logActivity({
       title: `Saved resume "${name}" to Resume Vault`,
       category: 'Resume Vault',
@@ -496,16 +455,20 @@ export default function App() {
     setSavedResumes((prev) =>
       prev.map((item) => (item.id === resumeId ? { ...item, ...patch } : item))
     );
-    if (authUser) {
-      backendWorkspaceApi.updateResume(resumeId, patch).catch(() => {});
-    }
+    updateRecord(
+      STORE_NAMES.RESUMES,
+      resumeId,
+      {
+        ...patch,
+        ...(patch.text !== undefined ? { extractedText: patch.text } : {}),
+      },
+      activeOwnerId
+    ).catch(() => {});
   };
 
   const handleDeleteSavedResume = (resumeId) => {
     setSavedResumes((prev) => prev.filter((item) => item.id !== resumeId));
-    if (authUser) {
-      backendWorkspaceApi.deleteResume(resumeId).catch(() => {});
-    }
+    deleteRecord(STORE_NAMES.RESUMES, resumeId, activeOwnerId).catch(() => {});
   };
 
   const clearLocalReactWorkspace = (nextProfile = { ...EMPTY_PROFILE, onboardingDismissed: false }) => {
@@ -523,9 +486,11 @@ export default function App() {
   };
 
   const handleResetAll = async () => {
-    if (authUser) {
-      await backendWorkspaceApi.resetWorkspace();
+    await clearOwnerWorkspace(activeOwnerId);
+    if (activeOwnerId === GUEST_OWNER_ID) {
       clearAllUserData();
+    }
+    if (authUser) {
       clearLocalReactWorkspace({
         ...EMPTY_PROFILE,
         name: authUser.fullName || authUser.name || '',
@@ -533,24 +498,23 @@ export default function App() {
         onboardingDismissed: false,
       });
     } else {
-      clearAllUserData();
       clearLocalReactWorkspace({ ...EMPTY_PROFILE, onboardingDismissed: false });
     }
     setActivePage('dashboard');
   };
 
-  const handleStartNewGuestSession = () => {
+  const handleStartNewGuestSession = async () => {
     if (authUser) return;
+    await clearOwnerWorkspace(GUEST_OWNER_ID);
     startNewGuestSession();
     clearLocalReactWorkspace({ ...EMPTY_PROFILE, onboardingDismissed: false });
     setActivePage('dashboard');
   };
 
   const handleLogout = async () => {
-    await backendAuthApi.logout();
+    await logoutFirebase();
     setAuthUser(null);
     startNewGuestSession();
-    clearLocalReactWorkspace({ ...EMPTY_PROFILE, onboardingDismissed: false });
     setActivePage('dashboard');
   };
 
@@ -558,30 +522,14 @@ export default function App() {
     if (authData?.user) {
       setAuthUser(authData.user);
     }
-    try {
-      const dash = await backendWorkspaceApi.getDashboard();
-      const isServerEmpty =
-        (dash?.stats?.savedResumesCount || 0) === 0 &&
-        (dash?.stats?.roadmapTotalSkills || 0) === 0;
-
-      const hasLocalData =
-        savedResumes.length > 0 ||
-        roadmapSkills.length > 0 ||
-        Boolean(userProfile.targetRole || userProfile.education);
-
-      if (isServerEmpty && hasLocalData) {
-        await backendWorkspaceApi.migrateLocalWorkspace({
-          profile: userProfile,
-          savedResumes,
-          roadmapSkills,
-        });
-      }
-    } catch {
-      // non-fatal migration error
-    }
-    await hydrateFromBackend();
   };
 
+  const handleExportBackup = () => exportWorkspaceBackup(activeOwnerId);
+
+  const handleImportBackup = async (backupPayload) => {
+    await importWorkspaceBackup(backupPayload, activeOwnerId, { replaceExisting: true });
+    await hydrateWorkspace(activeOwnerId, authUser);
+  };
   const showOnboarding = !userProfile.onboardingDismissed && !isProfileComplete(userProfile);
 
   const currentMeta = PAGE_META[activePage] || PAGE_META.dashboard;
@@ -593,7 +541,7 @@ export default function App() {
         onNavigate={setActivePage}
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
-        isAuthenticated={Boolean(authUser)}
+        isAuthenticated={authSession.isAuthenticated}
       />
 
       <div className="main-wrapper">
@@ -659,7 +607,7 @@ export default function App() {
               initialSourceText={sharedBuilderText}
               userProfile={userProfile}
               onSaveToVault={handleSaveResumeToVault}
-              isAuthenticated={Boolean(authUser)}
+              ownerId={activeOwnerId}
             />
           )}
           {activePage === 'interview' && (
@@ -698,7 +646,9 @@ export default function App() {
               userProfile={userProfile}
               onSaveProfile={handleSaveProfile}
               onResetAll={handleResetAll}
-              isAuthenticated={Boolean(authUser)}
+              onExportBackup={handleExportBackup}
+              onImportBackup={handleImportBackup}
+              isAuthenticated={authSession.isAuthenticated}
             />
           )}
         </main>
@@ -720,7 +670,7 @@ export default function App() {
       {showOnboarding && activePage !== 'settings' && (
         <OnboardingModal
           userProfile={userProfile}
-          isAuthenticated={Boolean(authUser)}
+          isAuthenticated={authSession.isAuthenticated}
           onComplete={(updated) => handleSaveProfile(updated)}
           onSkip={async () => {
             const dismissedProfile = {
@@ -728,13 +678,7 @@ export default function App() {
               onboardingDismissed: true,
             };
             setUserProfile(dismissedProfile);
-            if (authUser) {
-              try {
-                await backendWorkspaceApi.updateProfile(dismissedProfile);
-              } catch {
-                // Keep dismissed state locally if offline; backend sync will retry on next profile save
-              }
-            }
+            saveRecord(STORE_NAMES.PROFILES, dismissedProfile, activeOwnerId).catch(() => {});
           }}
         />
       )}

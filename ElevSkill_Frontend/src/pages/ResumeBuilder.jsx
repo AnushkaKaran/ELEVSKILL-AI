@@ -3,11 +3,14 @@ import { Printer, RotateCcw, Save, Sparkles } from 'lucide-react';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Badge } from '../components/Badge';
-import { backendWorkspaceApi } from '../services/backendWorkspaceApi';
-import { STORAGE_KEYS, safeReadStorage, safeWriteStorage } from '../utils/dashboardStore';
+import {
+  GUEST_OWNER_ID,
+  STORE_NAMES,
+  listRecordsByOwner,
+  saveRecord,
+  updateRecord,
+} from '../utils/indexedDbStore';
 import './pages.css';
-
-const GUEST_DRAFT_KEY = STORAGE_KEYS.BUILDER_DRAFT;
 
 const TEMPLATES = [
   { id: 'classic', label: 'Classic Clean', accent: '#1E293B' },
@@ -67,53 +70,42 @@ export function ResumeBuilder({
   initialSourceText,
   userProfile,
   onSaveToVault,
-  isAuthenticated = false,
+  ownerId = GUEST_OWNER_ID,
 }) {
   const [draftId, setDraftId] = useState(null);
   const [template, setTemplate] = useState('modern');
-  const [sections, setSections] = useState(() => {
-    if (!initialSourceText && !isAuthenticated) {
-      const localDraft = safeReadStorage(GUEST_DRAFT_KEY);
-      if (localDraft?.sections) {
-        return localDraft.sections;
-      }
-    }
-    return parseTextToSections(initialSourceText, userProfile);
-  });
+  const [sections, setSections] = useState(() => parseTextToSections(initialSourceText, userProfile));
   const [isLoadingDraft, setIsLoadingDraft] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [draftError, setDraftError] = useState('');
   const [savedNotice, setSavedNotice] = useState('');
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      const localDraft = safeReadStorage(GUEST_DRAFT_KEY);
-      if (localDraft?.template) setTemplate(localDraft.template);
-      return;
-    }
-
     let cancelled = false;
     setIsLoadingDraft(true);
     setDraftError('');
 
-    backendWorkspaceApi
-      .listResumeDrafts()
-      .then((res) => {
+    listRecordsByOwner(STORE_NAMES.RESUME_DRAFTS, ownerId)
+      .then((drafts) => {
         if (cancelled) return;
-        const latest = res?.drafts?.[0];
+        const latest = drafts?.[0];
         if (latest && !initialSourceText) {
-          setDraftId(latest.draftId);
+          setDraftId(latest.id);
           setTemplate(latest.template || 'modern');
           if (latest.draftData && typeof latest.draftData === 'object') {
             setSections((prev) => ({ ...prev, ...latest.draftData }));
+          } else if (latest.sections && typeof latest.sections === 'object') {
+            setSections((prev) => ({ ...prev, ...latest.sections }));
           }
         } else if (latest) {
-          setDraftId(latest.draftId);
+          setDraftId(latest.id);
+        } else {
+          setDraftId(null);
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setDraftError('Could not load saved drafts from server. You can continue editing safely.');
+          setDraftError('Could not load saved drafts from browser storage. You can continue editing safely.');
         }
       })
       .finally(() => {
@@ -123,7 +115,7 @@ export function ResumeBuilder({
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, initialSourceText]);
+  }, [ownerId, initialSourceText]);
 
   useEffect(() => {
     if (initialSourceText) {
@@ -148,12 +140,6 @@ export function ResumeBuilder({
     setSavedNotice('');
     const title = `${sections.fullName?.trim() || 'Untitled'} Resume Draft`;
 
-    if (!isAuthenticated) {
-      safeWriteStorage(GUEST_DRAFT_KEY, { template, sections, updatedAt: new Date().toISOString() });
-      setSavedNotice('Draft saved locally in your browser.');
-      return;
-    }
-
     setIsSavingDraft(true);
     try {
       const payload = {
@@ -161,21 +147,21 @@ export function ResumeBuilder({
         template,
         draftData: sections,
       };
-      const res = draftId
-        ? await backendWorkspaceApi.updateResumeDraft(draftId, payload)
-        : await backendWorkspaceApi.createResumeDraft(payload);
+      const saved = draftId
+        ? await updateRecord(STORE_NAMES.RESUME_DRAFTS, draftId, payload, ownerId)
+        : null;
 
-      if (res?.draft?.draftId) {
-        setDraftId(res.draft.draftId);
+      if (saved) {
+        setDraftId(saved.id);
+        setSavedNotice('Resume draft updated in browser storage.');
+      } else {
+        const created = await saveRecord(STORE_NAMES.RESUME_DRAFTS, payload, ownerId);
+        setDraftId(created.id);
+        setSavedNotice('Resume draft saved in browser storage.');
       }
-      setSavedNotice(
-        draftId
-          ? 'Resume draft updated in your account.'
-          : 'Resume draft saved to your account.'
-      );
     } catch (err) {
       setDraftError(
-        err?.message || 'Failed to save draft to server. Your unsaved edits are still preserved below.'
+        err?.message || 'Failed to save draft to browser storage. Your unsaved edits are still preserved below.'
       );
     } finally {
       setIsSavingDraft(false);

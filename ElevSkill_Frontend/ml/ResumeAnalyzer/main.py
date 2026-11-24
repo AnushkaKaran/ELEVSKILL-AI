@@ -15,9 +15,10 @@ from __future__ import annotations
 
 import io
 import logging
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -34,12 +35,27 @@ if not logger.handlers:
     logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
-ALLOWED_ORIGINS = [
+DEFAULT_LOCAL_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
 ]
+
+LOCAL_MODEL_DIR = Path(__file__).resolve().parent / "models" / "all-MiniLM-L6-v2"
+
+
+def get_allowed_origins() -> List[str]:
+    """Parses comma-separated ALLOWED_ORIGINS; defaults to local dev origins when unset."""
+    raw = os.getenv("ALLOWED_ORIGINS", "")
+    configured = [
+        origin.strip().rstrip("/")
+        for origin in raw.split(",")
+        if origin.strip() and origin.strip() != "*"
+    ]
+    if configured:
+        return configured
+    return list(DEFAULT_LOCAL_ORIGINS)
 
 
 def create_app(model_name_or_path: Optional[str] = None) -> FastAPI:
@@ -47,19 +63,24 @@ def create_app(model_name_or_path: Optional[str] = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(application: FastAPI):
-        engine = ResumeAnalyzerEngine(model_name_or_path=model_name_or_path)
+        target_path = model_name_or_path if model_name_or_path is not None else str(LOCAL_MODEL_DIR)
+        engine = ResumeAnalyzerEngine(model_name_or_path=target_path)
         application.state.engine = engine
         application.state.model_loaded = False
         application.state.model_error = None
 
-        try:
-            engine._get_model()
-            application.state.model_loaded = True
-            logger.info("ResumeAnalyzerEngine initialized from local source: %s", engine.model_source)
-        except Exception:
-            application.state.model_loaded = False
-            application.state.model_error = "Failed to load the local NLP embedding model."
-            logger.error("Failed to initialize ResumeAnalyzerEngine at startup.")
+        if not Path(target_path).exists():
+            application.state.model_error = "Local NLP embedding model directory is missing."
+            logger.error("Local Resume Analyzer model directory is missing.")
+        else:
+            try:
+                engine._get_model()
+                application.state.model_loaded = True
+                logger.info("ResumeAnalyzerEngine initialized offline (%s).", Path(target_path).name)
+            except Exception:
+                application.state.model_loaded = False
+                application.state.model_error = "Failed to load the local NLP embedding model."
+                logger.error("Failed to initialize ResumeAnalyzerEngine at startup.")
 
         yield
 
@@ -75,7 +96,7 @@ def create_app(model_name_or_path: Optional[str] = None) -> FastAPI:
 
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=ALLOWED_ORIGINS,
+        allow_origins=get_allowed_origins(),
         allow_credentials=False,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type", "Accept"],

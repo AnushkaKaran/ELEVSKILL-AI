@@ -1,5 +1,3 @@
-import { apiRequest, getAuthToken } from './apiClient.js';
-
 export const JOB_MATCHER_API_URL = (
   import.meta.env.VITE_JOB_MATCHER_API_URL || 'http://127.0.0.1:8003'
 ).replace(/\/+$/, '');
@@ -66,23 +64,7 @@ export async function checkJobMatcherHealth({ signal } = {}) {
   }
 }
 
-export async function matchProfileToJob(profile, job, { signal, resumeId = null } = {}) {
-  if (getAuthToken()) {
-    try {
-      const data = await apiRequest('/job-matcher/compare', {
-        method: 'POST',
-        body: { profile, job, ...(resumeId ? { resumeId } : {}) },
-        signal,
-      });
-      return data?.match ?? data;
-    } catch (err) {
-      throw new JobMatcherApiError(err?.message || 'Job match evaluation failed.', {
-        status: err?.status || null,
-        code: err?.code || 'API_ERROR',
-      });
-    }
-  }
-
+export async function matchProfileToJob(profile, job, { signal } = {}) {
   let response;
   try {
     response = await fetch(`${JOB_MATCHER_API_URL}/match`, {

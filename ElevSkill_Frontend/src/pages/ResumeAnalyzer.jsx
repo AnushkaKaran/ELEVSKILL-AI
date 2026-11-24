@@ -150,6 +150,7 @@ export function ResumeAnalyzer({
       classification: result?.candidate_profile?.label || '',
       originalFileName: retainPdfFile ? uploadedPdfMeta?.filename || null : null,
       originalFileDataUrl: retainPdfFile ? uploadedPdfMeta?.dataUrl || null : null,
+      pdfBlob: retainPdfFile ? uploadedPdfMeta?.file || null : null,
     });
     setSaveNotice(`Saved "${defaultName}" to Resume Vault.`);
   };
@@ -191,12 +192,13 @@ export function ResumeAnalyzer({
         reader.onload = () => {
           setUploadedPdfMeta({
             filename: file.name,
+            file,
             dataUrl: typeof reader.result === 'string' ? reader.result : null,
           });
         };
         reader.readAsDataURL(file);
       } else {
-        setUploadedPdfMeta({ filename: file.name, dataUrl: null });
+        setUploadedPdfMeta({ filename: file.name, file, dataUrl: null });
       }
 
       setPdfStatus(

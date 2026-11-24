@@ -16,9 +16,10 @@ Privacy & Reliability:
 from __future__ import annotations
 
 import logging
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -34,7 +35,7 @@ if not logger.handlers:
     logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
-ALLOWED_ORIGINS = [
+DEFAULT_LOCAL_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:5174",
@@ -42,6 +43,19 @@ ALLOWED_ORIGINS = [
 ]
 
 LOCAL_MODEL_DIR = Path(__file__).resolve().parent / "models" / "all-MiniLM-L6-v2"
+
+
+def get_allowed_origins() -> List[str]:
+    """Parses comma-separated ALLOWED_ORIGINS; defaults to local dev origins when unset."""
+    raw = os.getenv("ALLOWED_ORIGINS", "")
+    configured = [
+        origin.strip().rstrip("/")
+        for origin in raw.split(",")
+        if origin.strip() and origin.strip() != "*"
+    ]
+    if configured:
+        return configured
+    return list(DEFAULT_LOCAL_ORIGINS)
 
 
 def create_app(model_path: Optional[str] = None) -> FastAPI:
@@ -91,7 +105,7 @@ def create_app(model_path: Optional[str] = None) -> FastAPI:
 
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=ALLOWED_ORIGINS,
+        allow_origins=get_allowed_origins(),
         allow_credentials=False,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type", "Accept"],

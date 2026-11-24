@@ -1,8 +1,30 @@
-import { apiRequest, getAuthToken } from './apiClient.js';
-
 export const RESUME_ANALYZER_API_URL = (
   import.meta.env.VITE_RESUME_ANALYZER_API_URL || 'http://127.0.0.1:8000'
 ).replace(/\/+$/, '');
+
+function withTimeoutSignal(externalSignal, timeoutMs = 25000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort('timeout'), timeoutMs);
+  const onAbort = () => controller.abort(externalSignal?.reason || 'aborted');
+
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      controller.abort(externalSignal.reason || 'aborted');
+    } else {
+      externalSignal.addEventListener('abort', onAbort, { once: true });
+    }
+  }
+
+  return {
+    signal: controller.signal,
+    cleanup: () => {
+      clearTimeout(timer);
+      if (externalSignal) {
+        externalSignal.removeEventListener('abort', onAbort);
+      }
+    },
+  };
+}
 
 export class ResumeAnalyzerApiError extends Error {
   constructor(message, { status = null, code = 'API_ERROR' } = {}) {
@@ -61,27 +83,8 @@ export async function checkResumeAnalyzerHealth({ signal } = {}) {
   }
 }
 
-export async function analyzeResumeWithApi(resumeText, jobDescription, { signal, resumeId = null } = {}) {
-  if (getAuthToken()) {
-    try {
-      const data = await apiRequest('/resumes/analyze', {
-        method: 'POST',
-        body: {
-          resumeText,
-          jobDescription: jobDescription && jobDescription.trim() ? jobDescription : null,
-          ...(resumeId ? { resumeId } : {}),
-        },
-        signal,
-      });
-      return data?.analysis ?? data;
-    } catch (err) {
-      throw new ResumeAnalyzerApiError(err?.message || 'Resume analysis failed.', {
-        status: err?.status || null,
-        code: err?.code || 'API_ERROR',
-      });
-    }
-  }
-
+export async function analyzeResumeWithApi(resumeText, jobDescription, { signal } = {}) {
+  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, 25000);
   let response;
   try {
     response = await fetch(`${RESUME_ANALYZER_API_URL}/analyze`, {
@@ -94,14 +97,23 @@ export async function analyzeResumeWithApi(resumeText, jobDescription, { signal,
         resume_text: resumeText,
         job_description: jobDescription && jobDescription.trim() ? jobDescription : null,
       }),
-      signal,
+      signal: timedSignal,
     });
-  } catch {
+  } catch (err) {
+    cleanup();
+    if (err?.name === 'AbortError' || timedSignal.aborted) {
+      const isUserAbort = Boolean(signal?.aborted);
+      throw new ResumeAnalyzerApiError(
+        isUserAbort ? 'Request cancelled.' : 'Resume Analyzer request timed out. Please try again.',
+        { status: null, code: isUserAbort ? 'ABORTED' : 'TIMEOUT' }
+      );
+    }
     throw new ResumeAnalyzerApiError(
       'Unable to reach the Resume Analyzer AI service right now. Please try again.',
       { status: null, code: 'NETWORK_ERROR' }
     );
   }
+  cleanup();
 
   let data = null;
   try {
@@ -146,35 +158,29 @@ export async function extractPdfResumeText(file, { signal } = {}) {
   const formData = new FormData();
   formData.append('file', file);
 
-  if (getAuthToken()) {
-    try {
-      return await apiRequest('/resumes/extract-pdf', {
-        method: 'POST',
-        body: formData,
-        isFormData: true,
-        signal,
-      });
-    } catch (err) {
-      throw new ResumeAnalyzerApiError(err?.message || 'Failed to extract PDF text.', {
-        status: err?.status || null,
-        code: err?.code || 'API_ERROR',
-      });
-    }
-  }
-
+  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, 25000);
   let response;
   try {
     response = await fetch(`${RESUME_ANALYZER_API_URL}/extract-pdf`, {
       method: 'POST',
       body: formData,
-      signal,
+      signal: timedSignal,
     });
-  } catch {
+  } catch (err) {
+    cleanup();
+    if (err?.name === 'AbortError' || timedSignal.aborted) {
+      const isUserAbort = Boolean(signal?.aborted);
+      throw new ResumeAnalyzerApiError(
+        isUserAbort ? 'PDF extraction cancelled.' : 'PDF extraction timed out. Please try again.',
+        { status: null, code: isUserAbort ? 'ABORTED' : 'TIMEOUT' }
+      );
+    }
     throw new ResumeAnalyzerApiError(
       'Unable to reach the Resume Analyzer AI service to extract PDF text. Please try again.',
       { status: null, code: 'NETWORK_ERROR' }
     );
   }
+  cleanup();
 
   let data = null;
   try {

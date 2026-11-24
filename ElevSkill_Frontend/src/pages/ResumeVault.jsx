@@ -55,6 +55,7 @@ export function ResumeVault({
     onUpdateResume(selected.id, {
       name: editName.trim(),
       text: editText,
+      extractedText: editText,
       updatedAt: new Date().toISOString(),
     });
     setEditMode(false);
@@ -62,7 +63,7 @@ export function ResumeVault({
 
   const handleCopy = async (item) => {
     try {
-      await navigator.clipboard.writeText(item.text);
+      await navigator.clipboard.writeText(item.text || item.extractedText || '');
       setCopiedId(item.id);
       setTimeout(() => setCopiedId(null), 1800);
     } catch {
@@ -71,6 +72,17 @@ export function ResumeVault({
   };
 
   const handleDownloadOriginal = (item) => {
+    if (typeof Blob !== 'undefined' && item.pdfBlob instanceof Blob) {
+      const url = URL.createObjectURL(item.pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = item.originalFileName || `${item.name}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return;
+    }
     if (!item.originalFileDataUrl) return;
     const link = document.createElement('a');
     link.href = item.originalFileDataUrl;
@@ -114,7 +126,9 @@ export function ResumeVault({
                       ) : (
                         <Badge variant="neutral">Not analyzed</Badge>
                       )}
-                      {item.originalFileDataUrl && <Badge variant="purple">PDF Retained</Badge>}
+                      {(item.pdfBlob || item.hasPdfBlob || item.originalFileDataUrl) && (
+                        <Badge variant="purple">PDF Retained</Badge>
+                      )}
                     </div>
                   </div>
 
@@ -138,7 +152,7 @@ export function ResumeVault({
                       {copiedId === item.id ? <Check size={14} /> : <Copy size={14} />}
                       {copiedId === item.id ? 'Copied' : 'Copy'}
                     </Button>
-                    {item.originalFileDataUrl && (
+                    {(item.pdfBlob || item.originalFileDataUrl) && (
                       <Button
                         type="button"
                         variant="ghost"

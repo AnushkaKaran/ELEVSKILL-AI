@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import { X, LogIn, UserPlus, AlertCircle } from 'lucide-react';
+import { X, LogIn, UserPlus, AlertCircle, CheckCircle2, Mail } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { Button } from './Button';
-import { backendAuthApi } from '../services/backendWorkspaceApi';
+import {
+  loginWithEmail,
+  registerWithEmail,
+  sendPasswordReset,
+} from '../services/firebaseAuthService';
 
 export function AuthModal({ initialMode = 'login', onClose, onAuthSuccess }) {
   const [mode, setMode] = useState(initialMode);
@@ -11,19 +15,27 @@ export function AuthModal({ initialMode = 'login', onClose, onAuthSuccess }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setResetMessage('');
     setLoading(true);
 
     try {
-      const data =
-        mode === 'register'
-          ? await backendAuthApi.register({ fullName, email, password })
-          : await backendAuthApi.login({ email, password });
+      if (mode === 'reset') {
+        await sendPasswordReset(email);
+        setResetMessage('Password reset email sent. Please check your inbox.');
+        return;
+      }
 
-      onAuthSuccess?.(data);
+      const user =
+        mode === 'register'
+          ? await registerWithEmail({ fullName, email, password })
+          : await loginWithEmail({ email, password });
+
+      onAuthSuccess?.({ user });
       onClose?.();
     } catch (err) {
       setError(err?.message || 'Authentication failed. Please check your details.');
@@ -84,14 +96,42 @@ export function AuthModal({ initialMode = 'login', onClose, onAuthSuccess }) {
 
         <div>
           <h2 id="auth-modal-title" style={{ margin: '4px 0 6px', fontSize: '1.2rem' }}>
-            {mode === 'register' ? 'Create Your ELEVSKILL Account' : 'Sign In to ELEVSKILL AI'}
+            {mode === 'register'
+              ? 'Create Your ELEVSKILL Account'
+              : mode === 'reset'
+                ? 'Reset Your Password'
+                : 'Sign In to ELEVSKILL AI'}
           </h2>
           {mode === 'login' && (
             <p className="text-small text-muted" style={{ margin: 0 }}>
               Access your saved career preparation workspace across sessions.
             </p>
           )}
+          {mode === 'reset' && (
+            <p className="text-small text-muted" style={{ margin: 0 }}>
+              Enter your account email and we will send you a password reset link.
+            </p>
+          )}
         </div>
+
+        {resetMessage && (
+          <div
+            role="status"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 12px',
+              borderRadius: '10px',
+              background: 'rgba(22, 163, 74, 0.1)',
+              color: '#15803d',
+              fontSize: '0.88rem',
+            }}
+          >
+            <CheckCircle2 size={16} />
+            <span>{resetMessage}</span>
+          </div>
+        )}
 
         {error && (
           <div
@@ -141,41 +181,75 @@ export function AuthModal({ initialMode = 'login', onClose, onAuthSuccess }) {
             />
           </div>
 
-          <div className="form-field">
-            <label className="form-label" htmlFor="auth-password">Password</label>
-            <input
-              id="auth-password"
-              type="password"
-              className="form-input"
-              required
-              minLength={8}
-              placeholder="Minimum 8 characters"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+          {mode !== 'reset' && (
+            <div className="form-field">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label className="form-label" htmlFor="auth-password">Password</label>
+                {mode === 'login' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('reset');
+                      setError('');
+                      setResetMessage('');
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--accent-primary)',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: 0,
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
+              <input
+                id="auth-password"
+                type="password"
+                className="form-input"
+                required
+                minLength={8}
+                placeholder="Minimum 8 characters"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          )}
 
           <Button type="submit" variant="primary" disabled={loading} style={{ marginTop: '4px' }}>
-            {mode === 'register' ? <UserPlus size={16} /> : <LogIn size={16} />}
+            {mode === 'register' ? (
+              <UserPlus size={16} />
+            ) : mode === 'reset' ? (
+              <Mail size={16} />
+            ) : (
+              <LogIn size={16} />
+            )}
             <span>
               {loading
                 ? 'Please wait...'
                 : mode === 'register'
                   ? 'Create Account'
-                  : 'Sign In'}
+                  : mode === 'reset'
+                    ? 'Send Reset Email'
+                    : 'Sign In'}
             </span>
           </Button>
         </form>
 
         <div style={{ marginTop: '4px', textAlign: 'center', fontSize: '0.88rem' }}>
-          {mode === 'register' ? (
+          {mode === 'register' || mode === 'reset' ? (
             <>
-              Already have an account?{' '}
+              {mode === 'reset' ? 'Remembered your password? ' : 'Already have an account? '}
               <button
                 type="button"
                 onClick={() => {
                   setMode('login');
                   setError('');
+                  setResetMessage('');
                 }}
                 style={{
                   background: 'none',
@@ -196,6 +270,7 @@ export function AuthModal({ initialMode = 'login', onClose, onAuthSuccess }) {
                 onClick={() => {
                   setMode('register');
                   setError('');
+                  setResetMessage('');
                 }}
                 style={{
                   background: 'none',
