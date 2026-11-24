@@ -16,10 +16,12 @@ from __future__ import annotations
 
 import logging
 import os
+import threading
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+os.environ.setdefault("MALLOC_ARENA_MAX", "2")
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
@@ -98,6 +100,7 @@ def create_app(model_name_or_path: Optional[str] = None) -> FastAPI:
         description="Local, privacy-preserving 5-dimensional job-to-profile matching service.",
         lifespan=lifespan,
     )
+    application.state.inference_lock = threading.Lock()
 
     application.add_middleware(
         CORSMiddleware,
@@ -150,11 +153,19 @@ def create_app(model_name_or_path: Optional[str] = None) -> FastAPI:
                 ).model_dump(),
             )
 
+        inference_lock = getattr(request.app.state, "inference_lock", None)
         try:
-            result = engine.match(
-                profile=payload.profile.model_dump(),
-                job=payload.job.model_dump(),
-            )
+            if inference_lock is not None:
+                with inference_lock:
+                    result = engine.match(
+                        profile=payload.profile.model_dump(),
+                        job=payload.job.model_dump(),
+                    )
+            else:
+                result = engine.match(
+                    profile=payload.profile.model_dump(),
+                    job=payload.job.model_dump(),
+                )
         except Exception:
             logger.error("Runtime inference error during job matching.")
             return JSONResponse(

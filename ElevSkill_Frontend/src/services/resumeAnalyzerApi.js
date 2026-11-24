@@ -1,30 +1,8 @@
+import { AI_HEALTH_TIMEOUT_MS, AI_SERVICE_TIMEOUT_MS, withTimeoutSignal } from './apiTimeout';
+
 export const RESUME_ANALYZER_API_URL = (
   import.meta.env.VITE_RESUME_ANALYZER_API_URL || 'http://127.0.0.1:8000'
 ).replace(/\/+$/, '');
-
-function withTimeoutSignal(externalSignal, timeoutMs = 25000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort('timeout'), timeoutMs);
-  const onAbort = () => controller.abort(externalSignal?.reason || 'aborted');
-
-  if (externalSignal) {
-    if (externalSignal.aborted) {
-      controller.abort(externalSignal.reason || 'aborted');
-    } else {
-      externalSignal.addEventListener('abort', onAbort, { once: true });
-    }
-  }
-
-  return {
-    signal: controller.signal,
-    cleanup: () => {
-      clearTimeout(timer);
-      if (externalSignal) {
-        externalSignal.removeEventListener('abort', onAbort);
-      }
-    },
-  };
-}
 
 export class ResumeAnalyzerApiError extends Error {
   constructor(message, { status = null, code = 'API_ERROR' } = {}) {
@@ -52,11 +30,12 @@ function extractApiErrorMessage(data, status) {
 }
 
 export async function checkResumeAnalyzerHealth({ signal } = {}) {
+  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, AI_HEALTH_TIMEOUT_MS);
   try {
     const response = await fetch(`${RESUME_ANALYZER_API_URL}/health`, {
       method: 'GET',
       headers: { Accept: 'application/json' },
-      signal,
+      signal: timedSignal,
     });
     if (!response.ok) {
       return {
@@ -80,11 +59,16 @@ export async function checkResumeAnalyzerHealth({ signal } = {}) {
       modelLoaded: false,
       error: 'Resume Analyzer API is currently unavailable.',
     };
+  } finally {
+    cleanup();
   }
 }
 
 export async function analyzeResumeWithApi(resumeText, jobDescription, { signal } = {}) {
-  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, 25000);
+  const { signal: timedSignal, didTimeout, cleanup } = withTimeoutSignal(
+    signal,
+    AI_SERVICE_TIMEOUT_MS
+  );
   let response;
   try {
     response = await fetch(`${RESUME_ANALYZER_API_URL}/analyze`, {
@@ -101,10 +85,12 @@ export async function analyzeResumeWithApi(resumeText, jobDescription, { signal 
     });
   } catch (err) {
     cleanup();
-    if (err?.name === 'AbortError' || timedSignal.aborted) {
-      const isUserAbort = Boolean(signal?.aborted);
+    if (didTimeout() || err?.name === 'AbortError' || timedSignal.aborted) {
+      const isUserAbort = Boolean(signal?.aborted) && !didTimeout();
       throw new ResumeAnalyzerApiError(
-        isUserAbort ? 'Request cancelled.' : 'Resume Analyzer request timed out. Please try again.',
+        isUserAbort
+          ? 'Request cancelled.'
+          : 'Resume Analyzer request timed out (the AI service may still be waking up). Please try again.',
         { status: null, code: isUserAbort ? 'ABORTED' : 'TIMEOUT' }
       );
     }
@@ -158,7 +144,10 @@ export async function extractPdfResumeText(file, { signal } = {}) {
   const formData = new FormData();
   formData.append('file', file);
 
-  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, 25000);
+  const { signal: timedSignal, didTimeout, cleanup } = withTimeoutSignal(
+    signal,
+    AI_SERVICE_TIMEOUT_MS
+  );
   let response;
   try {
     response = await fetch(`${RESUME_ANALYZER_API_URL}/extract-pdf`, {
@@ -168,10 +157,12 @@ export async function extractPdfResumeText(file, { signal } = {}) {
     });
   } catch (err) {
     cleanup();
-    if (err?.name === 'AbortError' || timedSignal.aborted) {
-      const isUserAbort = Boolean(signal?.aborted);
+    if (didTimeout() || err?.name === 'AbortError' || timedSignal.aborted) {
+      const isUserAbort = Boolean(signal?.aborted) && !didTimeout();
       throw new ResumeAnalyzerApiError(
-        isUserAbort ? 'PDF extraction cancelled.' : 'PDF extraction timed out. Please try again.',
+        isUserAbort
+          ? 'PDF extraction cancelled.'
+          : 'PDF extraction timed out (the AI service may still be waking up). Please try again.',
         { status: null, code: isUserAbort ? 'ABORTED' : 'TIMEOUT' }
       );
     }

@@ -28,6 +28,7 @@ from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pypdf import PdfReader
+from starlette.concurrency import run_in_threadpool
 
 from api_schemas import AnalyzeRequest, ErrorResponse, HealthResponse
 from resume_analyzer import ResumeAnalyzerEngine
@@ -214,13 +215,35 @@ def create_app(model_name_or_path: Optional[str] = None) -> FastAPI:
             )
 
         try:
-            reader = PdfReader(io.BytesIO(raw_bytes))
-            pages_text = []
-            for page in reader.pages:
-                text = page.extract_text() or ""
-                if text.strip():
-                    pages_text.append(text.strip())
-            extracted = "\n\n".join(pages_text).strip()
+            def _parse_pdf_bytes(data: bytes) -> tuple[int, str]:
+                reader = PdfReader(io.BytesIO(data))
+                page_count = len(reader.pages)
+                if page_count > 25:
+                    raise ValueError("TOO_MANY_PAGES")
+                pages_text = []
+                for page in reader.pages:
+                    text = page.extract_text() or ""
+                    if text.strip():
+                        pages_text.append(text.strip())
+                return page_count, "\n\n".join(pages_text).strip()
+
+            page_count, extracted = await run_in_threadpool(_parse_pdf_bytes, raw_bytes)
+        except ValueError as exc:
+            if str(exc) == "TOO_MANY_PAGES":
+                return JSONResponse(
+                    status_code=422,
+                    content=ErrorResponse(
+                        detail="PDF exceeds the 25-page limit for resume extraction.",
+                        error_code="TOO_MANY_PAGES",
+                    ).model_dump(),
+                )
+            return JSONResponse(
+                status_code=422,
+                content=ErrorResponse(
+                    detail="Unable to read the PDF file. It may be corrupted or password-protected.",
+                    error_code="PDF_PARSE_ERROR",
+                ).model_dump(),
+            )
         except Exception:
             return JSONResponse(
                 status_code=422,
@@ -242,7 +265,7 @@ def create_app(model_name_or_path: Optional[str] = None) -> FastAPI:
         cleaned, _ = ResumeAnalyzerEngine._clean_text(extracted, 25_000)
         return {
             "filename": filename,
-            "page_count": len(reader.pages),
+            "page_count": page_count,
             "extracted_text": cleaned,
             "char_count": len(cleaned),
         }

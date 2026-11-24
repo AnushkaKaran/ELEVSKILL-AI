@@ -1,3 +1,5 @@
+import { AI_HEALTH_TIMEOUT_MS, AI_SERVICE_TIMEOUT_MS, withTimeoutSignal } from './apiTimeout';
+
 export const JOB_MATCHER_API_URL = (
   import.meta.env.VITE_JOB_MATCHER_API_URL || 'http://127.0.0.1:8003'
 ).replace(/\/+$/, '');
@@ -28,11 +30,12 @@ function extractApiErrorMessage(data, status) {
 }
 
 export async function checkJobMatcherHealth({ signal } = {}) {
+  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, AI_HEALTH_TIMEOUT_MS);
   try {
     const response = await fetch(`${JOB_MATCHER_API_URL}/health`, {
       method: 'GET',
       headers: { Accept: 'application/json' },
-      signal,
+      signal: timedSignal,
     });
     if (!response.ok) {
       return {
@@ -61,10 +64,16 @@ export async function checkJobMatcherHealth({ signal } = {}) {
       modelLoaded: false,
       error: 'Job Matcher API is currently unavailable.',
     };
+  } finally {
+    cleanup();
   }
 }
 
 export async function matchProfileToJob(profile, job, { signal } = {}) {
+  const { signal: timedSignal, didTimeout, cleanup } = withTimeoutSignal(
+    signal,
+    AI_SERVICE_TIMEOUT_MS
+  );
   let response;
   try {
     response = await fetch(`${JOB_MATCHER_API_URL}/match`, {
@@ -74,14 +83,25 @@ export async function matchProfileToJob(profile, job, { signal } = {}) {
         Accept: 'application/json',
       },
       body: JSON.stringify({ profile, job }),
-      signal,
+      signal: timedSignal,
     });
-  } catch {
+  } catch (err) {
+    cleanup();
+    if (didTimeout() || err?.name === 'AbortError' || timedSignal.aborted) {
+      const isUserAbort = Boolean(signal?.aborted) && !didTimeout();
+      throw new JobMatcherApiError(
+        isUserAbort
+          ? 'Request cancelled.'
+          : 'Job Matcher request timed out (the AI service may still be waking up). Please try again.',
+        { status: null, code: isUserAbort ? 'ABORTED' : 'TIMEOUT' }
+      );
+    }
     throw new JobMatcherApiError(
       'Unable to reach the Job Matcher AI service right now. Please try again.',
       { status: null, code: 'NETWORK_ERROR' }
     );
   }
+  cleanup();
 
   let data = null;
   try {

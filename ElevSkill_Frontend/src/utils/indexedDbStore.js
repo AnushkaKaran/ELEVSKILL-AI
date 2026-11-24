@@ -522,7 +522,16 @@ export async function exportWorkspaceBackup(ownerId = GUEST_OWNER_ID) {
 
     for (const storeName of ALL_STORES) {
       const rows = await tx.objectStore(storeName).index('ownerId').getAll(normalizedOwner);
-      data[storeName] = sortByTimestampDesc(rows).map((row) => stripSensitiveFields(row));
+      data[storeName] = sortByTimestampDesc(rows).map((row) => {
+        const stripped = stripSensitiveFields(row);
+        if (storeName === STORE_NAMES.RESUMES && stripped && typeof stripped === 'object') {
+          return {
+            ...stripped,
+            hasPdfBlob: false,
+          };
+        }
+        return stripped;
+      });
     }
 
     await tx.done;
@@ -620,6 +629,7 @@ export async function importWorkspaceBackup(
         ...sanitized,
         id: safeId,
         ownerId: normalizedOwner,
+        hasPdfBlob: Boolean(sanitized.pdfBlob),
         createdAt: sanitized.createdAt || now,
         updatedAt: sanitized.updatedAt || now,
       });

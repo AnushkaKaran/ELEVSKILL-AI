@@ -78,7 +78,7 @@ export function Settings({
           title="User Profile & Preferences"
           subtitle={
             isAuthenticated
-              ? 'Synchronized with your ELEVSKILL account (SQL Server)'
+              ? 'Stored locally in this browser (isolated to your Firebase account)'
               : 'Stored locally in your current browser (Guest Mode)'
           }
         >

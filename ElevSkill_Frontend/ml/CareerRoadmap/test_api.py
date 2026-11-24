@@ -233,3 +233,21 @@ def test_simulated_inference_failure_returns_sanitized_500(client: TestClient, m
     assert body["error_code"] == "INTERNAL_ERROR"
     assert "Traceback" not in resp.text
     assert "D:/secret/internal/path" not in resp.text
+
+
+def test_c_and_dbms_mapped_and_cross_domain_completed_skills_preserved(client: TestClient):
+    resp = client.post(
+        "/generate",
+        json={
+            "target_role": "Data Scientist",
+            "known_skills": ["Python", "C"],
+            "completed_skills": ["SQL", "DBMS"],
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["valid"] is True
+    assert "C" in data["known_skills"]
+    assert "DBMS" in data["completed_skills"]
+    assert "C" not in data["uncertain_skills"]
+    assert "DBMS" not in data["uncertain_skills"]

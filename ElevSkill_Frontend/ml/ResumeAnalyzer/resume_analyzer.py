@@ -116,9 +116,12 @@ SECTION_PATTERNS: Dict[str, List[str]] = {
         r"education\s*&\s*training", r"academic history", r"degrees"
     ],
     "experience": [
-        r"experience", r"work experience", r"employment", r"internship", r"internships", r"career history",
+        r"experience", r"work experience", r"employment", r"internship", r"internships",
+        r"internship experience", r"internships experience", r"summer internship", r"summer internships",
+        r"relevant internships", r"industrial training", r"career history",
         r"professional experience", r"work history", r"relevant experience", r"industry experience",
-        r"internships\s*&\s*experience", r"experience\s*&\s*internships"
+        r"internships\s*(?:&|and)\s*experience", r"experience\s*(?:&|and)\s*internships",
+        r"work\s*(?:&|and)\s*internship(?:s)?(?:\s+experience)?",
     ],
     "projects": [
         r"projects", r"personal projects", r"academic projects", r"key projects", r"portfolio",
@@ -279,6 +282,14 @@ class ResumeAnalyzerEngine:
             re.I,
         )
 
+        exp_fallback_pattern = re.compile(
+            r"\b(?:summer\s+intern(?:ship)?|software\s+(?:engineer|developer)\s+intern|"
+            r"engineering\s+intern|data\s+(?:science|analyst)\s+intern|ml\s+intern|"
+            r"web\s+developer\s+intern|intern(?:ship)?\s*(?:at|@|-|–|\|)|"
+            r"worked\s+as\s+(?:an?\s+)?intern)\b",
+            re.I,
+        )
+
         assessment: Dict[str, Dict[str, Any]] = {}
         for sec_name in SECTION_PATTERNS:
             sec_text = "\n".join(sections_content[sec_name]).strip()
@@ -291,10 +302,15 @@ class ResumeAnalyzerEngine:
                 if edu_lines:
                     sec_text = "\n".join(edu_lines)
                     word_count = max(word_count, len(sec_text.split()))
+            elif not has_header and sec_name == "experience":
+                exp_lines = [ln for ln in lines if ln and exp_fallback_pattern.search(ln)]
+                if exp_lines:
+                    sec_text = "\n".join(exp_lines)
+                    word_count = max(word_count, len(sec_text.split()))
 
             if has_header and word_count >= 6:
                 status = "present"
-            elif not has_header and sec_name == "education" and word_count >= 6:
+            elif not has_header and sec_name in ("education", "experience") and word_count >= 6:
                 status = "present"
             elif has_header or word_count > 0:
                 status = "incomplete"
@@ -704,11 +720,17 @@ class ResumeAnalyzerEngine:
 
         for sec in ["education", "experience", "projects", "skills"]:
             if sec in missing_sections:
-                if sec == "experience" and candidate_profile["level"] == "fresher" and sections_raw["projects"]["status"] == "present":
-                    recommendations.append(
-                        "As a fresher, consider adding any internships, part-time technical roles, or open-source contributions under an Experience section."
-                    )
-                    continue
+                if sec == "experience":
+                    if candidate_profile.get("has_internship") or candidate_profile.get("has_work_experience"):
+                        recommendations.append(
+                            "Consider organizing your internship or work experience under a dedicated 'Experience' heading for clearer ATS parsing."
+                        )
+                        continue
+                    if candidate_profile["level"] == "fresher" and sections_raw["projects"]["status"] == "present":
+                        recommendations.append(
+                            "As a fresher, consider adding any internships, part-time technical roles, or open-source contributions under an Experience section."
+                        )
+                        continue
                 improvements.append(f"Missing '{sec}' section.")
                 if sec == "education":
                     recommendations.append("Add an Education section listing your degree, institution, graduation year, and relevant coursework.")

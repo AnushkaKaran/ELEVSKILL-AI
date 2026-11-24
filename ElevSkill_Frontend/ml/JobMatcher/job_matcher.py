@@ -297,9 +297,10 @@ class JobMatcherEngine:
             s for s in uncertain_skills if s not in req_skills and s not in pref_skills
         ]
 
-        # Account for all non-preferred JD technical skills consistently in required_skills
-        # so intro/summary skills are not silently omitted from matched/missing lists.
-        effective_required = list(dict.fromkeys(req_skills + uncertain_skills))
+        # Only fall back to uncertain_skills when no explicit Required section or
+        # explicit required_skills list was provided; otherwise keep incidental mentions
+        # in uncertain_skills so they do not inflate missing_required_skills.
+        effective_required = list(req_skills) if req_skills else list(uncertain_skills)
 
         return {
             "required_skills": effective_required,
@@ -308,8 +309,16 @@ class JobMatcherEngine:
         }
 
     def _encode(self, texts: List[str]) -> np.ndarray:
+        import torch
+
         model = self._get_model()
-        return model.encode(texts, normalize_embeddings=True)
+        with torch.inference_mode():
+            return model.encode(
+                texts,
+                batch_size=8,
+                show_progress_bar=False,
+                normalize_embeddings=True,
+            )
 
     @staticmethod
     def _scale_sim(sim: float, low: float = 0.15, high: float = 0.72) -> float:
@@ -321,18 +330,40 @@ class JobMatcherEngine:
         jd_text: str,
         jd_skills: Optional[List[str]] = None,
         top_k: int = 3,
+        jd_vec: Optional[np.ndarray] = None,
+        max_evidence_lines: int = 40,
     ) -> Tuple[List[Dict[str, Any]], float]:
         """Retrieves actual user-supplied project/resume lines most relevant to the JD."""
         valid_lines = [(src, txt) for src, txt in profile_lines if len(txt.split()) >= 5]
         if not valid_lines:
             return [], 0.0
 
-        texts = [txt for _, txt in valid_lines]
-        vecs = self._encode(texts + [jd_text])
-        jd_vec = vecs[-1]
-        line_vecs = vecs[:-1]
-
         jd_skill_set = {s.lower() for s in (jd_skills or [])}
+        if len(valid_lines) > max_evidence_lines:
+            # Bound line encoding to prevent memory spikes on large resumes while preserving
+            # explicit project descriptions and lines containing JD-relevant skills.
+            ranked_indices = sorted(
+                range(len(valid_lines)),
+                key=lambda i: (
+                    1 if valid_lines[i][0] == "project" else 0,
+                    len({s.lower() for s in self.extract_skills(valid_lines[i][1])} & jd_skill_set)
+                    if jd_skill_set
+                    else 0,
+                    -i,
+                ),
+                reverse=True,
+            )[:max_evidence_lines]
+            ranked_indices.sort()
+            valid_lines = [valid_lines[i] for i in ranked_indices]
+
+        texts = [txt for _, txt in valid_lines]
+        if jd_vec is not None:
+            line_vecs = self._encode(texts)
+        else:
+            vecs = self._encode(texts + [jd_text])
+            jd_vec = vecs[-1]
+            line_vecs = vecs[:-1]
+
         scored = []
         for idx, (src, txt) in enumerate(valid_lines):
             sim = float(np.clip(np.dot(line_vecs[idx], jd_vec), 0.0, 1.0))
@@ -444,6 +475,7 @@ class JobMatcherEngine:
         # 2. Semantic profile-to-job relevance
         vecs = self._encode([clean_profile, clean_jd])
         raw_sem = float(np.clip(np.dot(vecs[0], vecs[1]), 0.0, 1.0))
+        jd_vec = vecs[1]
         sem_norm = self._scale_sim(raw_sem, low=0.14, high=0.72)
 
         # 3. Project/experience evidence
@@ -457,8 +489,15 @@ class JobMatcherEngine:
                     evidence_lines.append(("resume", cleaned_line))
 
         evidence, proj_norm = self._extract_profile_evidence(
-            evidence_lines, clean_jd, jd_skills=req_skills + pref_skills
+            evidence_lines,
+            clean_jd,
+            jd_skills=req_skills + pref_skills,
+            jd_vec=jd_vec,
         )
+        has_evidence_lines = len(evidence_lines) > 0
+        del vecs, jd_vec, evidence_lines
+        import gc
+        gc.collect()
 
         # 4. Education & qualification alignment (canonicalized degree levels & fields)
         def _extract_edu_signals(text_val: str) -> Tuple[int, set[str]]:
@@ -513,7 +552,7 @@ class JobMatcherEngine:
                 "raw_score": sem_norm,
             },
             "project_experience_alignment": {
-                "applicable": len(evidence_lines) > 0 and len(evidence) > 0,
+                "applicable": has_evidence_lines and len(evidence) > 0,
                 "weight": self.weights["project_experience_alignment"],
                 "raw_score": proj_norm if evidence else None,
             },

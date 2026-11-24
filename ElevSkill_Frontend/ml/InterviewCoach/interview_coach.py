@@ -139,7 +139,8 @@ class InterviewCoachEngine:
 
     @staticmethod
     def _clean_text(text: str, max_chars: int) -> Tuple[str, bool]:
-        normalized = re.sub(r"\s+", " ", text).strip()
+        lines = [re.sub(r"[ \t\r\f\v]+", " ", ln).strip() for ln in text.splitlines()]
+        normalized = "\n".join(ln for ln in lines if ln).strip()
         truncated = len(normalized) > max_chars
         if truncated:
             normalized = normalized[:max_chars]
@@ -158,22 +159,37 @@ class InterviewCoachEngine:
     def _scale_sim(sim: float, low: float = 0.25, high: float = 0.72) -> float:
         return float(np.clip((sim - low) / (high - low), 0.0, 1.0))
 
+    CODING_CATEGORIES = {
+        "python",
+        "cpp",
+        "java",
+        "csharp",
+        "dotnet",
+        "mern",
+        "frontend",
+        "backend",
+        "dsa",
+        "logic",
+    }
+
     @staticmethod
     def _is_code_submission(text: str) -> bool:
         code_markers = (
-            r"\bdef\s+\w+\s*\(",
-            r"\bfunction\s+\w*\s*\(",
+            r"\bdef\s+\w+\s*\([^)]*\)\s*:",
+            r"\bfunction\s+\w*\s*\([^)]*\)\s*\{",
             r"\b(const|let|var)\s+\w+\s*=",
-            r"\bfor\s+[\w,\s()]+\s+in\b",
-            r"\bfor\s*\(",
-            r"\bwhile\s*[\s(]",
-            r"\breturn\b",
-            r"=>",
+            r"\b(public|private|protected|static)\s+[\w<>\[\]]+\s+\w+\s*\(",
+            r"=>\s*[\{\w(]",
             r"\benumerate\s*\(",
-            r"\bnew\s+(Map|Set|HashMap|HashSet)\b",
+            r"\bnew\s+(Map|Set|HashMap|HashSet|Dictionary|List)\b",
+            r"(?m)^\s*(for|while)\s+.*(?::|\{|\bin\b)",
+            r"(?m)^\s*return\b",
+            r"(?m);\s*$",
         )
         hits = sum(1 for pat in code_markers if re.search(pat, text))
-        return hits >= 2 or ("def " in text and "return" in text)
+        return hits >= 2 or bool(
+            re.search(r"\bdef\s+\w+\s*\([^)]*\)\s*:", text) and re.search(r"\breturn\b", text)
+        )
 
     @staticmethod
     def _extract_code_signals(text: str) -> Dict[str, bool]:
@@ -414,7 +430,7 @@ class InterviewCoachEngine:
             else (bank_entry["expected_concepts"] if bank_entry else [])
         )
 
-        is_code = self._is_code_submission(clean_answer)
+        is_code = (cat in self.CODING_CATEGORIES) and self._is_code_submission(clean_answer)
         code_sig = self._extract_code_signals(clean_answer) if is_code else {}
         sentences = self._split_sentences(clean_answer)
         if is_code and len(sentences) < 2:

@@ -48,7 +48,7 @@ export function Topbar({
         </div>
 
         <div className="topbar-right">
-          {authUser && <Badge variant="success">Synced Account</Badge>}
+          {authUser && <Badge variant="success">Signed In</Badge>}
           <div className="user-pill">
             <div className="user-avatar" aria-hidden="true">
               {initials}

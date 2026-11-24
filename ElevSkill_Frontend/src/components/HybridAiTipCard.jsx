@@ -188,7 +188,7 @@ export function HybridAiTipCard() {
             </div>
             {isSlow && (
               <div className="question-tip" style={{ margin: 0 }} role="status">
-                On-device Chrome AI inference is taking longer than expected. Local hardware generation can take some time — please wait while it completes.
+                Generating is taking longer than expected (on-device initialization or cloud Gemini fallback in progress) — please wait while it completes.
               </div>
             )}
           </div>

@@ -273,3 +273,50 @@ def test_regression_python_two_sum_merge_intervals_and_behavioral(client: TestCl
     )
     assert r_beh.status_code == 200
     assert r_beh.json()["overall_score"] >= 65
+
+
+def test_theoretical_os_answer_does_not_trigger_code_feedback(client: TestClient):
+    resp = client.post(
+        "/evaluate",
+        json={
+            "category": "os",
+            "question_text": "What are the four Coffman conditions for a Deadlock, and how can you prevent one?",
+            "expected_concepts": ["mutual exclusion", "hold and wait", "no preemption", "circular wait"],
+            "answer_text": (
+                "Deadlock requires four Coffman conditions for a deadlock in an operating system: "
+                "mutual exclusion, hold and wait while waiting for another resource, no preemption, "
+                "and circular wait. To prevent deadlock, you can enforce a strict resource ordering "
+                "so processes never return to earlier locks or hold one resource while requesting another."
+            ),
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    joined_strengths = " ".join(data["strengths"]).lower()
+    joined_suggestions = " ".join(data["improvement_suggestions"]).lower()
+    assert "executable code solution" not in joined_strengths
+    assert "time and space complexity" not in joined_suggestions
+
+
+def test_legitimate_code_submission_still_detected_in_coding_category(client: TestClient):
+    resp = client.post(
+        "/evaluate",
+        json={
+            "category": "python",
+            "question_text": "Write a Python function to find two numbers that sum to a target.",
+            "expected_concepts": ["hash map", "single pass", "O(n)"],
+            "answer_text": (
+                "def two_sum(nums, target):\n"
+                "    seen = {}\n"
+                "    for i, num in enumerate(nums):\n"
+                "        diff = target - num\n"
+                "        if diff in seen:\n"
+                "            return [seen[diff], i]\n"
+                "        seen[num] = i\n"
+                "    return []"
+            ),
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert any("executable code solution" in s.lower() for s in data["strengths"])

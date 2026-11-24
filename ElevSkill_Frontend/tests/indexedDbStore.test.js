@@ -280,4 +280,30 @@ describe('indexedDbStore (Phase 2)', () => {
       resetDbConnectionForTests();
     }
   });
+
+  it('clears hasPdfBlob on backup export/import when pdfBlob binary is excluded', async () => {
+    const pdfBlob = new Blob(['%PDF-1.4 sample'], { type: 'application/pdf' });
+    await saveResumeRecord(
+      {
+        id: 'res-pdf-meta',
+        name: 'Sample Resume',
+        text: 'Jane Doe software engineer resume text',
+        pdfBlob,
+        hasPdfBlob: true,
+        originalFileName: 'sample.pdf',
+        originalFileDataUrl: null,
+      },
+      'user-backup-meta'
+    );
+
+    const backup = await exportWorkspaceBackup('user-backup-meta');
+    expect(backup.data[STORE_NAMES.RESUMES][0].pdfBlob).toBeUndefined();
+    expect(backup.data[STORE_NAMES.RESUMES][0].hasPdfBlob).toBe(false);
+
+    await importWorkspaceBackup(backup, 'user-backup-meta-2', { replaceExisting: true });
+    const importedResumes = await listRecordsByOwner(STORE_NAMES.RESUMES, 'user-backup-meta-2');
+    expect(importedResumes).toHaveLength(1);
+    expect(importedResumes[0].hasPdfBlob).toBe(false);
+    expect(importedResumes[0].pdfBlob).toBeUndefined();
+  });
 });

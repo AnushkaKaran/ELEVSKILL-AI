@@ -149,11 +149,22 @@ export default function App() {
   const [activityLog, setActivityLog] = useState([]);
   const [authUser, setAuthUser] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [storageError, setStorageError] = useState('');
+
+  const handleStorageError = useCallback((err) => {
+    setStorageError(
+      err?.message || 'Unable to save workspace changes to browser storage (IndexedDB).'
+    );
+  }, []);
 
   const authSession = getAuthSessionState(authUser);
   const activeOwnerId = authSession.ownerId;
 
   const hydrateWorkspace = useCallback(async (ownerId, currentAuthUser = null) => {
+    setStorageError('');
+    setSharedResumeText('');
+    setSharedMatcherText('');
+    setSharedBuilderText('');
     try {
       if (ownerId === GUEST_OWNER_ID) {
         await migrateGuestLocalStorageToIndexedDb({ ownerId: GUEST_OWNER_ID }).catch(() => null);
@@ -186,8 +197,10 @@ export default function App() {
           timeLabel: item.timeLabel || formatDateShort(item.createdAt),
         }))
       );
-    } catch {
-      // Preserve in-memory fallback if IndexedDB is unavailable
+    } catch (err) {
+      setStorageError(
+        err?.message || 'Browser storage (IndexedDB) is unavailable; changes are kept in memory only.'
+      );
     }
   }, []);
 
@@ -226,7 +239,7 @@ export default function App() {
       variant,
     };
     setActivityLog((prev) => [entry, ...prev].slice(0, 15));
-    saveRecord(STORE_NAMES.ACTIVITY_LOGS, entry, activeOwnerId).catch(() => {});
+    saveRecord(STORE_NAMES.ACTIVITY_LOGS, entry, activeOwnerId).catch(handleStorageError);
   };
 
   const handleToggleSkill = (skillId) => {
@@ -245,7 +258,7 @@ export default function App() {
       skillId,
       { status: nextStatus, completed: nextCompleted },
       activeOwnerId
-    ).catch(() => {});
+    ).catch(handleStorageError);
 
     if (nextCompleted) {
       logActivity({
@@ -282,7 +295,7 @@ export default function App() {
       skillId,
       { status: validStatus, completed: nextCompleted },
       activeOwnerId
-    ).catch(() => {});
+    ).catch(handleStorageError);
 
     const labelMap = {
       not_started: 'Not Started',
@@ -311,7 +324,7 @@ export default function App() {
       skillId,
       { alreadyKnown: nextKnown },
       activeOwnerId
-    ).catch(() => {});
+    ).catch(handleStorageError);
   };
 
   const handleAddSkill = ({ title, category, hours = 4, priority = 'Medium', alreadyKnown = false }) => {
@@ -331,7 +344,7 @@ export default function App() {
       alreadyKnown: Boolean(alreadyKnown),
     };
     setRoadmapSkills((prev) => [newSkill, ...prev]);
-    saveRecord(STORE_NAMES.ROADMAP_SKILLS, newSkill, activeOwnerId).catch(() => {});
+    saveRecord(STORE_NAMES.ROADMAP_SKILLS, newSkill, activeOwnerId).catch(handleStorageError);
     logActivity({
       title: `Added roadmap skill "${newSkill.title}"`,
       category: 'Career Roadmap',
@@ -393,7 +406,7 @@ export default function App() {
     const targetSkill = roadmapSkills.find((s) => s.id === skillId);
     if (!targetSkill) return;
     setRoadmapSkills((prev) => prev.filter((s) => s.id !== skillId));
-    deleteRecord(STORE_NAMES.ROADMAP_SKILLS, skillId, activeOwnerId).catch(() => {});
+    deleteRecord(STORE_NAMES.ROADMAP_SKILLS, skillId, activeOwnerId).catch(handleStorageError);
     logActivity({
       title: `Removed roadmap skill "${targetSkill.title}"`,
       category: 'Career Roadmap',
@@ -408,7 +421,7 @@ export default function App() {
       overallScore: analysisSummary.score ?? analysisSummary.overallScore ?? 0,
     };
     setLatestResumeAnalysis(entry);
-    saveRecord(STORE_NAMES.RESUME_ANALYSES, entry, activeOwnerId).catch(() => {});
+    saveRecord(STORE_NAMES.RESUME_ANALYSES, entry, activeOwnerId).catch(handleStorageError);
     logActivity({
       title: `Completed resume analysis (${analysisSummary.score}/100 · ${analysisSummary.status})`,
       category: 'Resume Analyzer',
@@ -423,7 +436,7 @@ export default function App() {
       overallScore: matchSummary.matchPercent ?? matchSummary.overallScore ?? 0,
     };
     setLatestJobMatch(entry);
-    saveRecord(STORE_NAMES.JOB_MATCH_HISTORY, entry, activeOwnerId).catch(() => {});
+    saveRecord(STORE_NAMES.JOB_MATCH_HISTORY, entry, activeOwnerId).catch(handleStorageError);
     logActivity({
       title: `Completed job matching (${matchSummary.matchPercent}% keyword overlap)`,
       category: 'Job Matcher',
@@ -434,7 +447,7 @@ export default function App() {
 
   const handleSaveProfile = (updatedProfile) => {
     setUserProfile(updatedProfile);
-    saveRecord(STORE_NAMES.PROFILES, updatedProfile, activeOwnerId).catch(() => {});
+    saveRecord(STORE_NAMES.PROFILES, updatedProfile, activeOwnerId).catch(handleStorageError);
     logActivity({
       title: updatedProfile.targetRole
         ? `Updated profile for ${updatedProfile.targetRole}`
@@ -463,7 +476,7 @@ export default function App() {
       totalPracticed: (prev?.totalPracticed || 0) + 1,
     }));
     setInterviewHistory((prev) => [entry, ...prev].slice(0, 30));
-    saveRecord(STORE_NAMES.INTERVIEW_HISTORY, entry, activeOwnerId).catch(() => {});
+    saveRecord(STORE_NAMES.INTERVIEW_HISTORY, entry, activeOwnerId).catch(handleStorageError);
   };
 
   const handleSaveResumeToVault = ({
@@ -491,7 +504,7 @@ export default function App() {
       updatedAt: now,
     };
     setSavedResumes((prev) => [entry, ...prev]);
-    saveResumeRecord(entry, activeOwnerId).catch(() => {});
+    saveResumeRecord(entry, activeOwnerId).catch(handleStorageError);
     logActivity({
       title: `Saved resume "${name}" to Resume Vault`,
       category: 'Resume Vault',
@@ -512,12 +525,12 @@ export default function App() {
         ...(patch.text !== undefined ? { extractedText: patch.text } : {}),
       },
       activeOwnerId
-    ).catch(() => {});
+    ).catch(handleStorageError);
   };
 
   const handleDeleteSavedResume = (resumeId) => {
     setSavedResumes((prev) => prev.filter((item) => item.id !== resumeId));
-    deleteRecord(STORE_NAMES.RESUMES, resumeId, activeOwnerId).catch(() => {});
+    deleteRecord(STORE_NAMES.RESUMES, resumeId, activeOwnerId).catch(handleStorageError);
   };
 
   const clearLocalReactWorkspace = (nextProfile = { ...EMPTY_PROFILE, onboardingDismissed: false }) => {
@@ -563,12 +576,20 @@ export default function App() {
   const handleLogout = async () => {
     await logoutFirebase();
     setAuthUser(null);
+    setSharedResumeText('');
+    setSharedMatcherText('');
+    setSharedBuilderText('');
+    setStorageError('');
     startNewGuestSession();
     setActivePage('dashboard');
   };
 
   const handleAuthSuccess = async (authData) => {
     if (authData?.user) {
+      setSharedResumeText('');
+      setSharedMatcherText('');
+      setSharedBuilderText('');
+      setStorageError('');
       setAuthUser(authData.user);
     }
   };
@@ -606,6 +627,28 @@ export default function App() {
         />
 
         <main className="page-content">
+          {storageError && (
+            <div
+              className="validation-error"
+              role="alert"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px',
+                marginBottom: '16px',
+              }}
+            >
+              <span>{storageError}</span>
+              <button
+                type="button"
+                onClick={() => setStorageError('')}
+                style={{ fontWeight: 600, textDecoration: 'underline', flexShrink: 0 }}
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
           {activePage === 'dashboard' && (
             <Dashboard
               userProfile={userProfile}
@@ -729,7 +772,7 @@ export default function App() {
               onboardingDismissed: true,
             };
             setUserProfile(dismissedProfile);
-            saveRecord(STORE_NAMES.PROFILES, dismissedProfile, activeOwnerId).catch(() => {});
+            saveRecord(STORE_NAMES.PROFILES, dismissedProfile, activeOwnerId).catch(handleStorageError);
           }}
         />
       )}

@@ -115,6 +115,21 @@ SKILL_TAXONOMY: Dict[str, Dict[str, Any]] = {
             "source_type": "official_documentation",
         },
     },
+    "c": {
+        "id": "c",
+        "name": "C",
+        "category": "Programming",
+        "tier": "foundational",
+        "aliases": ["c", "c language", "c programming", "ansi c"],
+        "prerequisites": [],
+        "estimated_hours": 10,
+        "learning_objective": "Understand pointers, memory management, structs, and procedural programming in C.",
+        "official_resource": {
+            "title": "cppreference — C Documentation",
+            "url": "https://en.cppreference.com/w/c",
+            "source_type": "official_documentation",
+        },
+    },
     "sql": {
         "id": "sql",
         "name": "SQL",
@@ -124,6 +139,28 @@ SKILL_TAXONOMY: Dict[str, Dict[str, Any]] = {
         "prerequisites": [],
         "estimated_hours": 6,
         "learning_objective": "Query, filter, join, and aggregate relational tables safely.",
+        "official_resource": {
+            "title": "PostgreSQL Documentation",
+            "url": "https://www.postgresql.org/docs/",
+            "source_type": "official_documentation",
+        },
+    },
+    "dbms": {
+        "id": "dbms",
+        "name": "DBMS",
+        "category": "Databases",
+        "tier": "foundational",
+        "aliases": [
+            "dbms",
+            "rdbms",
+            "database management",
+            "database management system",
+            "database normalization",
+            "acid properties",
+        ],
+        "prerequisites": [],
+        "estimated_hours": 6,
+        "learning_objective": "Understand relational schemas, normalization, indexing, transactions, and ACID properties.",
         "official_resource": {
             "title": "PostgreSQL Documentation",
             "url": "https://www.postgresql.org/docs/",
@@ -747,13 +784,22 @@ class CareerRoadmapEngine:
         known_ids, uncertain_known = self.map_skills(raw_known, extra_text)
         completed_ids, uncertain_completed = self.map_skills(raw_completed, "")
 
-        # Preserve explicit separation between known and completed skills
+        # Preserve all mapped known and completed skills (role-relevant first, then cross-domain)
         known_set = set(known_ids)
         completed_set = set(completed_ids)
         satisfied_set = known_set | completed_set
+        role_skill_set = set(role_skill_ids)
 
-        role_known_names = [SKILL_TAXONOMY[sid]["name"] for sid in role_skill_ids if sid in known_set]
-        role_completed_names = [SKILL_TAXONOMY[sid]["name"] for sid in role_skill_ids if sid in completed_set]
+        all_known_names = [SKILL_TAXONOMY[sid]["name"] for sid in role_skill_ids if sid in known_set] + [
+            SKILL_TAXONOMY[sid]["name"]
+            for sid in known_ids
+            if sid not in role_skill_set and sid in SKILL_TAXONOMY
+        ]
+        all_completed_names = [SKILL_TAXONOMY[sid]["name"] for sid in role_skill_ids if sid in completed_set] + [
+            SKILL_TAXONOMY[sid]["name"]
+            for sid in completed_ids
+            if sid not in role_skill_set and sid in SKILL_TAXONOMY
+        ]
         missing_ids = [sid for sid in role_skill_ids if sid not in satisfied_set]
         missing_names = [SKILL_TAXONOMY[sid]["name"] for sid in missing_ids]
 
@@ -851,15 +897,15 @@ class CareerRoadmapEngine:
             "role_resolution": resolution,
             "current_skill_assessment": {
                 "total_role_skills": total_role_skills,
-                "known_count": len(role_known_names),
-                "completed_count": len(role_completed_names),
+                "known_count": len(all_known_names),
+                "completed_count": len(all_completed_names),
                 "satisfied_count": satisfied_count,
                 "missing_count": len(missing_names),
                 "coverage_percent": coverage_pct,
                 "unprovided_profile_fields": unprovided_fields,
             },
-            "known_skills": role_known_names,
-            "completed_skills": role_completed_names,
+            "known_skills": all_known_names,
+            "completed_skills": all_completed_names,
             "missing_skills": missing_names,
             "uncertain_skills": uncertain_skills,
             "roadmap_stages": roadmap_stages,

@@ -273,3 +273,109 @@ def test_regression_frontend_data_scientist_and_aiml_matching(client: TestClient
     assert "NLP" in d3["matched_preferred_skills"]
     for pref_miss in ["PyTorch", "Deep Learning", "Docker", "LLMs"]:
         assert pref_miss in d3["missing_preferred_skills"]
+
+
+def test_bounded_evidence_extraction_and_jd_vec_reuse(client: TestClient, monkeypatch):
+    engine = client.app.state.engine
+    encode_call_sizes = []
+    original_encode = engine._encode
+
+    def spy_encode(texts):
+        encode_call_sizes.append(len(texts))
+        return original_encode(texts)
+
+    monkeypatch.setattr(engine, "_encode", spy_encode)
+
+    filler_lines = [
+        f"Assisted team with routine office coordination and documentation task {i}."
+        for i in range(90)
+    ]
+    target_line = "Architected scalable REST API services using React, JavaScript, and Git."
+    long_resume = "\n".join(filler_lines + [target_line])
+
+    response = client.post(
+        "/match",
+        json={
+            "profile": {
+                **STRONG_PROFILE,
+                "resume_text": long_resume,
+            },
+            "job": FRONTEND_JOB,
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["valid"] is True
+    # Call 1: [clean_profile, clean_jd] (2 texts); Call 2: <= 40 bounded evidence lines (no duplicate JD)
+    assert len(encode_call_sizes) == 2
+    assert encode_call_sizes[0] == 2
+    assert encode_call_sizes[1] <= 40
+    evidence_texts = [item["text"] for item in data["relevant_profile_evidence"]]
+    assert any("React" in txt or "course planner" in txt for txt in evidence_texts)
+
+
+def test_concurrent_match_requests_are_serialized_safely(client: TestClient, monkeypatch):
+    import threading
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    engine = client.app.state.engine
+    original_match = engine.match
+    active_calls = 0
+    max_concurrent_calls = 0
+    counter_lock = threading.Lock()
+
+    def tracked_match(profile, job):
+        nonlocal active_calls, max_concurrent_calls
+        with counter_lock:
+            active_calls += 1
+            max_concurrent_calls = max(max_concurrent_calls, active_calls)
+        time.sleep(0.05)
+        try:
+            return original_match(profile, job)
+        finally:
+            with counter_lock:
+                active_calls -= 1
+
+    monkeypatch.setattr(engine, "match", tracked_match)
+
+    def send_request():
+        return client.post("/match", json={"profile": STRONG_PROFILE, "job": FRONTEND_JOB})
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        responses = list(executor.map(lambda _: send_request(), range(4)))
+
+    assert all(r.status_code == 200 for r in responses)
+    assert max_concurrent_calls == 1
+
+
+def test_incidental_intro_skills_not_promoted_to_required_skills(client: TestClient):
+    resp = client.post(
+        "/match",
+        json={
+            "profile": {
+                "skills": ["Python", "SQL", "FastAPI", "Docker"],
+                "resume_text": "Backend Engineer experienced with Python, SQL, FastAPI, and Docker.",
+            },
+            "job": {
+                "title": "Backend Engineer",
+                "description": (
+                    "We build analytics pipelines and data preprocessing tools.\n"
+                    "Required:\n"
+                    "Python, SQL, FastAPI, Docker\n"
+                    "Preferred:\n"
+                    "AWS"
+                ),
+            },
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert set(data["diagnostics"]["required_skills_detected"]) == {
+        "Python",
+        "SQL",
+        "FastAPI",
+        "Docker",
+    }
+    assert "Data Preprocessing" not in data["missing_required_skills"]
+    assert "Data Preprocessing" in data["diagnostics"]["uncertain_skills_detected"]

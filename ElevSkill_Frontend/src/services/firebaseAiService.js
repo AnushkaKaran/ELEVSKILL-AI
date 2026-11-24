@@ -5,7 +5,7 @@ const DEFAULT_CLOUD_MODEL = (
   import.meta.env.VITE_FIREBASE_AI_CLOUD_MODEL || 'gemini-3.5-flash-lite'
 ).trim();
 
-const REQUEST_TIMEOUT_MS = 30000;
+const REQUEST_TIMEOUT_MS = 45000;
 
 const CONCISE_SYSTEM_INSTRUCTION =
   'You are a concise career preparation assistant for ELEVSKILL AI. ' +
@@ -134,17 +134,29 @@ export async function generateHybridPromptResponse(promptText, { signal: externa
       if (err instanceof FirebaseAiServiceError) {
         throw err;
       }
-      if (timedOut || err?.name === 'AbortError' || /timeout|timed out/i.test(err?.message || '')) {
+      const rawMsg = typeof err?.message === 'string' ? err.message : '';
+      if (timedOut || err?.name === 'AbortError' || /timeout|timed out/i.test(rawMsg)) {
         throw new FirebaseAiServiceError(
-          'The AI request timed out. Please try a shorter prompt or try again.',
+          'The AI request timed out before on-device or cloud Gemini could finish. Please try a shorter prompt or try again.',
           { code: 'TIMEOUT' }
         );
       }
-      const rawMsg = typeof err?.message === 'string' ? err.message : '';
       if (/app\s*check|recaptcha|403/i.test(rawMsg)) {
         throw new FirebaseAiServiceError(
           'Firebase App Check verification failed. Ensure your reCAPTCHA Enterprise site key and local debug token are registered in Firebase Console.',
           { code: 'APP_CHECK_ERROR' }
+        );
+      }
+      if (/network|failed to fetch|offline|ERR_INTERNET_DISCONNECTED/i.test(rawMsg)) {
+        throw new FirebaseAiServiceError(
+          'Unable to reach cloud Gemini fallback due to a network error. Check your connection and try again.',
+          { code: 'NETWORK_ERROR' }
+        );
+      }
+      if (/on[- ]device|prompt\s*api|gemini\s*nano|model.*unavailable|quota|429|503/i.test(rawMsg)) {
+        throw new FirebaseAiServiceError(
+          'On-device AI was unavailable and the cloud Gemini fallback could not complete right now. Please try again.',
+          { code: 'FALLBACK_FAILED' }
         );
       }
       throw new FirebaseAiServiceError(

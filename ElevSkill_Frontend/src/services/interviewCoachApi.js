@@ -1,3 +1,5 @@
+import { AI_HEALTH_TIMEOUT_MS, AI_SERVICE_TIMEOUT_MS, withTimeoutSignal } from './apiTimeout';
+
 export const INTERVIEW_COACH_API_URL = (
   import.meta.env.VITE_INTERVIEW_COACH_API_URL || 'http://127.0.0.1:8002'
 ).replace(/\/+$/, '');
@@ -28,11 +30,12 @@ function extractApiErrorMessage(data, status) {
 }
 
 export async function checkInterviewCoachHealth({ signal } = {}) {
+  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, AI_HEALTH_TIMEOUT_MS);
   try {
     const response = await fetch(`${INTERVIEW_COACH_API_URL}/health`, {
       method: 'GET',
       headers: { Accept: 'application/json' },
-      signal,
+      signal: timedSignal,
     });
     if (!response.ok) {
       return {
@@ -61,6 +64,8 @@ export async function checkInterviewCoachHealth({ signal } = {}) {
       modelLoaded: false,
       error: 'Interview Coach API is currently unavailable.',
     };
+  } finally {
+    cleanup();
   }
 }
 
@@ -79,6 +84,10 @@ export async function evaluateInterviewAnswer(
       ? questionReference.questionText
       : null;
 
+  const { signal: timedSignal, didTimeout, cleanup } = withTimeoutSignal(
+    signal,
+    AI_SERVICE_TIMEOUT_MS
+  );
   let response;
   try {
     response = await fetch(`${INTERVIEW_COACH_API_URL}/evaluate`, {
@@ -93,14 +102,25 @@ export async function evaluateInterviewAnswer(
         question_id: questionId,
         question_text: questionText,
       }),
-      signal,
+      signal: timedSignal,
     });
-  } catch {
+  } catch (err) {
+    cleanup();
+    if (didTimeout() || err?.name === 'AbortError' || timedSignal.aborted) {
+      const isUserAbort = Boolean(signal?.aborted) && !didTimeout();
+      throw new InterviewCoachApiError(
+        isUserAbort
+          ? 'Request cancelled.'
+          : 'Interview Coach request timed out (the AI service may still be waking up). Please try again.',
+        { status: null, code: isUserAbort ? 'ABORTED' : 'TIMEOUT' }
+      );
+    }
     throw new InterviewCoachApiError(
       'Unable to reach the Interview Coach AI service right now. Please try again.',
       { status: null, code: 'NETWORK_ERROR' }
     );
   }
+  cleanup();
 
   let data = null;
   try {

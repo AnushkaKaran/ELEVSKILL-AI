@@ -221,3 +221,90 @@ def test_c_and_ml_negative_guards_and_c_cpp_pair(client: TestClient):
     assert pair_resp.status_code == 200
     pair_detected = set(pair_resp.json()["skills_analysis"]["detected_skills"])
     assert {"C", "C++", "Python"}.issubset(pair_detected)
+
+
+def test_internship_experience_heading_and_evidence_recognized(client: TestClient):
+    resume_with_heading = (
+        "Rahul Sharma\n"
+        "rahul@example.com | github.com/rahulsharma\n"
+        "Education\n"
+        "B.Tech Computer Science, Example University (2025)\n"
+        "Internship Experience\n"
+        "Software Engineer Intern at Example Labs (May 2024 - Aug 2024)\n"
+        "- Built REST APIs with Python, FastAPI, React, and SQL.\n"
+        "Projects\n"
+        "Portfolio App built with React and JavaScript.\n"
+        "Technical Skills\n"
+        "Python, JavaScript, React, SQL, Git\n"
+    )
+    resp = client.post("/analyze", json={"resume_text": resume_with_heading})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["section_assessment"]["experience"]["status"] == "present"
+    assert "experience" not in data["missing_sections"]
+    joined_recs = " ".join(data["recommendations"]).lower()
+    assert "add internship" not in joined_recs
+    assert "missing 'experience'" not in " ".join(data["areas_for_improvement"]).lower()
+
+    resume_unheaded_intern = (
+        "Rahul Sharma\n"
+        "rahul@example.com\n"
+        "Education\n"
+        "B.Tech Computer Science, Example University (2025)\n"
+        "Software Engineer Intern at Example Labs (May 2024 - Aug 2024) building FastAPI and SQL services.\n"
+        "Projects\n"
+        "Portfolio App built with React and JavaScript for student collaboration.\n"
+        "Skills\n"
+        "Python, JavaScript, React, SQL, Git\n"
+    )
+    resp2 = client.post("/analyze", json={"resume_text": resume_unheaded_intern})
+    assert resp2.status_code == 200
+    data2 = resp2.json()
+    assert data2["section_assessment"]["experience"]["status"] == "present"
+    assert "add internship" not in " ".join(data2["recommendations"]).lower()
+
+
+def test_extract_pdf_preserves_response_contract_and_handles_invalid_pdf(client: TestClient):
+    # Minimal valid PDF 1.4 with selectable text
+    stream_data = b"BT /F1 12 Tf 72 720 Td (Rahul Sharma Software Engineer Intern) Tj ET"
+    pdf_parts = [
+        b"%PDF-1.4\n",
+        b"1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n",
+        b"2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n",
+        b"3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj\n",
+        f"4 0 obj << /Length {len(stream_data)} >>\nstream\n".encode("ascii")
+        + stream_data
+        + b"\nendstream\nendobj\n",
+        b"5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n",
+    ]
+    offsets = []
+    body = bytearray()
+    for part in pdf_parts:
+        offsets.append(len(body))
+        body.extend(part)
+    xref_pos = len(body)
+    body.extend(f"xref\n0 {len(offsets)}\n0000000000 65535 f \n".encode("ascii"))
+    for off in offsets[1:]:
+        body.extend(f"{off:010d} 00000 n \n".encode("ascii"))
+    body.extend(
+        f"trailer << /Size {len(offsets)} /Root 1 0 R >>\nstartxref\n{xref_pos}\n%%EOF\n".encode("ascii")
+    )
+
+    resp = client.post(
+        "/extract-pdf",
+        files={"file": ("sample_resume.pdf", bytes(body), "application/pdf")},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert set(data.keys()) == {"filename", "page_count", "extracted_text", "char_count"}
+    assert data["filename"] == "sample_resume.pdf"
+    assert data["page_count"] == 1
+    assert "Rahul Sharma" in data["extracted_text"]
+    assert data["char_count"] == len(data["extracted_text"])
+
+    bad_resp = client.post(
+        "/extract-pdf",
+        files={"file": ("bad.txt", b"not a pdf", "text/plain")},
+    )
+    assert bad_resp.status_code == 422
+    assert bad_resp.json()["error_code"] == "INVALID_FILE_TYPE"

@@ -1,3 +1,5 @@
+import { AI_HEALTH_TIMEOUT_MS, AI_SERVICE_TIMEOUT_MS, withTimeoutSignal } from './apiTimeout';
+
 export const CAREER_ROADMAP_API_URL = (
   import.meta.env.VITE_CAREER_ROADMAP_API_URL || 'http://127.0.0.1:8004'
 ).replace(/\/+$/, '');
@@ -27,28 +29,8 @@ function extractApiErrorMessage(data, status) {
   return `Career Roadmap service returned an unexpected error (HTTP ${status}).`;
 }
 
-function withTimeoutSignal(externalSignal, timeoutMs) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort('timeout'), timeoutMs);
-  if (externalSignal) {
-    if (externalSignal.aborted) {
-      controller.abort(externalSignal.reason);
-    } else {
-      externalSignal.addEventListener(
-        'abort',
-        () => controller.abort(externalSignal.reason),
-        { once: true }
-      );
-    }
-  }
-  return {
-    signal: controller.signal,
-    cleanup: () => clearTimeout(timer),
-  };
-}
-
 export async function checkCareerRoadmapHealth({ signal } = {}) {
-  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, 8000);
+  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, AI_HEALTH_TIMEOUT_MS);
   try {
     const response = await fetch(`${CAREER_ROADMAP_API_URL}/health`, {
       method: 'GET',
@@ -92,7 +74,10 @@ export async function checkCareerRoadmapHealth({ signal } = {}) {
 }
 
 export async function generateCareerRoadmap(requestData, { signal } = {}) {
-  const { signal: timedSignal, cleanup } = withTimeoutSignal(signal, 20000);
+  const { signal: timedSignal, didTimeout, cleanup } = withTimeoutSignal(
+    signal,
+    AI_SERVICE_TIMEOUT_MS
+  );
   let response;
   try {
     response = await fetch(`${CAREER_ROADMAP_API_URL}/generate`, {
@@ -106,11 +91,17 @@ export async function generateCareerRoadmap(requestData, { signal } = {}) {
     });
   } catch (err) {
     cleanup();
-    if (err?.name === 'AbortError' && signal?.aborted) {
-      throw new CareerRoadmapApiError('Request cancelled.', {
-        status: null,
-        code: 'ABORTED',
-      });
+    if (didTimeout() || err?.name === 'AbortError' || timedSignal.aborted) {
+      const isUserAbort = Boolean(signal?.aborted) && !didTimeout();
+      throw new CareerRoadmapApiError(
+        isUserAbort
+          ? 'Request cancelled.'
+          : 'Career Roadmap request timed out (the AI service may still be waking up). Please try again.',
+        {
+          status: null,
+          code: isUserAbort ? 'ABORTED' : 'TIMEOUT',
+        }
+      );
     }
     throw new CareerRoadmapApiError(
       'Unable to reach the Career Roadmap AI service right now. Please try again.',
