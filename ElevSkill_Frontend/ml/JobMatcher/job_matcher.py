@@ -107,6 +107,11 @@ SKILL_TAXONOMY: Dict[str, Dict[str, List[str]]] = {
         "Data Visualization": ["data visualization", "visualization", "matplotlib", "seaborn"],
         "REST API": ["rest api integration", "rest apis", "rest api", "restful"],
         "GraphQL": ["graphql"],
+        "OOP": ["object-oriented programming", "object oriented programming", "oop"],
+        "Data Structures": ["data structures", "data structure", "dsa"],
+        "Algorithms": ["algorithms", "algorithm", "algorithmic"],
+        "Unit Testing": ["unit testing", "unit tests", "unit test"],
+        "Debugging": ["debugging", "debug", "troubleshooting"],
         "WCAG Accessibility": ["wcag accessibility", "web accessibility", "wcag", "accessibility", "a11y"],
         "Code Review": ["collaborative code reviews", "code reviews", "code review"],
     },
@@ -143,6 +148,9 @@ DISAMBIGUATION_MASKS = [
     ("Code Review", ["collaborative code reviews", "code reviews", "code review"]),
     ("Power BI", ["power bi", "powerbi"]),
     ("REST API", ["rest api integration", "rest apis", "rest api", "restful"]),
+    ("OOP", ["object-oriented programming", "object oriented programming"]),
+    ("Data Structures", ["data structures", "data structure"]),
+    ("Unit Testing", ["unit testing", "unit tests", "unit test"]),
     ("C++", ["c++"]),
     ("C#", ["c#"]),
     ("CSS3", ["css3", "css"]),
@@ -154,6 +162,18 @@ DISAMBIGUATION_MASKS = [
 
 PREFERRED_SECTION_RE = re.compile(
     r"\b(preferred|bonus|nice to have|optional|plus|desirable)\b", re.I
+)
+PREFERRED_HEADING_ONLY_RE = re.compile(
+    r"^(?:[-*•\d.)]+\s*)?(?:preferred(?:\s+(?:skills|qualifications|requirements|experience))?|"
+    r"bonus(?:\s+skills)?|nice\s+to\s+have(?:\s+skills)?|optional(?:\s+skills)?|"
+    r"good\s+to\s+have|desirable(?:\s+skills)?)\s*:?\s*$",
+    re.I,
+)
+PREFERRED_PREFIX_RE = re.compile(
+    r"^(?:[-*•\d.)]+\s*)?(?:preferred(?:\s+(?:skills|qualifications|requirements|experience))?|"
+    r"bonus(?:\s+skills)?|nice\s+to\s+have(?:\s+skills)?|optional(?:\s+skills)?|"
+    r"good\s+to\s+have|desirable(?:\s+skills)?)\s*:",
+    re.I,
 )
 REQUIRED_SECTION_RE = re.compile(
     r"\b(required|requirements|must have|minimum qualifications|essential|qualifications)\b", re.I
@@ -265,8 +285,14 @@ class JobMatcherEngine:
 
         mode = "uncertain"
         for line in lines:
-            if PREFERRED_SECTION_RE.search(line) and len(line.split()) <= 16:
+            if PREFERRED_HEADING_ONLY_RE.match(line):
                 mode = "preferred"
+                pref_lines.append(line)
+                continue
+            if PREFERRED_PREFIX_RE.match(line):
+                # A top-level "Preferred:" / "Bonus:" / "Optional:" prefix switches mode unless it's a single bullet inside Required
+                if not re.match(r"^\s*[-*•]\s+", line):
+                    mode = "preferred"
                 pref_lines.append(line)
                 continue
             if REQUIRED_SECTION_RE.search(line) and len(line.split()) <= 10:
@@ -274,12 +300,12 @@ class JobMatcherEngine:
                 req_lines.append(line)
                 continue
 
-            if PREFERRED_SECTION_RE.search(line):
-                pref_lines.append(line)
-            elif mode == "preferred":
+            if mode == "preferred":
                 pref_lines.append(line)
             elif mode == "required":
                 req_lines.append(line)
+            elif PREFERRED_SECTION_RE.search(line):
+                pref_lines.append(line)
             else:
                 uncertain_lines.append(line)
 

@@ -403,3 +403,85 @@ def test_project_cleaning_and_preprocessing_detected_as_data_preprocessing(clien
     data = resp.json()
     assert "Data Preprocessing" in data["matched_required_skills"]
     assert "Data Preprocessing" not in data["missing_required_skills"]
+
+
+def test_foundational_skills_and_rahul_patel_representative_fixture(client: TestClient):
+    """Representative Rahul Patel fresher resume & Junior Python Developer JD fixture."""
+    rahul_patel_resume = (
+        "Rahul Patel\n"
+        "B.Tech Computer Science (2025)\n"
+        "Skills: Python, Object-Oriented Programming, Data Structures, Algorithms, Debugging\n"
+        "Projects:\n"
+        "- Built a Python CLI expense tracker using OOP and unit testing with modular debugging."
+    )
+    junior_python_jd = (
+        "Junior Python Developer\n"
+        "Required:\n"
+        "- Strong Python, OOP, Data Structures, and Algorithms fundamentals.\n"
+        "- Experience with SQL and REST APIs, plus Git and Unit Testing.\n"
+        "- Debugging and troubleshooting Python modules.\n"
+        "Preferred:\n"
+        "- Docker, FastAPI\n"
+        "Bonus: AWS\n"
+        "Optional: CI/CD"
+    )
+    resp = client.post(
+        "/match",
+        json={"profile": {"resume_text": rahul_patel_resume}, "job": {"description": junior_python_jd}},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    expected_required = {
+        "Python",
+        "OOP",
+        "Data Structures",
+        "Algorithms",
+        "SQL",
+        "REST API",
+        "Git",
+        "Unit Testing",
+        "Debugging",
+    }
+    assert expected_required.issubset(set(data["diagnostics"]["required_skills_detected"]))
+    # Inline 'plus Git and Unit Testing' inside Required must NOT be diverted to preferred
+    assert "Git" not in data["diagnostics"]["preferred_skills_detected"]
+    assert "Unit Testing" not in data["diagnostics"]["preferred_skills_detected"]
+    assert {"Docker", "FastAPI", "AWS", "CI/CD"}.issubset(
+        set(data["diagnostics"]["preferred_skills_detected"])
+    )
+    assert set(data["matched_required_skills"]).isdisjoint(set(data["matched_preferred_skills"]))
+    assert {"Python", "OOP", "Data Structures", "Algorithms", "Unit Testing", "Debugging"}.issubset(
+        set(data["matched_required_skills"])
+    )
+    assert {"SQL", "REST API", "Git"}.issubset(set(data["missing_required_skills"]))
+
+
+def test_identical_inputs_produce_deterministic_scores_and_evidence(client: TestClient):
+    payload = {
+        "profile": {
+            "resume_text": (
+                "Rahul Patel\n"
+                "B.Tech Computer Science (2025)\n"
+                "Skills: Python, OOP, Data Structures, Algorithms\n"
+                "Projects:\n"
+                "- Built a Python automation script for CSV data cleaning and unit testing."
+            ),
+        },
+        "job": {
+            "title": "Junior Python Developer",
+            "description": (
+                "Required:\n"
+                "Python, OOP, Data Structures, Algorithms, SQL, REST API, Git, Unit Testing\n"
+                "Preferred:\n"
+                "Docker, FastAPI"
+            ),
+        },
+    }
+    r1 = client.post("/match", json=payload)
+    r2 = client.post("/match", json=payload)
+    assert r1.status_code == 200 and r2.status_code == 200
+    d1, d2 = r1.json(), r2.json()
+    assert d1["overall_match_score"] == d2["overall_match_score"]
+    assert d1["semantic_relevance"] == d2["semantic_relevance"]
+    assert d1["required_skill_coverage"] == d2["required_skill_coverage"]
+    assert d1["relevant_profile_evidence"] == d2["relevant_profile_evidence"]
