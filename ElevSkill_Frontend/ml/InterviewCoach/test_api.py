@@ -113,7 +113,7 @@ def test_evaluate_general_answer_with_star(client: TestClient):
         json={
             "answer_text": GENERAL_ANSWER,
             "category": "general",
-            "question_id": "gen-1",
+            "question_id": "gen-2",
         },
     )
     assert resp.status_code == 200
@@ -341,3 +341,58 @@ def test_csharp_i_dont_know_answer_does_not_false_credit_concepts(client: TestCl
     assert data["covered_concepts"] == []
     assert "structs cannot inherit from other structs or classes" in data["missing_concepts"]
     assert data["overall_score"] < 40
+
+
+def test_motivation_question_avoids_star_penalty_while_conflict_uses_star(client: TestClient):
+    # 1. Motivation / preference question (gen-1)
+    r_mot = client.post(
+        "/evaluate",
+        json={
+            "category": "general",
+            "question_id": "gen-1",
+            "answer_text": (
+                "I am excited about this entry-level role because it lets me apply my React and Python "
+                "fundamentals to real user-facing products while learning from senior engineers. "
+                "I learn fastest in collaborative teams with constructive code reviews, clear mentorship, "
+                "pair debugging, and ownership over small end-to-end features."
+            ),
+        },
+    )
+    assert r_mot.status_code == 200
+    d_mot = r_mot.json()
+    assert d_mot["star_assessment"] is None
+    assert "role_alignment" in d_mot["dimension_scores"]
+    assert "star_completeness" not in d_mot["dimension_scores"]
+    assert d_mot["dimension_scores"]["role_alignment"] >= 18
+    assert d_mot["overall_score"] >= 70
+    assert not any("strengthen star" in s.lower() for s in d_mot["improvement_suggestions"])
+
+    # 2. Past-conflict behavioral question (beh-2) still requires STAR
+    r_conf = client.post(
+        "/evaluate",
+        json={
+            "category": "behavioral",
+            "question_id": "beh-2",
+            "answer_text": (
+                "During our capstone project (Situation), two teammates disagreed on whether to use REST or GraphQL (Task). "
+                "I organized a short comparison of both approaches against our 3-week deadline and proposed REST (Action). "
+                "The team aligned quickly and shipped all endpoints on time (Result)."
+            ),
+        },
+    )
+    assert r_conf.status_code == 200
+    d_conf = r_conf.json()
+    assert d_conf["star_assessment"] is not None
+    assert "star_completeness" in d_conf["dimension_scores"]
+
+    # 3. Question-answer mismatch detection preserved
+    r_mis = client.post(
+        "/evaluate",
+        json={
+            "category": "behavioral",
+            "question_id": "beh-2",
+            "answer_text": "My favorite food is pizza with extra cheese and fresh basil leaves.",
+        },
+    )
+    assert r_mis.status_code == 200
+    assert r_mis.json()["overall_score"] < 45

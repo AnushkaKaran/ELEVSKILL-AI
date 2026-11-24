@@ -14,6 +14,7 @@ import './pages.css';
 const DIMENSION_LABELS = {
   relevance: 'Question Relevance',
   star_completeness: 'STAR Completeness',
+  role_alignment: 'Role & Motivation Alignment',
   concept_coverage: 'Behavioral Themes',
   conceptual_understanding: 'Conceptual Understanding',
   completeness: 'Completeness',

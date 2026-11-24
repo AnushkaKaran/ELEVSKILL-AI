@@ -494,53 +494,131 @@ class InterviewCoachEngine:
             concept_norm *= 0.40
 
         star_assessment: Optional[Dict[str, Any]] = None
+        is_motivation_question = False
         if cat in {"behavioral", "general"}:
-            star_assessment = self._evaluate_star(clean_answer, sentences)
-            present_star_count = sum(1 for v in star_assessment.values() if v["present"])
-            star_weights = {"situation": 6.0, "task": 6.0, "action": 10.0, "result": 8.0}
-            star_pts = sum(
-                star_weights[k] if star_assessment[k]["present"] else star_weights[k] * 0.2
-                for k in star_weights
+            q_lower = resolved_question.lower()
+            past_experience_re = re.compile(
+                r"\b(tell me about a time|describe a (?:situation|time|project|conflict|high-pressure)|"
+                r"give an example|have you ever|recent technology.*apply|when you (?:had to|faced|resolved|missed|disagreed))\b",
+                re.I,
             )
-            if diag["word_count"] < 10:
-                star_pts *= 0.3
-
-            # Concrete domain-specific STAR stories (3+ STAR elements, >= 40 words) should not be
-            # under-scored when using domain terms rather than generic rubric phrasing.
-            beh_rel_norm = (
-                self._scale_sim(raw_relevance, low=0.18, high=0.56)
-                if present_star_count >= 3 and diag["word_count"] >= 40
-                else relevance_norm
+            motivation_pref_re = re.compile(
+                r"\b(why are you interested|what kind of team|helps you learn|why do you want|"
+                r"what motivates you|career goals|grow technically|what makes an engineering team|"
+                r"etiquette|how do you balance|how do you approach|how do you organize)\b",
+                re.I,
             )
-            beh_concept_norm = (
-                max(concept_norm, 0.58)
-                if present_star_count >= 3 and diag["word_count"] >= 40 and raw_relevance >= 0.25
-                else concept_norm
+            requires_star = bool(past_experience_re.search(q_lower)) or (
+                cat == "behavioral" and not motivation_pref_re.search(q_lower)
             )
 
-            rel_pts = beh_rel_norm * 20.0
-            concept_pts = beh_concept_norm * 20.0
-            clarity_pts = clarity_norm * 8.0
-            comm_pts = comm_norm * 7.0
-            practical_pts = practical_norm * 15.0
+            if requires_star:
+                star_assessment = self._evaluate_star(clean_answer, sentences)
+                present_star_count = sum(1 for v in star_assessment.values() if v["present"])
+                star_weights = {"situation": 6.0, "task": 6.0, "action": 10.0, "result": 8.0}
+                star_pts = sum(
+                    star_weights[k] if star_assessment[k]["present"] else star_weights[k] * 0.2
+                    for k in star_weights
+                )
+                if diag["word_count"] < 10:
+                    star_pts *= 0.3
 
-            overall_score = int(
-                round(rel_pts + star_pts + concept_pts + clarity_pts + comm_pts + practical_pts)
-            )
-            dimension_scores = {
-                "relevance": round(rel_pts, 1),
-                "relevance_max": 20,
-                "star_completeness": round(star_pts, 1),
-                "star_completeness_max": 30,
-                "concept_coverage": round(concept_pts, 1),
-                "concept_coverage_max": 20,
-                "clarity": round(clarity_pts, 1),
-                "clarity_max": 8,
-                "communication": round(comm_pts, 1),
-                "communication_max": 7,
-                "practical_application": round(practical_pts, 1),
-                "practical_application_max": 15,
-            }
+                # Concrete domain-specific STAR stories (3+ STAR elements, >= 40 words) should not be
+                # under-scored when using domain terms rather than generic rubric phrasing.
+                beh_rel_norm = (
+                    self._scale_sim(raw_relevance, low=0.18, high=0.56)
+                    if present_star_count >= 3 and diag["word_count"] >= 40
+                    else relevance_norm
+                )
+                beh_concept_norm = (
+                    max(concept_norm, 0.58)
+                    if present_star_count >= 3 and diag["word_count"] >= 40 and raw_relevance >= 0.25
+                    else concept_norm
+                )
+
+                rel_pts = beh_rel_norm * 20.0
+                concept_pts = beh_concept_norm * 20.0
+                clarity_pts = clarity_norm * 8.0
+                comm_pts = comm_norm * 7.0
+                practical_pts = practical_norm * 15.0
+
+                overall_score = int(
+                    round(rel_pts + star_pts + concept_pts + clarity_pts + comm_pts + practical_pts)
+                )
+                dimension_scores = {
+                    "relevance": round(rel_pts, 1),
+                    "relevance_max": 20,
+                    "star_completeness": round(star_pts, 1),
+                    "star_completeness_max": 30,
+                    "concept_coverage": round(concept_pts, 1),
+                    "concept_coverage_max": 20,
+                    "clarity": round(clarity_pts, 1),
+                    "clarity_max": 8,
+                    "communication": round(comm_pts, 1),
+                    "communication_max": 7,
+                    "practical_application": round(practical_pts, 1),
+                    "practical_application_max": 15,
+                }
+            else:
+                # Motivation, preference, and career-interest questions should not be penalized for lacking STAR
+                is_motivation_question = True
+                growth_cues = bool(
+                    re.search(
+                        r"\b(learn|grow|growth|feedback|mentor|mentorship|curious|curiosity|improve|ownership|collaborat|team|pair|code review)\b",
+                        clean_answer,
+                        re.I,
+                    )
+                )
+                reasoning_cues = bool(
+                    re.search(
+                        r"\b(because|since|so that|which helps|allows me|interested in|excited|aligned|goal|role)\b",
+                        clean_answer,
+                        re.I,
+                    )
+                )
+                alignment_norm = float(
+                    np.clip(
+                        0.40 * relevance_norm
+                        + 0.25 * concept_norm
+                        + (0.20 if growth_cues else 0.0)
+                        + (0.15 if reasoning_cues else 0.0),
+                        0.0,
+                        1.0,
+                    )
+                )
+                if diag["word_count"] < 10 or raw_relevance < 0.22:
+                    alignment_norm *= 0.25
+
+                mot_practical_norm = (
+                    max(practical_norm, 0.70)
+                    if growth_cues and reasoning_cues and diag["word_count"] >= 35 and raw_relevance >= 0.25
+                    else practical_norm
+                )
+
+                align_pts = alignment_norm * 30.0
+                rel_pts = relevance_norm * 20.0
+                concept_pts = concept_norm * 20.0
+                clarity_pts = clarity_norm * 8.0
+                comm_pts = comm_norm * 7.0
+                practical_pts = mot_practical_norm * 15.0
+
+                overall_score = int(
+                    round(rel_pts + align_pts + concept_pts + clarity_pts + comm_pts + practical_pts)
+                )
+                dimension_scores = {
+                    "relevance": round(rel_pts, 1),
+                    "relevance_max": 20,
+                    "role_alignment": round(align_pts, 1),
+                    "role_alignment_max": 30,
+                    "concept_coverage": round(concept_pts, 1),
+                    "concept_coverage_max": 20,
+                    "clarity": round(clarity_pts, 1),
+                    "clarity_max": 8,
+                    "communication": round(comm_pts, 1),
+                    "communication_max": 7,
+                    "practical_application": round(practical_pts, 1),
+                    "practical_application_max": 15,
+                }
         else:
             # Technical ('frontend', 'dsa')
             rel_pts = relevance_norm * 20.0
@@ -596,6 +674,8 @@ class InterviewCoachEngine:
                 strengths.append(f"Includes STAR structure elements ({', '.join(present_star)}).")
             if missing_star:
                 suggestions.append(f"Strengthen STAR structure by adding: {', '.join(missing_star)}.")
+        elif is_motivation_question and raw_relevance >= 0.35:
+            strengths.append("Demonstrates clear motivation, collaboration mindset, and alignment with the role.")
 
         if 55 <= diag["word_count"] <= 190:
             strengths.append(f"Well-paced length ({diag['word_count']} words).")

@@ -326,3 +326,42 @@ def test_contact_line_not_flagged_as_non_action_bullet(client: TestClient):
     non_action = " ".join(data["quality_analysis"]["non_action_bullets"]).lower()
     assert "aarav.mehta@example.com" not in non_action
     assert "98000" not in non_action
+
+
+def test_summary_paragraph_not_flagged_as_bullet_while_weak_bullets_preserved(client: TestClient):
+    student_resume = (
+        "Ritu Sharma\n"
+        "Jaipur, India | ritu.sharma@example.com\n\n"
+        "Summary\n"
+        "Motivated computer science undergraduate passionate about learning modern software engineering and building reliable user interfaces.\n\n"
+        "Education\n"
+        "B.Sc. Computer Science (2025)\n\n"
+        "Projects\n"
+        "- Did a college website project using HTML and CSS.\n"
+        "- Worked on a database assignment in MySQL.\n"
+    )
+    resp = client.post("/analyze", json={"resume_text": student_resume})
+    assert resp.status_code == 200
+    data = resp.json()
+    non_action = " ".join(data["quality_analysis"]["non_action_bullets"]).lower()
+    weak = " ".join(data["quality_analysis"]["weak_bullets"]).lower()
+    assert "motivated computer science undergraduate" not in non_action
+    assert "did a college website" in weak or "did a college website" in non_action
+
+    experienced_resume = (
+        "Vikram Desai\n"
+        "vikram.desai@example.com | github.com/vikramdesai\n\n"
+        "Summary\n"
+        "Backend Developer with 2 years of experience designing scalable REST APIs, relational schemas, and containerized microservices.\n\n"
+        "Experience\n"
+        "Backend Engineer — CloudCart (2024 - Present)\n"
+        "- Designed 18 FastAPI endpoints backed by PostgreSQL handling 400+ requests per minute.\n"
+        "- Optimized slow SQL joins cutting checkout latency by 35%.\n\n"
+        "Education\n"
+        "B.E. Information Technology (2024)"
+    )
+    resp2 = client.post("/analyze", json={"resume_text": experienced_resume})
+    assert resp2.status_code == 200
+    data2 = resp2.json()
+    non_action2 = " ".join(data2["quality_analysis"]["non_action_bullets"]).lower()
+    assert "backend developer with 2 years" not in non_action2

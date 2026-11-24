@@ -214,7 +214,7 @@ describe('Phase 3 Firebase AI Quick Assistant error classification', () => {
     });
   });
 
-  it('provides at least 10 distinct resume and job description samples', async () => {
+  it('provides at least 10 distinct resume and job description samples including genuine fresher draft', async () => {
     const { SAMPLE_RESUMES, SAMPLE_JOB_DESCRIPTIONS } = await import('../src/data/sampleData');
     expect(SAMPLE_RESUMES.length).toBeGreaterThanOrEqual(10);
     expect(SAMPLE_JOB_DESCRIPTIONS.length).toBeGreaterThanOrEqual(10);
@@ -222,5 +222,10 @@ describe('Phase 3 Firebase AI Quick Assistant error classification', () => {
     expect(new Set(SAMPLE_JOB_DESCRIPTIONS.map((j) => j.description)).size).toBe(
       SAMPLE_JOB_DESCRIPTIONS.length
     );
+
+    const fresherDraft = SAMPLE_RESUMES.find((r) => r.id === 'fresher-weak-draft');
+    expect(fresherDraft).toBeDefined();
+    expect(fresherDraft.resumeText.toLowerCase()).not.toContain('intern');
+    expect(fresherDraft.resumeText.toLowerCase()).not.toContain('frontend developer with');
   });
 });

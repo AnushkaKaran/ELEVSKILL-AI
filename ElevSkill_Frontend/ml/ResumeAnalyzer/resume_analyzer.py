@@ -452,19 +452,43 @@ class ResumeAnalyzerEngine:
         }
 
     @staticmethod
-    def _analyze_quality(resume_text: str) -> Dict[str, Any]:
+    def _analyze_quality(
+        resume_text: str,
+        sections_raw: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> Dict[str, Any]:
         """Evaluates bullet strength, measurable achievements, and word repetition."""
         raw_lines = [line.strip() for line in resume_text.split("\n") if line.strip()]
+        summary_lines = {
+            ln.strip().lower()
+            for ln in (sections_raw or {}).get("summary", {}).get("text", "").splitlines()
+            if ln.strip()
+        }
         contact_line_re = re.compile(
             r"(?:[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|\+?\d[\d\s().-]{7,}\d|"
             r"https?://|linkedin\.com|github\.com|gitlab\.com)",
             re.I,
         )
+
+        def _is_heading_line(line: str) -> bool:
+            cleaned = ResumeAnalyzerEngine._normalize_heading_candidate(line)
+            if not cleaned or len(cleaned.split()) > 6:
+                return False
+            return any(
+                re.fullmatch(pat, cleaned)
+                for patterns in SECTION_PATTERNS.values()
+                for pat in patterns
+            )
+
         bullets = [
             re.sub(r"^[-*•\d.)]+\s*", "", line).strip()
             for line in raw_lines
             if line.startswith(("-", "*", "•"))
-            or (len(line.split()) >= 7 and not contact_line_re.search(line))
+            or (
+                len(line.split()) >= 7
+                and line.lower() not in summary_lines
+                and not contact_line_re.search(line)
+                and not _is_heading_line(line)
+            )
         ]
 
         weak_bullets: List[str] = []
@@ -618,7 +642,7 @@ class ResumeAnalyzerEngine:
             else None
         )
 
-        quality = self._analyze_quality(clean_resume)
+        quality = self._analyze_quality(clean_resume, sections_raw=sections_raw)
 
         # Transparent Scoring Rubric
         structure_pts = 0.0
