@@ -455,10 +455,16 @@ class ResumeAnalyzerEngine:
     def _analyze_quality(resume_text: str) -> Dict[str, Any]:
         """Evaluates bullet strength, measurable achievements, and word repetition."""
         raw_lines = [line.strip() for line in resume_text.split("\n") if line.strip()]
+        contact_line_re = re.compile(
+            r"(?:[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|\+?\d[\d\s().-]{7,}\d|"
+            r"https?://|linkedin\.com|github\.com|gitlab\.com)",
+            re.I,
+        )
         bullets = [
             re.sub(r"^[-*•\d.)]+\s*", "", line).strip()
             for line in raw_lines
-            if line.startswith(("-", "*", "•")) or len(line.split()) >= 7
+            if line.startswith(("-", "*", "•"))
+            or (len(line.split()) >= 7 and not contact_line_re.search(line))
         ]
 
         weak_bullets: List[str] = []

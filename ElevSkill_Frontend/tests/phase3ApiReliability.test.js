@@ -33,7 +33,11 @@ vi.mock('../src/config/firebase.js', () => ({
 }));
 
 vi.mock('firebase/ai', () => ({
-  InferenceMode: { PREFER_ON_DEVICE: 'prefer_on_device' },
+  InferenceMode: {
+    PREFER_ON_DEVICE: 'prefer_on_device',
+    ONLY_IN_CLOUD: 'only_in_cloud',
+    ONLY_ON_DEVICE: 'only_on_device',
+  },
   InferenceSource: { ON_DEVICE: 'on_device', IN_CLOUD: 'in_cloud' },
   getGenerativeModel: (...args) => mockGetGenerativeModel(...args),
 }));
@@ -170,7 +174,7 @@ describe('Phase 3 Firebase AI Quick Assistant error classification', () => {
 
     const p = generateHybridPromptResponse('Explain closures');
     const check = expect(p).rejects.toMatchObject({ code: 'TIMEOUT' });
-    await vi.advanceTimersByTimeAsync(45000);
+    await vi.advanceTimersByTimeAsync(25000);
     await check;
 
     // Subsequent request should not be blocked by stale inFlightRequest
@@ -208,5 +212,15 @@ describe('Phase 3 Firebase AI Quick Assistant error classification', () => {
     await expect(generateHybridPromptResponse('Tip please')).rejects.toMatchObject({
       code: 'APP_CHECK_ERROR',
     });
+  });
+
+  it('provides at least 10 distinct resume and job description samples', async () => {
+    const { SAMPLE_RESUMES, SAMPLE_JOB_DESCRIPTIONS } = await import('../src/data/sampleData');
+    expect(SAMPLE_RESUMES.length).toBeGreaterThanOrEqual(10);
+    expect(SAMPLE_JOB_DESCRIPTIONS.length).toBeGreaterThanOrEqual(10);
+    expect(new Set(SAMPLE_RESUMES.map((r) => r.resumeText)).size).toBe(SAMPLE_RESUMES.length);
+    expect(new Set(SAMPLE_JOB_DESCRIPTIONS.map((j) => j.description)).size).toBe(
+      SAMPLE_JOB_DESCRIPTIONS.length
+    );
   });
 });

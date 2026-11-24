@@ -5,7 +5,8 @@ const DEFAULT_CLOUD_MODEL = (
   import.meta.env.VITE_FIREBASE_AI_CLOUD_MODEL || 'gemini-3.5-flash-lite'
 ).trim();
 
-const REQUEST_TIMEOUT_MS = 45000;
+const REQUEST_TIMEOUT_MS = 25000;
+const ON_DEVICE_FALLBACK_TIMEOUT_MS = 10000;
 
 const CONCISE_SYSTEM_INSTRUCTION =
   'You are a concise career preparation assistant for ELEVSKILL AI. ' +
@@ -30,25 +31,21 @@ function normalizeInferenceSource(rawSource) {
   return 'UNKNOWN';
 }
 
-let cachedModel = null;
+let cachedCloudModel = null;
+let cachedOnDeviceModel = null;
 let cachedModelAiRef = null;
 let cachedModelName = null;
 let inFlightRequest = null;
 
-function getOrCreateHybridModel(ai) {
-  if (cachedModel && cachedModelAiRef === ai && cachedModelName === DEFAULT_CLOUD_MODEL) {
-    return cachedModel;
+function getOrCreateCloudModel(ai) {
+  if (cachedCloudModel && cachedModelAiRef === ai && cachedModelName === DEFAULT_CLOUD_MODEL) {
+    return cachedCloudModel;
   }
 
-  cachedModel = getGenerativeModel(
+  cachedCloudModel = getGenerativeModel(
     ai,
     {
-      mode: InferenceMode.PREFER_ON_DEVICE,
-      onDeviceParams: {
-        createOptions: {
-          initialPrompts: [{ role: 'system', content: CONCISE_SYSTEM_INSTRUCTION }],
-        },
-      },
+      mode: InferenceMode.ONLY_IN_CLOUD,
       inCloudParams: {
         model: DEFAULT_CLOUD_MODEL,
         systemInstruction: CONCISE_SYSTEM_INSTRUCTION,
@@ -61,7 +58,44 @@ function getOrCreateHybridModel(ai) {
   );
   cachedModelAiRef = ai;
   cachedModelName = DEFAULT_CLOUD_MODEL;
-  return cachedModel;
+  return cachedCloudModel;
+}
+
+function getOrCreateOnDeviceModel(ai) {
+  if (cachedOnDeviceModel && cachedModelAiRef === ai) {
+    return cachedOnDeviceModel;
+  }
+
+  cachedOnDeviceModel = getGenerativeModel(
+    ai,
+    {
+      mode: InferenceMode.ONLY_ON_DEVICE,
+      onDeviceParams: {
+        createOptions: {
+          initialPrompts: [{ role: 'system', content: CONCISE_SYSTEM_INSTRUCTION }],
+        },
+      },
+    },
+    { timeout: ON_DEVICE_FALLBACK_TIMEOUT_MS }
+  );
+  return cachedOnDeviceModel;
+}
+
+function raceWithTimeout(promise, timeoutMs, controller, onTimeout) {
+  let timer;
+  const timeoutPromise = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      onTimeout();
+      controller.abort('timeout');
+      const err = new Error('The AI request timed out.');
+      err.name = 'AbortError';
+      reject(err);
+    }, timeoutMs);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    clearTimeout(timer);
+  });
 }
 
 export async function generateHybridPromptResponse(promptText, { signal: externalSignal } = {}) {
@@ -109,11 +143,45 @@ export async function generateHybridPromptResponse(promptText, { signal: externa
 
   const runPromise = (async () => {
     try {
-      const model = getOrCreateHybridModel(services.ai);
-      const result = await model.generateContent(cleanPrompt, {
-        signal: controller.signal,
-        timeout: REQUEST_TIMEOUT_MS,
-      });
+      const cloudModel = getOrCreateCloudModel(services.ai);
+      let result;
+      try {
+        result = await raceWithTimeout(
+          cloudModel.generateContent(cleanPrompt, {
+            signal: controller.signal,
+            timeout: REQUEST_TIMEOUT_MS,
+          }),
+          REQUEST_TIMEOUT_MS,
+          controller,
+          () => {
+            timedOut = true;
+          }
+        );
+      } catch (cloudErr) {
+        const cloudMsg = typeof cloudErr?.message === 'string' ? cloudErr.message : '';
+        const shouldTryOnDevice =
+          !timedOut &&
+          !externalSignal?.aborted &&
+          !/app\s*check|recaptcha|403/i.test(cloudMsg) &&
+          /network|failed to fetch|offline|ERR_INTERNET_DISCONNECTED/i.test(cloudMsg);
+
+        if (!shouldTryOnDevice) {
+          throw cloudErr;
+        }
+
+        const onDeviceModel = getOrCreateOnDeviceModel(services.ai);
+        result = await raceWithTimeout(
+          onDeviceModel.generateContent(cleanPrompt, {
+            signal: controller.signal,
+            timeout: ON_DEVICE_FALLBACK_TIMEOUT_MS,
+          }),
+          ON_DEVICE_FALLBACK_TIMEOUT_MS,
+          controller,
+          () => {
+            timedOut = true;
+          }
+        );
+      }
 
       const response = result?.response;
       const text = typeof response?.text === 'function' ? response.text() : '';

@@ -225,22 +225,49 @@ class InterviewCoachEngine:
         is_code = self._is_code_submission(answer_text)
         code_sig = self._extract_code_signals(answer_text) if is_code else {}
         ans_lower = answer_text.lower()
+        uncertainty_only_re = re.compile(
+            r"\b(?:i\s+don'?t\s+know|do\s+not\s+know|no\s+idea|not\s+sure|can'?t\s+recall)\b",
+            re.I,
+        )
+        non_uncertainty_words = [
+            w
+            for w in re.findall(r"[a-z0-9]+", uncertainty_only_re.sub(" ", ans_lower))
+            if w not in {"is", "are", "and", "or", "the", "a", "an", "also", "both", "about"}
+        ]
+        is_pure_uncertainty = bool(uncertainty_only_re.search(ans_lower)) and len(non_uncertainty_words) < 6
+
+        stop_tokens = {
+            "the", "and", "for", "with", "from", "other", "that", "this",
+            "into", "have", "they", "them", "their", "are", "can", "use",
+        }
 
         covered: List[str] = []
         missing: List[str] = []
         scores: List[float] = []
 
         for idx, concept in enumerate(expected_concepts):
+            if is_pure_uncertainty:
+                missing.append(concept)
+                scores.append(0.0)
+                continue
+
             sims = np.dot(cand_vecs, concept_vecs[idx])
             best_sim = float(np.max(sims))
             c_lower = concept.lower()
 
-            concept_tokens = [w for w in re.findall(r"[a-z0-9]+", c_lower) if len(w) >= 3]
+            concept_tokens = list(
+                dict.fromkeys(
+                    w
+                    for w in re.findall(r"[a-z0-9]+", c_lower)
+                    if len(w) >= 3 and w not in stop_tokens
+                )
+            )
             token_hits = sum(
                 1 for t in concept_tokens
                 if t in ans_lower or (len(t) >= 5 and t[:5] in ans_lower)
             )
-            lexical_bonus = min(0.20, token_hits * 0.055)
+            token_coverage = (token_hits / len(concept_tokens)) if concept_tokens else 0.0
+            lexical_bonus = min(0.20, token_coverage * 0.22) if token_hits >= 2 or token_coverage >= 0.5 else 0.0
 
             # Code-aware algorithmic concept recognition
             code_bonus = 0.0
@@ -255,7 +282,7 @@ class InterviewCoachEngine:
             combined = best_sim + lexical_bonus + code_bonus
             scores.append(self._scale_sim(combined, low=0.28, high=0.66))
 
-            if combined >= 0.42:
+            if combined >= 0.44 and (best_sim >= 0.34 or code_bonus > 0 or token_coverage >= 0.6):
                 covered.append(concept)
             else:
                 missing.append(concept)

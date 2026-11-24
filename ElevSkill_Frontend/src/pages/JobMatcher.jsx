@@ -4,7 +4,7 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Badge } from '../components/Badge';
 import { ProgressBar } from '../components/ProgressBar';
-import { SAMPLE_RESUME_TEXT, SAMPLE_JOB_DESCRIPTION } from '../data/sampleData';
+import { SAMPLE_RESUMES, SAMPLE_JOB_DESCRIPTIONS } from '../data/sampleData';
 import { checkJobMatcherHealth, matchProfileToJob } from '../services/jobMatcherApi';
 import './pages.css';
 
@@ -25,6 +25,8 @@ function getAlignmentLabel(score) {
 export function JobMatcher({ initialResumeText = '', userProfile, roadmapSkills, onRecordMatch }) {
   const [resumeText, setResumeText] = useState(initialResumeText || '');
   const [jobText, setJobText] = useState('');
+  const [selectedResumeSampleId, setSelectedResumeSampleId] = useState(SAMPLE_RESUMES[0].id);
+  const [selectedJobSampleId, setSelectedJobSampleId] = useState(SAMPLE_JOB_DESCRIPTIONS[0].id);
   const [error, setError] = useState('');
   const [apiError, setApiError] = useState('');
   const [isMatching, setIsMatching] = useState(false);
@@ -138,11 +140,45 @@ export function JobMatcher({ initialResumeText = '', userProfile, roadmapSkills,
     runMatch();
   };
 
-  const handleLoadSample = () => {
+  const handleSelectResumeSample = (sampleId) => {
+    const sample = SAMPLE_RESUMES.find((s) => s.id === sampleId) || SAMPLE_RESUMES[0];
     setError('');
     setApiError('');
-    setResumeText(SAMPLE_RESUME_TEXT);
-    setJobText(SAMPLE_JOB_DESCRIPTION);
+    setSelectedResumeSampleId(sample.id);
+    setResumeText(sample.resumeText);
+    setComparison(null);
+  };
+
+  const handleSelectJobSample = (jdId) => {
+    const jd = SAMPLE_JOB_DESCRIPTIONS.find((j) => j.id === jdId) || SAMPLE_JOB_DESCRIPTIONS[0];
+    setError('');
+    setApiError('');
+    setSelectedJobSampleId(jd.id);
+    setJobText(jd.description);
+    setComparison(null);
+  };
+
+  const handleLoadSample = () => {
+    const currentIdx = SAMPLE_RESUMES.findIndex((s) => s.id === selectedResumeSampleId);
+    const currentResume = SAMPLE_RESUMES[currentIdx] || SAMPLE_RESUMES[0];
+    const currentJob =
+      SAMPLE_JOB_DESCRIPTIONS.find((j) => j.id === selectedJobSampleId) ||
+      SAMPLE_JOB_DESCRIPTIONS[0];
+
+    const alreadyLoaded =
+      resumeText.trim() === currentResume.resumeText.trim() &&
+      jobText.trim() === currentJob.description.trim();
+
+    const targetIdx = alreadyLoaded ? (currentIdx + 1) % SAMPLE_RESUMES.length : currentIdx;
+    const nextResume = SAMPLE_RESUMES[targetIdx] || SAMPLE_RESUMES[0];
+    const nextJob = SAMPLE_JOB_DESCRIPTIONS[targetIdx] || SAMPLE_JOB_DESCRIPTIONS[0];
+
+    setError('');
+    setApiError('');
+    setSelectedResumeSampleId(nextResume.id);
+    setSelectedJobSampleId(nextJob.id);
+    setResumeText(nextResume.resumeText);
+    setJobText(nextJob.description);
     setComparison(null);
   };
 
@@ -246,13 +282,42 @@ export function JobMatcher({ initialResumeText = '', userProfile, roadmapSkills,
           <Button type="submit" variant="primary" disabled={isMatching}>
             <GitCompare size={16} /> {isMatching ? 'Matching...' : 'Compare Resume & Job'}
           </Button>
+          <select
+            aria-label="Select sample resume"
+            className="form-select"
+            value={selectedResumeSampleId}
+            disabled={isMatching}
+            onChange={(e) => handleSelectResumeSample(e.target.value)}
+            style={{ width: 'auto', minWidth: '190px', maxWidth: '100%' }}
+          >
+            {SAMPLE_RESUMES.map((sample) => (
+              <option key={sample.id} value={sample.id}>
+                Resume: {sample.label}
+              </option>
+            ))}
+          </select>
+          <select
+            aria-label="Select sample job description"
+            className="form-select"
+            value={selectedJobSampleId}
+            disabled={isMatching}
+            onChange={(e) => handleSelectJobSample(e.target.value)}
+            style={{ width: 'auto', minWidth: '190px', maxWidth: '100%' }}
+          >
+            {SAMPLE_JOB_DESCRIPTIONS.map((jd) => (
+              <option key={jd.id} value={jd.id}>
+                JD: {jd.label}
+              </option>
+            ))}
+          </select>
           <Button
             type="button"
             variant="secondary"
             onClick={handleLoadSample}
             disabled={isMatching}
+            title="Load selected sample pair (or click again for next sample)"
           >
-            <RotateCcw size={15} /> Load Sample Text
+            <RotateCcw size={15} /> Load Sample Pair
           </Button>
           <Button
             type="button"

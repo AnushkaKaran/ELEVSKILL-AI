@@ -308,3 +308,21 @@ def test_extract_pdf_preserves_response_contract_and_handles_invalid_pdf(client:
     )
     assert bad_resp.status_code == 422
     assert bad_resp.json()["error_code"] == "INVALID_FILE_TYPE"
+
+
+def test_contact_line_not_flagged_as_non_action_bullet(client: TestClient):
+    resume = (
+        "Aarav Mehta\n"
+        "Bengaluru, India | +91 98000 11223 | aarav.mehta@example.com | github.com/aaravmehta\n\n"
+        "Experience\n"
+        "Frontend Intern at Campus Lab (2025)\n"
+        "- Built 12 reusable React components for student planner.\n\n"
+        "Education\n"
+        "B.Tech Computer Science (2026)"
+    )
+    resp = client.post("/analyze", json={"resume_text": resume})
+    assert resp.status_code == 200
+    data = resp.json()
+    non_action = " ".join(data["quality_analysis"]["non_action_bullets"]).lower()
+    assert "aarav.mehta@example.com" not in non_action
+    assert "98000" not in non_action

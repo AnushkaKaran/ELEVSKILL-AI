@@ -4,7 +4,7 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Badge } from '../components/Badge';
 import { ProgressBar } from '../components/ProgressBar';
-import { SAMPLE_RESUME_TEXT, SAMPLE_JOB_DESCRIPTION } from '../data/sampleData';
+import { SAMPLE_RESUMES } from '../data/sampleData';
 import { getResumeStatusLabel } from '../utils/dashboardStore';
 import {
   checkResumeAnalyzerHealth,
@@ -22,6 +22,7 @@ export function ResumeAnalyzer({
 }) {
   const [resumeText, setResumeText] = useState(initialResumeText || '');
   const [jobText, setJobText] = useState('');
+  const [selectedSampleId, setSelectedSampleId] = useState(SAMPLE_RESUMES[0].id);
   const [error, setError] = useState('');
   const [apiError, setApiError] = useState('');
   const [pdfStatus, setPdfStatus] = useState('');
@@ -114,13 +115,26 @@ export function ResumeAnalyzer({
     runAnalysis();
   };
 
-  const handleLoadSample = () => {
+  const applySampleById = (sampleId) => {
+    const sample = SAMPLE_RESUMES.find((s) => s.id === sampleId) || SAMPLE_RESUMES[0];
     setError('');
     setApiError('');
     setPdfStatus('');
-    setResumeText(SAMPLE_RESUME_TEXT);
-    setJobText(SAMPLE_JOB_DESCRIPTION);
+    setSelectedSampleId(sample.id);
+    setResumeText(sample.resumeText);
+    setJobText(sample.jobDescription);
     setResult(null);
+  };
+
+  const handleLoadSample = () => {
+    const currentIdx = SAMPLE_RESUMES.findIndex((s) => s.id === selectedSampleId);
+    const current = SAMPLE_RESUMES[currentIdx] || SAMPLE_RESUMES[0];
+    if (resumeText.trim() === current.resumeText.trim()) {
+      const next = SAMPLE_RESUMES[(currentIdx + 1) % SAMPLE_RESUMES.length];
+      applySampleById(next.id);
+    } else {
+      applySampleById(current.id);
+    }
   };
 
   const handleClear = () => {
@@ -337,13 +351,28 @@ export function ResumeAnalyzer({
               <Button type="submit" variant="primary" disabled={isAnalyzing}>
                 <Sparkles size={16} /> {isAnalyzing ? 'Analyzing...' : 'Analyze Resume'}
               </Button>
+              <select
+                aria-label="Select sample resume"
+                className="form-select"
+                value={selectedSampleId}
+                disabled={isAnalyzing}
+                onChange={(e) => applySampleById(e.target.value)}
+                style={{ width: 'auto', minWidth: '210px', maxWidth: '100%' }}
+              >
+                {SAMPLE_RESUMES.map((sample) => (
+                  <option key={sample.id} value={sample.id}>
+                    {sample.label}
+                  </option>
+                ))}
+              </select>
               <Button
                 type="button"
                 variant="secondary"
                 onClick={handleLoadSample}
                 disabled={isAnalyzing}
+                title="Load selected sample (or click again for next sample)"
               >
-                <RotateCcw size={15} /> Load Sample Text
+                <RotateCcw size={15} /> Load Sample
               </Button>
               <Button
                 type="button"

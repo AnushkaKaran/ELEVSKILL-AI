@@ -141,8 +141,8 @@ export function HybridAiTipCard() {
 
   return (
     <Card
-      title="Hybrid AI Quick Assistant"
-      subtitle="Powered by Firebase AI Logic (prefers on-device Chrome Gemini Nano, falls back to cloud Gemini)"
+      title="ELEVSKILL AI Quick Assistant"
+      subtitle="Powered by Firebase AI Logic (fast cloud Gemini with on-device fallback)"
       action={
         result ? (
           <Badge variant={result.inferenceSource === 'ON_DEVICE' ? 'success' : 'blue'}>
@@ -184,11 +184,11 @@ export function HybridAiTipCard() {
         {loading && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div className="text-small text-muted" role="status">
-              Generating concise response (preferring on-device AI when available)...
+              Generating concise response with ELEVSKILL AI...
             </div>
             {isSlow && (
               <div className="question-tip" style={{ margin: 0 }} role="status">
-                Generating is taking longer than expected (on-device initialization or cloud Gemini fallback in progress) — please wait while it completes.
+                Generating is taking longer than expected — please wait while ELEVSKILL AI completes your response.
               </div>
             )}
           </div>

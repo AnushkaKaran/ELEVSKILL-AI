@@ -320,3 +320,24 @@ def test_legitimate_code_submission_still_detected_in_coding_category(client: Te
     assert resp.status_code == 200
     data = resp.json()
     assert any("executable code solution" in s.lower() for s in data["strengths"])
+
+
+def test_csharp_i_dont_know_answer_does_not_false_credit_concepts(client: TestClient):
+    resp = client.post(
+        "/evaluate",
+        json={
+            "category": "csharp",
+            "question_text": "What is the difference between value types (struct) and reference types (class) in C#?",
+            "expected_concepts": [
+                "structs are value types stored inline/stack while classes are reference types on the heap",
+                "structs cannot inherit from other structs or classes",
+                "classes support inheritance and polymorphism",
+            ],
+            "answer_text": "struct is i don't know and class also i don't know",
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["covered_concepts"] == []
+    assert "structs cannot inherit from other structs or classes" in data["missing_concepts"]
+    assert data["overall_score"] < 40

@@ -379,3 +379,27 @@ def test_incidental_intro_skills_not_promoted_to_required_skills(client: TestCli
     }
     assert "Data Preprocessing" not in data["missing_required_skills"]
     assert "Data Preprocessing" in data["diagnostics"]["uncertain_skills_detected"]
+
+
+def test_project_cleaning_and_preprocessing_detected_as_data_preprocessing(client: TestClient):
+    resp = client.post(
+        "/match",
+        json={
+            "profile": {
+                "resume_text": (
+                    "Rohan Kulkarni\n"
+                    "Projects\n"
+                    "- Heartiva Cardiac Risk Predictor: Cleaned and preprocessed a 70,000-row clinical dataset "
+                    "and trained scikit-learn models in Python."
+                ),
+            },
+            "job": {
+                "title": "Data Scientist",
+                "description": "Required: Python, scikit-learn, Data Preprocessing, and SQL experience.",
+            },
+        },
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "Data Preprocessing" in data["matched_required_skills"]
+    assert "Data Preprocessing" not in data["missing_required_skills"]
