@@ -1,5 +1,5 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { getAI, GoogleAIBackend } from 'firebase/ai';
 import { getAuth } from 'firebase/auth';
 
@@ -80,15 +80,15 @@ export function getFirebaseServices() {
       // Only enable App Check debug mode in local development builds; never in production.
       self.FIREBASE_APPCHECK_DEBUG_TOKEN = envDebugToken || true;
 
-      // Official Web debug-token flow: ReCaptchaV3Provider is passed to initializeAppCheck,
+      // Official Web debug-token flow: ReCaptchaEnterpriseProvider is passed to initializeAppCheck,
       // while Firebase App Check debug mode intercepts token generation/exchange on localhost.
       cachedAppCheck = initializeAppCheck(cachedApp, {
-        provider: new ReCaptchaV3Provider(siteKey || 'local-dev-debug-key'),
+        provider: new ReCaptchaEnterpriseProvider(siteKey || 'local-dev-debug-key'),
         isTokenAutoRefreshEnabled: true,
       });
     } else if (siteKey) {
       cachedAppCheck = initializeAppCheck(cachedApp, {
-        provider: new ReCaptchaV3Provider(siteKey),
+        provider: new ReCaptchaEnterpriseProvider(siteKey),
         isTokenAutoRefreshEnabled: true,
       });
     } else {

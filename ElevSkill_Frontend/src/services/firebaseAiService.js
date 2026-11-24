@@ -143,7 +143,7 @@ export async function generateHybridPromptResponse(promptText, { signal: externa
       const rawMsg = typeof err?.message === 'string' ? err.message : '';
       if (/app\s*check|recaptcha|403/i.test(rawMsg)) {
         throw new FirebaseAiServiceError(
-          'Firebase App Check verification failed. Ensure your reCAPTCHA v3 site key and local debug token are registered in Firebase Console.',
+          'Firebase App Check verification failed. Ensure your reCAPTCHA Enterprise site key and local debug token are registered in Firebase Console.',
           { code: 'APP_CHECK_ERROR' }
         );
       }
