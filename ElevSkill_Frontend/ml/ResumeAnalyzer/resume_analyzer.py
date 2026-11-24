@@ -173,14 +173,20 @@ class ResumeAnalyzerEngine:
 
     def _get_model(self):
         if self._model is None:
+            import gc
+            import torch
             from sentence_transformers import SentenceTransformer
 
+            torch.set_num_threads(1)
             logger.info("Loading SentenceTransformer model from %s", self.model_source)
             is_local_dir = Path(self.model_source).exists()
             self._model = SentenceTransformer(
                 self.model_source,
+                device="cpu",
                 local_files_only=is_local_dir,
+                model_kwargs={"low_cpu_mem_usage": True},
             )
+            gc.collect()
         return self._model
 
     @staticmethod

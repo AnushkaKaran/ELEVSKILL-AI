@@ -180,11 +180,20 @@ class JobMatcherEngine:
 
     def _get_model(self):
         if self._model is None:
+            import gc
+            import torch
             from sentence_transformers import SentenceTransformer
 
+            torch.set_num_threads(1)
             is_local = Path(self.model_source).exists()
             logger.info("Loading JobMatcher model from %s", self.model_source)
-            self._model = SentenceTransformer(self.model_source, local_files_only=is_local)
+            self._model = SentenceTransformer(
+                self.model_source,
+                device="cpu",
+                local_files_only=is_local,
+                model_kwargs={"low_cpu_mem_usage": True},
+            )
+            gc.collect()
         return self._model
 
     @staticmethod

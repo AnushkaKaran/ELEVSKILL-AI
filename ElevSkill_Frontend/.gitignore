@@ -29,9 +29,6 @@ __pycache__/
 # Local logs
 /logs/
 
-# Uploaded user data
-ElevSkill_Backend/storage/
-
 # Build outputs
 dist/
 build/

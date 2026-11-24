@@ -10,7 +10,6 @@ logs/
 # Node.js Dependencies & Build Output
 node_modules/
 ElevSkill_Frontend/dist/
-ElevSkill_Backend/coverage/
 
 # Python Virtual Environments & Caches
 **/.venv/
@@ -19,12 +18,6 @@ ElevSkill_Backend/coverage/
 **/.ipynb_checkpoints/
 *.pyc
 *.pyo
-
-# Uploaded & Temporary User Files
-ElevSkill_Backend/storage/resumes/*
-!ElevSkill_Backend/storage/resumes/.gitkeep
-ElevSkill_Backend/storage/temporary/*
-!ElevSkill_Backend/storage/temporary/.gitkeep
 
 # OS & Editor Files
 .DS_Store

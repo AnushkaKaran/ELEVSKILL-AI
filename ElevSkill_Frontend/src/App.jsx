@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
 import { OnboardingModal } from './components/OnboardingModal';
@@ -22,13 +22,62 @@ import {
   subscribeToAuthChanges,
 } from './services/firebaseAuthService';
 import { Dashboard } from './pages/Dashboard';
-import { ResumeAnalyzer } from './pages/ResumeAnalyzer';
-import { ResumeVault } from './pages/ResumeVault';
-import { ResumeBuilder } from './pages/ResumeBuilder';
-import { InterviewCoach } from './pages/InterviewCoach';
-import { CareerRoadmap } from './pages/CareerRoadmap';
-import { JobMatcher } from './pages/JobMatcher';
-import { Settings } from './pages/Settings';
+
+const ResumeAnalyzer = lazy(() =>
+  import('./pages/ResumeAnalyzer').then((module) => ({
+    default: module.ResumeAnalyzer,
+  }))
+);
+const ResumeVault = lazy(() =>
+  import('./pages/ResumeVault').then((module) => ({
+    default: module.ResumeVault,
+  }))
+);
+const ResumeBuilder = lazy(() =>
+  import('./pages/ResumeBuilder').then((module) => ({
+    default: module.ResumeBuilder,
+  }))
+);
+const InterviewCoach = lazy(() =>
+  import('./pages/InterviewCoach').then((module) => ({
+    default: module.InterviewCoach,
+  }))
+);
+const CareerRoadmap = lazy(() =>
+  import('./pages/CareerRoadmap').then((module) => ({
+    default: module.CareerRoadmap,
+  }))
+);
+const JobMatcher = lazy(() =>
+  import('./pages/JobMatcher').then((module) => ({
+    default: module.JobMatcher,
+  }))
+);
+const Settings = lazy(() =>
+  import('./pages/Settings').then((module) => ({
+    default: module.Settings,
+  }))
+);
+
+function PageLoadingFallback() {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '240px',
+        color: 'var(--text-secondary)',
+        fontSize: '0.95rem',
+        fontWeight: 500,
+      }}
+    >
+      Loading page...
+    </div>
+  );
+}
 import { EMPTY_PROFILE } from './data/sampleData';
 import {
   clearAllUserData,
@@ -568,7 +617,8 @@ export default function App() {
               onNavigate={setActivePage}
             />
           )}
-          {activePage === 'resume' && (
+          <Suspense fallback={<PageLoadingFallback />}>
+            {activePage === 'resume' && (
             <ResumeAnalyzer
               initialResumeText={sharedResumeText}
               onRecordAnalysis={handleRecordResumeAnalysis}
@@ -651,6 +701,7 @@ export default function App() {
               isAuthenticated={authSession.isAuthenticated}
             />
           )}
+          </Suspense>
         </main>
 
         <footer className="app-footer">

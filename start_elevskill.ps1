@@ -7,7 +7,6 @@ $ErrorActionPreference = 'Stop'
 
 $RootDir = $PSScriptRoot
 $LogsDir = Join-Path $RootDir 'logs'
-$BackendDir = Join-Path $RootDir 'ElevSkill_Backend'
 $FrontendDir = Join-Path $RootDir 'ElevSkill_Frontend'
 $PythonExe = Join-Path $FrontendDir 'ml\ResumeAnalyzer\.venv\Scripts\python.exe'
 $ViteScript = Join-Path $FrontendDir 'node_modules\vite\bin\vite.js'
@@ -54,16 +53,6 @@ $ServiceDefinitions = @(
         HealthUrl = 'http://127.0.0.1:8004/health'
     },
     @{
-        Key       = 'backend'
-        Name      = 'Express Backend'
-        Type      = 'backend'
-        Port      = 5000
-        WorkDir   = $BackendDir
-        Exe       = 'node'
-        Args      = @('server.js')
-        HealthUrl = 'http://127.0.0.1:5000/api/health'
-    },
-    @{
         Key       = 'frontend'
         Name      = 'React + Vite Frontend'
         Type      = 'frontend'
@@ -93,33 +82,6 @@ function Write-Warn {
 function Write-Err {
     param([string]$Message)
     Write-Host "[ELEVSKILL] $Message" -ForegroundColor Red
-}
-
-function Test-SqlServerConnectivity {
-    $sqlService = Get-Service -Name 'MSSQL$SQLEXPRESS' -ErrorAction SilentlyContinue
-    if ($null -eq $sqlService) {
-        throw "SQL Server Express service 'MSSQL`$SQLEXPRESS' was not found on this machine."
-    }
-    if ($sqlService.Status -ne 'Running') {
-        throw "SQL Server Express service 'MSSQL`$SQLEXPRESS' is currently '$($sqlService.Status)'. Start the service before launching ELEVSKILL AI."
-    }
-
-    $sqlcmd = Get-Command 'sqlcmd' -ErrorAction SilentlyContinue
-    if ($null -ne $sqlcmd) {
-        $null = & sqlcmd -S '.\SQLEXPRESS' -d 'ELEVSKILL_AI_DB' -Q 'SELECT 1' -b -l 5 2>&1
-        if ($LASTEXITCODE -ne 0) {
-            throw "SQL Server Express connectivity check failed for '.\SQLEXPRESS' (database 'ELEVSKILL_AI_DB'). Ensure the database exists and Windows Authentication is enabled."
-        }
-        return
-    }
-
-    $conn = New-Object System.Data.SqlClient.SqlConnection('Server=.\SQLEXPRESS;Database=ELEVSKILL_AI_DB;Integrated Security=True;Connection Timeout=5;')
-    try {
-        $conn.Open()
-    }
-    finally {
-        $conn.Dispose()
-    }
 }
 
 function Test-PortsFree {
@@ -160,20 +122,11 @@ function Invoke-PreFlightChecks {
         throw "npm ('npm.cmd') was not found in PATH."
     }
 
-    if (-not (Test-Path (Join-Path $BackendDir 'node_modules'))) {
-        throw "Backend dependencies missing. Run 'npm.cmd install' in $BackendDir."
-    }
     if (-not (Test-Path (Join-Path $FrontendDir 'node_modules'))) {
         throw "Frontend dependencies missing. Run 'npm.cmd install' in $FrontendDir."
     }
     if (-not (Test-Path $ViteScript)) {
         throw "Vite binary script not found at: $ViteScript"
-    }
-    if (-not (Test-Path (Join-Path $BackendDir '.env'))) {
-        throw "Backend .env file not found at: $(Join-Path $BackendDir '.env')"
-    }
-    if (-not (Test-Path (Join-Path $BackendDir 'server.js'))) {
-        throw "Backend entry point not found at: $(Join-Path $BackendDir 'server.js')"
     }
 
     foreach ($svc in $ServiceDefinitions) {
@@ -182,11 +135,8 @@ function Invoke-PreFlightChecks {
         }
     }
 
-    Test-SqlServerConnectivity
-    Write-Success "SQL Server Express (.\SQLEXPRESS / ELEVSKILL_AI_DB) is reachable."
-
     Test-PortsFree -Services $ServiceDefinitions
-    Write-Success "All required ports (5000, 5173, 8000, 8002, 8003, 8004) are available."
+    Write-Success "All required ports (5173, 8000, 8002, 8003, 8004) are available."
 }
 
 function Initialize-LogFiles {
@@ -228,24 +178,6 @@ function Get-ServiceHealthState {
                 return @{ State = 'Ready'; Detail = 'Model loaded' }
             }
             return @{ State = 'Waiting for model loading'; Detail = "status=$($resp.status), model_loaded=$($resp.model_loaded)" }
-        }
-        elseif ($Tracked.Type -eq 'backend') {
-            $resp = Invoke-RestMethod -Uri $Tracked.HealthUrl -Method Get -TimeoutSec 3
-            $dbOk = ($null -ne $resp.database) -and ($resp.database.connected -eq $true)
-            $ai = $resp.aiServices
-            $aiOk = ($null -ne $ai) -and `
-                    ($ai.resumeAnalyzer.ok -eq $true) -and `
-                    ($ai.interviewCoach.ok -eq $true) -and `
-                    ($ai.jobMatcher.ok -eq $true) -and `
-                    ($ai.careerRoadmap.ok -eq $true)
-
-            if ($dbOk -and $aiOk) {
-                return @{ State = 'Ready'; Detail = 'DB + 4 AI services healthy' }
-            }
-            if (-not $dbOk) {
-                return @{ State = 'Starting'; Detail = 'Waiting for SQL Server connection' }
-            }
-            return @{ State = 'Waiting for AI services'; Detail = 'Backend up, waiting for AI models' }
         }
         elseif ($Tracked.Type -eq 'frontend') {
             $resp = Invoke-WebRequest -Uri $Tracked.HealthUrl -Method Get -UseBasicParsing -TimeoutSec 3
@@ -291,7 +223,7 @@ function Stop-TrackedProcesses {
             Write-Warn "Could not verify shutdown for $($entry.Name) (PID $($proc.Id)): $($_.Exception.Message)"
         }
     }
-    Write-Info "SQL Server Express and unrelated processes were not modified."
+    Write-Info "Unrelated processes were not modified."
 }
 
 $TrackedProcesses = New-Object System.Collections.ArrayList
@@ -390,12 +322,10 @@ try {
     Write-Success " ELEVSKILL AI is READY in ${elapsed}s"
     Write-Success "=========================================================="
     Write-Host "  Frontend : http://127.0.0.1:5173"
-    Write-Host "  Backend  : http://127.0.0.1:5000/api/health"
     Write-Host "  AI (RA)  : http://127.0.0.1:8000/health"
     Write-Host "  AI (IC)  : http://127.0.0.1:8002/health"
     Write-Host "  AI (JM)  : http://127.0.0.1:8003/health"
     Write-Host "  AI (CR)  : http://127.0.0.1:8004/health"
-    Write-Host "  Database : .\SQLEXPRESS / ELEVSKILL_AI_DB (Connected)"
     Write-Host "  Logs     : $LogsDir"
     Write-Host ""
     Write-Info "Press Ctrl+C to stop all ELEVSKILL AI services cleanly."
