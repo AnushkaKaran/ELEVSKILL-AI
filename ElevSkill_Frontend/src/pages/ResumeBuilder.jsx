@@ -18,6 +18,31 @@ const TEMPLATES = [
   { id: 'compact', label: 'Compact Technical', accent: '#386A8C' },
 ];
 
+const REQUIRED_RESUME_FIELDS = [
+  ['fullName', 'Full Name'],
+  ['email', 'Email'],
+  ['phone', 'Phone'],
+  ['summary', 'Professional Summary'],
+  ['education', 'Education'],
+  ['skills', 'Technical Skills'],
+  ['softSkills', 'Soft Skills'],
+  ['projects', 'Projects'],
+];
+
+export function validateRequiredResumeFields(sections = {}) {
+  const missing = REQUIRED_RESUME_FIELDS
+    .filter(([key]) => !String(sections?.[key] || '').trim())
+    .map(([, label]) => label);
+  return {
+    valid: missing.length === 0,
+    missingFields: missing,
+    message:
+      missing.length > 0
+        ? `Please complete all required (*) fields before generating or downloading: ${missing.join(', ')}.`
+        : '',
+  };
+}
+
 function parseTextToSections(rawText, userProfile) {
   const text = (rawText || '').trim();
   const lines = text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
@@ -29,6 +54,7 @@ function parseTextToSections(rawText, userProfile) {
     summary: [],
     education: [],
     skills: [],
+    softSkills: [],
     projects: [],
     experience: [],
     internships: [],
@@ -41,6 +67,7 @@ function parseTextToSections(rawText, userProfile) {
     const cleanHead = line.replace(/^[#*\-\d.\s]+/, '').replace(/[:\-–—|]+$/, '').trim().toLowerCase();
     if (/^(professional\s+)?summary|objective|profile$/.test(cleanHead)) { current = 'summary'; continue; }
     if (/^education|academics|academic background$/.test(cleanHead)) { current = 'education'; continue; }
+    if (/^(soft|interpersonal)\s+skills$/.test(cleanHead)) { current = 'softSkills'; continue; }
     if (/^(technical\s+)?skills|technologies|tech stack$/.test(cleanHead)) { current = 'skills'; continue; }
     if (/^(academic\s+|personal\s+|key\s+)?projects$/.test(cleanHead)) { current = 'projects'; continue; }
     if (/^(work\s+|professional\s+)?experience$/.test(cleanHead)) { current = 'experience'; continue; }
@@ -58,6 +85,7 @@ function parseTextToSections(rawText, userProfile) {
     summary: buckets.summary.slice(1).join('\n'),
     education: buckets.education.join('\n') || userProfile?.education || '',
     skills: buckets.skills.join('\n') || userProfile?.skills || '',
+    softSkills: buckets.softSkills.join('\n'),
     projects: buckets.projects.join('\n'),
     experience: buckets.experience.join('\n'),
     internships: buckets.internships.join('\n'),
@@ -78,6 +106,7 @@ export function ResumeBuilder({
   const [isLoadingDraft, setIsLoadingDraft] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [draftError, setDraftError] = useState('');
+  const [validationError, setValidationError] = useState('');
   const [savedNotice, setSavedNotice] = useState('');
 
   useEffect(() => {
@@ -127,11 +156,19 @@ export function ResumeBuilder({
     setSections((prev) => ({ ...prev, [field]: value }));
     if (savedNotice) setSavedNotice('');
     if (draftError) setDraftError('');
+    if (validationError) setValidationError('');
   };
 
   const activeTemplate = TEMPLATES.find((t) => t.id === template) || TEMPLATES[1];
 
   const handlePrintPdf = () => {
+    const check = validateRequiredResumeFields(sections);
+    if (!check.valid) {
+      setValidationError(check.message);
+      setSavedNotice('');
+      return;
+    }
+    setValidationError('');
     window.print();
   };
 
@@ -169,12 +206,21 @@ export function ResumeBuilder({
   };
 
   const handleSaveBuiltResume = () => {
+    const check = validateRequiredResumeFields(sections);
+    if (!check.valid) {
+      setValidationError(check.message);
+      setSavedNotice('');
+      return;
+    }
+    setValidationError('');
+
     const compiled = [
       sections.fullName,
       [sections.email, sections.phone, sections.links].filter(Boolean).join(' | '),
       sections.summary ? `\nSummary\n${sections.summary}` : '',
       sections.education ? `\nEducation\n${sections.education}` : '',
       sections.skills ? `\nTechnical Skills\n${sections.skills}` : '',
+      sections.softSkills ? `\nSoft Skills\n${sections.softSkills}` : '',
       sections.projects ? `\nProjects\n${sections.projects}` : '',
       sections.experience ? `\nExperience\n${sections.experience}` : '',
       sections.internships ? `\nInternships\n${sections.internships}` : '',
@@ -268,6 +314,12 @@ export function ResumeBuilder({
         </div>
       )}
 
+      {validationError && (
+        <div className="validation-error no-print" role="alert">
+          {validationError}
+        </div>
+      )}
+
       {savedNotice && (
         <div className="question-tip no-print" role="status">
           {savedNotice}
@@ -307,20 +359,27 @@ export function ResumeBuilder({
 
             <div className="grid-2 resume-builder-grid">
               <div className="form-field">
-                <label className="form-label" htmlFor="rb-name">Full Name</label>
+                <label className="form-label" htmlFor="rb-name">
+                  Full Name <span aria-hidden="true" style={{ color: '#dc2626' }}>*</span>
+                </label>
                 <input
                   id="rb-name"
                   className="form-input"
+                  required
                   value={sections.fullName}
                   onChange={(e) => updateField('fullName', e.target.value)}
                   placeholder="Alex Rivera"
                 />
               </div>
               <div className="form-field">
-                <label className="form-label" htmlFor="rb-email">Email</label>
+                <label className="form-label" htmlFor="rb-email">
+                  Email <span aria-hidden="true" style={{ color: '#dc2626' }}>*</span>
+                </label>
                 <input
                   id="rb-email"
+                  type="email"
                   className="form-input"
+                  required
                   value={sections.email}
                   onChange={(e) => updateField('email', e.target.value)}
                   placeholder="alex@university.edu"
@@ -330,17 +389,22 @@ export function ResumeBuilder({
 
             <div className="grid-2 resume-builder-grid">
               <div className="form-field">
-                <label className="form-label" htmlFor="rb-phone">Phone</label>
+                <label className="form-label" htmlFor="rb-phone">
+                  Phone <span aria-hidden="true" style={{ color: '#dc2626' }}>*</span>
+                </label>
                 <input
                   id="rb-phone"
                   className="form-input"
+                  required
                   value={sections.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
                   placeholder="(555) 123-4567"
                 />
               </div>
               <div className="form-field">
-                <label className="form-label" htmlFor="rb-links">GitHub / LinkedIn / Portfolio</label>
+                <label className="form-label" htmlFor="rb-links">
+                  GitHub / LinkedIn / Portfolio (Optional)
+                </label>
                 <input
                   id="rb-links"
                   className="form-input"
@@ -352,24 +416,34 @@ export function ResumeBuilder({
             </div>
 
             {[
-              ['summary', 'Professional Summary', 70],
-              ['education', 'Education', 80],
-              ['skills', 'Technical Skills', 70],
-              ['projects', 'Projects', 100],
-              ['experience', 'Experience', 90],
-              ['internships', 'Internships', 80],
-              ['certifications', 'Certifications', 70],
-              ['achievements', 'Achievements', 70],
-            ].map(([key, label, minH]) => (
+              ['summary', 'Professional Summary', 130, 5, true, 'Summarize your background, key strengths, and target engineering focus...'],
+              ['education', 'Education', 115, 4, true, 'Degree, institution, graduation year, and relevant coursework...'],
+              ['skills', 'Technical Skills', 105, 3, true, 'Languages, frameworks, databases, and developer tools...'],
+              ['softSkills', 'Soft Skills', 105, 3, true, 'Team Collaboration, Problem Solving, Communication, Time Management...'],
+              ['projects', 'Projects', 165, 6, true, 'Describe 2–3 projects with technologies used and measurable impact...'],
+              ['experience', 'Work Experience (Optional)', 150, 5, false, 'Optional for freshers/students — list roles, responsibilities, and outcomes...'],
+              ['internships', 'Internships (Optional)', 120, 4, false, 'Optional — list internships, duration, and key contributions...'],
+              ['certifications', 'Certifications (Optional)', 100, 3, false, 'Optional — relevant certifications or completed courses...'],
+              ['achievements', 'Achievements (Optional)', 100, 3, false, 'Optional — hackathons, awards, or leadership highlights...'],
+            ].map(([key, label, minH, rows, isRequired, placeholder]) => (
               <div className="form-field" key={key}>
-                <label className="form-label" htmlFor={`rb-${key}`}>{label}</label>
+                <label className="form-label" htmlFor={`rb-${key}`}>
+                  <span>
+                    {label}{' '}
+                    {isRequired && (
+                      <span aria-hidden="true" style={{ color: '#dc2626' }}>*</span>
+                    )}
+                  </span>
+                </label>
                 <textarea
                   id={`rb-${key}`}
                   className="form-textarea"
-                  style={{ minHeight: `${minH}px` }}
-                  value={sections[key]}
+                  rows={rows}
+                  required={isRequired}
+                  style={{ minHeight: `${minH}px`, resize: 'vertical' }}
+                  value={sections[key] || ''}
                   onChange={(e) => updateField(key, e.target.value)}
-                  placeholder={`Enter ${label.toLowerCase()}...`}
+                  placeholder={placeholder}
                 />
               </div>
             ))}
@@ -406,6 +480,7 @@ export function ResumeBuilder({
             {renderPreviewSection('Professional Summary', sections.summary)}
             {renderPreviewSection('Education', sections.education)}
             {renderPreviewSection('Technical Skills', sections.skills)}
+            {renderPreviewSection('Soft Skills', sections.softSkills)}
             {renderPreviewSection('Projects', sections.projects)}
             {renderPreviewSection('Experience', sections.experience)}
             {renderPreviewSection('Internships', sections.internships)}

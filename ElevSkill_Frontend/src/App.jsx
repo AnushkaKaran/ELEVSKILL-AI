@@ -622,6 +622,7 @@ export default function App() {
           authUser={authUser}
           onOpenMenu={() => setMobileMenuOpen(true)}
           onOpenAuth={() => setShowAuthModal(true)}
+          onOpenSettings={() => setActivePage('settings')}
           onLogout={handleLogout}
           onStartNewGuestSession={handleStartNewGuestSession}
         />

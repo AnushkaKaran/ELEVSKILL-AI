@@ -2,20 +2,37 @@ import { useState } from 'react';
 import { ArrowRight, X } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { Button } from './Button';
+import {
+  CAREER_INTEREST_OPTIONS,
+  DEGREE_OPTIONS,
+  TARGET_ROLE_OPTIONS,
+  resolveDropdownState,
+  resolveDropdownValue,
+} from '../data/profileOptions';
 
 export function OnboardingModal({ userProfile, onComplete, onSkip, isAuthenticated = false }) {
+  const initRole = resolveDropdownState(userProfile?.targetRole, TARGET_ROLE_OPTIONS);
+  const initDegree = resolveDropdownState(userProfile?.degree, DEGREE_OPTIONS);
+  const initInterest = resolveDropdownState(userProfile?.careerInterests, CAREER_INTEREST_OPTIONS);
+
   const [name, setName] = useState(userProfile?.name || '');
   const [status, setStatus] = useState(userProfile?.experienceLevel || '');
-  const [targetRole, setTargetRole] = useState(userProfile?.targetRole || '');
-  const [degree, setDegree] = useState(userProfile?.degree || '');
+  const [targetRoleSelect, setTargetRoleSelect] = useState(initRole.selected);
+  const [customTargetRole, setCustomTargetRole] = useState(initRole.custom);
+  const [degreeSelect, setDegreeSelect] = useState(initDegree.selected);
+  const [customDegree, setCustomDegree] = useState(initDegree.custom);
   const [institution, setInstitution] = useState(userProfile?.institution || '');
   const [graduationYear, setGraduationYear] = useState(userProfile?.graduationYear || '');
-  const [careerInterests, setCareerInterests] = useState(userProfile?.careerInterests || '');
+  const [interestSelect, setInterestSelect] = useState(initInterest.selected);
+  const [customInterest, setCustomInterest] = useState(initInterest.custom);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const resolvedRole = resolveDropdownValue(targetRoleSelect, customTargetRole);
+    const resolvedDegree = resolveDropdownValue(degreeSelect, customDegree);
+    const resolvedInterests = resolveDropdownValue(interestSelect, customInterest);
     const eduSummary =
-      [degree.trim(), institution.trim(), graduationYear.trim() ? `Class of ${graduationYear.trim()}` : '']
+      [resolvedDegree, institution.trim(), graduationYear.trim() ? `Class of ${graduationYear.trim()}` : '']
         .filter(Boolean)
         .join(' · ') || userProfile?.education || '';
 
@@ -23,12 +40,12 @@ export function OnboardingModal({ userProfile, onComplete, onSkip, isAuthenticat
       ...userProfile,
       name: name.trim(),
       experienceLevel: status,
-      targetRole: targetRole.trim(),
-      degree: degree.trim(),
+      targetRole: resolvedRole,
+      degree: resolvedDegree,
       institution: institution.trim(),
       graduationYear: graduationYear.trim(),
       education: eduSummary,
-      careerInterests: careerInterests.trim(),
+      careerInterests: resolvedInterests,
       onboardingDismissed: true,
     });
   };
@@ -122,28 +139,56 @@ export function OnboardingModal({ userProfile, onComplete, onSkip, isAuthenticat
           </div>
 
           <div className="form-field">
-            <label className="form-label" htmlFor="ob-role">Target Career Role</label>
-            <input
+            <label className="form-label" htmlFor="ob-role">Target Role</label>
+            <select
               id="ob-role"
-              type="text"
-              className="form-input"
-              placeholder="e.g., Frontend Developer, Data Analyst, Backend Developer"
-              value={targetRole}
-              onChange={(e) => setTargetRole(e.target.value)}
-            />
+              className="form-select"
+              value={targetRoleSelect}
+              onChange={(e) => setTargetRoleSelect(e.target.value)}
+            >
+              <option value="">Select target role (optional)</option>
+              {TARGET_ROLE_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
+            {targetRoleSelect === 'Other' && (
+              <input
+                id="ob-role-custom"
+                type="text"
+                className="form-input"
+                aria-label="Custom target role"
+                placeholder="Enter your target role"
+                value={customTargetRole}
+                onChange={(e) => setCustomTargetRole(e.target.value)}
+              />
+            )}
           </div>
 
           <div className="grid-2">
             <div className="form-field">
               <label className="form-label" htmlFor="ob-degree">Degree / Course</label>
-              <input
+              <select
                 id="ob-degree"
-                type="text"
-                className="form-input"
-                placeholder="e.g., B.S. Computer Science"
-                value={degree}
-                onChange={(e) => setDegree(e.target.value)}
-              />
+                className="form-select"
+                value={degreeSelect}
+                onChange={(e) => setDegreeSelect(e.target.value)}
+              >
+                <option value="">Select degree / course (optional)</option>
+                {DEGREE_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+              {degreeSelect === 'Other' && (
+                <input
+                  id="ob-degree-custom"
+                  type="text"
+                  className="form-input"
+                  aria-label="Custom degree or course"
+                  placeholder="Enter your degree or course"
+                  value={customDegree}
+                  onChange={(e) => setCustomDegree(e.target.value)}
+                />
+              )}
             </div>
             <div className="form-field">
               <label className="form-label" htmlFor="ob-year">Graduation Year</label>
@@ -171,15 +216,29 @@ export function OnboardingModal({ userProfile, onComplete, onSkip, isAuthenticat
               />
             </div>
             <div className="form-field">
-              <label className="form-label" htmlFor="ob-interests">Career Interests</label>
-              <input
+              <label className="form-label" htmlFor="ob-interests">Career Interest</label>
+              <select
                 id="ob-interests"
-                type="text"
-                className="form-input"
-                placeholder="e.g., Web Apps, AI/ML, Cloud"
-                value={careerInterests}
-                onChange={(e) => setCareerInterests(e.target.value)}
-              />
+                className="form-select"
+                value={interestSelect}
+                onChange={(e) => setInterestSelect(e.target.value)}
+              >
+                <option value="">Select career interest (optional)</option>
+                {CAREER_INTEREST_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+              {interestSelect === 'Other' && (
+                <input
+                  id="ob-interests-custom"
+                  type="text"
+                  className="form-input"
+                  aria-label="Custom career interest"
+                  placeholder="Enter your career interest"
+                  value={customInterest}
+                  onChange={(e) => setCustomInterest(e.target.value)}
+                />
+              )}
             </div>
           </div>
 

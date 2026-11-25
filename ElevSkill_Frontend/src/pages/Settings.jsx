@@ -4,6 +4,13 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Badge } from '../components/Badge';
 import { validateWorkspaceBackup } from '../utils/indexedDbStore';
+import {
+  CAREER_INTEREST_OPTIONS,
+  DEGREE_OPTIONS,
+  TARGET_ROLE_OPTIONS,
+  resolveDropdownState,
+  resolveDropdownValue,
+} from '../data/profileOptions';
 import './pages.css';
 
 const THEME_OPTIONS = [
@@ -21,6 +28,15 @@ export function Settings({
   isAuthenticated = false,
 }) {
   const [formState, setFormState] = useState({ ...userProfile });
+  const [roleDropdown, setRoleDropdown] = useState(() =>
+    resolveDropdownState(userProfile?.targetRole, TARGET_ROLE_OPTIONS)
+  );
+  const [degreeDropdown, setDegreeDropdown] = useState(() =>
+    resolveDropdownState(userProfile?.degree, DEGREE_OPTIONS)
+  );
+  const [interestDropdown, setInterestDropdown] = useState(() =>
+    resolveDropdownState(userProfile?.careerInterests, CAREER_INTEREST_OPTIONS)
+  );
   const [savedNotice, setSavedNotice] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
@@ -33,6 +49,9 @@ export function Settings({
 
   useEffect(() => {
     setFormState({ ...userProfile });
+    setRoleDropdown(resolveDropdownState(userProfile?.targetRole, TARGET_ROLE_OPTIONS));
+    setDegreeDropdown(resolveDropdownState(userProfile?.degree, DEGREE_OPTIONS));
+    setInterestDropdown(resolveDropdownState(userProfile?.careerInterests, CAREER_INTEREST_OPTIONS));
   }, [userProfile]);
 
   const handleChange = (field, value) => {
@@ -46,10 +65,16 @@ export function Settings({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const resolvedRole = resolveDropdownValue(roleDropdown.selected, roleDropdown.custom);
+    const resolvedDegree = resolveDropdownValue(degreeDropdown.selected, degreeDropdown.custom);
+    const resolvedInterests = resolveDropdownValue(
+      interestDropdown.selected,
+      interestDropdown.custom
+    );
     const combinedEdu =
       formState.education.trim() ||
       [
-        formState.degree?.trim(),
+        resolvedDegree,
         formState.institution?.trim(),
         formState.graduationYear?.trim() ? `Class of ${formState.graduationYear.trim()}` : '',
       ]
@@ -61,12 +86,12 @@ export function Settings({
       name: formState.name.trim(),
       email: formState.email.trim(),
       education: combinedEdu,
-      degree: (formState.degree || '').trim(),
+      degree: resolvedDegree,
       institution: (formState.institution || '').trim(),
       graduationYear: (formState.graduationYear || '').trim(),
-      targetRole: formState.targetRole.trim(),
+      targetRole: resolvedRole,
       skills: (formState.skills || '').trim(),
-      careerInterests: (formState.careerInterests || '').trim(),
+      careerInterests: resolvedInterests,
     });
     setSavedNotice(true);
   };
@@ -100,16 +125,36 @@ export function Settings({
             <div className="grid-2">
               <div className="form-field">
                 <label className="form-label" htmlFor="pref-degree">
-                  Degree / Program (Optional)
+                  Degree / Course (Optional)
                 </label>
-                <input
+                <select
                   id="pref-degree"
-                  type="text"
-                  className="form-input"
-                  placeholder="e.g., B.S. Computer Science"
-                  value={formState.degree || ''}
-                  onChange={(e) => handleChange('degree', e.target.value)}
-                />
+                  className="form-select"
+                  value={degreeDropdown.selected}
+                  onChange={(e) => {
+                    setDegreeDropdown((prev) => ({ ...prev, selected: e.target.value }));
+                    setSavedNotice(false);
+                  }}
+                >
+                  <option value="">Select degree / course</option>
+                  {DEGREE_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+                {degreeDropdown.selected === 'Other' && (
+                  <input
+                    id="pref-degree-custom"
+                    type="text"
+                    className="form-input"
+                    aria-label="Custom degree or course"
+                    placeholder="Enter your degree or course"
+                    value={degreeDropdown.custom}
+                    onChange={(e) => {
+                      setDegreeDropdown((prev) => ({ ...prev, custom: e.target.value }));
+                      setSavedNotice(false);
+                    }}
+                  />
+                )}
               </div>
 
               <div className="form-field">
@@ -174,16 +219,36 @@ export function Settings({
 
               <div className="form-field">
                 <label className="form-label" htmlFor="pref-interests">
-                  Career Interests (Optional)
+                  Career Interest (Optional)
                 </label>
-                <input
+                <select
                   id="pref-interests"
-                  type="text"
-                  className="form-input"
-                  placeholder="e.g., Full-Stack, AI/ML"
-                  value={formState.careerInterests || ''}
-                  onChange={(e) => handleChange('careerInterests', e.target.value)}
-                />
+                  className="form-select"
+                  value={interestDropdown.selected}
+                  onChange={(e) => {
+                    setInterestDropdown((prev) => ({ ...prev, selected: e.target.value }));
+                    setSavedNotice(false);
+                  }}
+                >
+                  <option value="">Select career interest</option>
+                  {CAREER_INTEREST_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+                {interestDropdown.selected === 'Other' && (
+                  <input
+                    id="pref-interests-custom"
+                    type="text"
+                    className="form-input"
+                    aria-label="Custom career interest"
+                    placeholder="Enter your career interest"
+                    value={interestDropdown.custom}
+                    onChange={(e) => {
+                      setInterestDropdown((prev) => ({ ...prev, custom: e.target.value }));
+                      setSavedNotice(false);
+                    }}
+                  />
+                )}
               </div>
             </div>
 
@@ -203,16 +268,36 @@ export function Settings({
 
             <div className="form-field">
               <label className="form-label" htmlFor="pref-role">
-                Target Job Role
+                Target Role
               </label>
-              <input
+              <select
                 id="pref-role"
-                type="text"
-                className="form-input"
-                placeholder="e.g., Junior Frontend Developer"
-                value={formState.targetRole}
-                onChange={(e) => handleChange('targetRole', e.target.value)}
-              />
+                className="form-select"
+                value={roleDropdown.selected}
+                onChange={(e) => {
+                  setRoleDropdown((prev) => ({ ...prev, selected: e.target.value }));
+                  setSavedNotice(false);
+                }}
+              >
+                <option value="">Select target role</option>
+                {TARGET_ROLE_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+              {roleDropdown.selected === 'Other' && (
+                <input
+                  id="pref-role-custom"
+                  type="text"
+                  className="form-input"
+                  aria-label="Custom target role"
+                  placeholder="Enter your target role"
+                  value={roleDropdown.custom}
+                  onChange={(e) => {
+                    setRoleDropdown((prev) => ({ ...prev, custom: e.target.value }));
+                    setSavedNotice(false);
+                  }}
+                />
+              )}
             </div>
 
             <div className="form-field">

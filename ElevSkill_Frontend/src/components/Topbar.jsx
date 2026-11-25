@@ -10,6 +10,7 @@ export function Topbar({
   authUser,
   onOpenMenu,
   onOpenAuth,
+  onOpenSettings,
   onLogout,
   onStartNewGuestSession,
 }) {
@@ -49,7 +50,13 @@ export function Topbar({
 
         <div className="topbar-right">
           {authUser && <Badge variant="success">Signed In</Badge>}
-          <div className="user-pill">
+          <button
+            type="button"
+            className="user-pill user-pill-btn"
+            onClick={onOpenSettings}
+            title="Open Profile Settings"
+            aria-label={`${displayName} — open Profile Settings`}
+          >
             <div className="user-avatar" aria-hidden="true">
               {initials}
             </div>
@@ -57,7 +64,7 @@ export function Topbar({
               <span className="user-name">{displayName}</span>
               <span className="user-role">{displayRole}</span>
             </div>
-          </div>
+          </button>
           {authUser ? (
             <Button variant="secondary" size="sm" onClick={onLogout} title="Sign out">
               <LogOut size={15} />
